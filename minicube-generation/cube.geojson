@@ -1,0 +1,236 @@
+{
+    "type": "Feature",
+    "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+            [
+            ]
+        ]
+    },
+    "properties": {
+        "title": "",
+        "data_id": "",
+        "description": "",
+        "version": "",
+        "recipe": "https://github.com/bcdev/deepextremes/minicube-generation",
+        "changes": "https://github.com/bcdev/deepextremes/minicube-generation/CHANGES.md",
+        "license": "Terms and conditions of the DeepESDL data distribution",
+        "time_range": ["2016-01-01", "2022-09-30"],
+        "time_period": "5D",
+        "spatial_ref": "",
+        "spatial_bbox": [],
+        "spatial_size": [128, 128],
+        "metadata": {
+            "date_modified": "",
+            "geospatial_lon_min": "",
+            "geospatial_lon_max": "",
+            "geospatial_lat_min": "",
+            "geospatial_lat_max": "",
+            "temporal_coverage_start": "2016-01-01 00:00:00",
+            "temporal_coverage_end": "2022-09-30 23:59:59",
+            "keywords": ["minicube", "events", "extremes"],
+            "Conventions": "CF-1.9",
+            "acknowledgment": "DeepExtremes project, DeepESDL project",
+            "contributor_name": "Brockmann Consult GmbH",
+            "contributor_url": "www.brockmann-geomatics.se",
+            "creator_email": "info@brockmann-consult.de",
+            "creator_name": "Brockmann Consult GmbH",
+            "creator_url": "www.brockmann-consult.de",
+            "institution": "Brockmann Consult GmbH",
+            "project": "DeepExtremes",
+            "publisher_email": "info@brockmann-consult.de",
+            "publisher_name": "Brockmann Consult GmbH"
+        },
+        "variables": [
+            {
+                "name": "B02",
+                "long_name": "Reflectance in band B02",
+                "units": "n.a.",
+                "dtype": "float32",
+                "dims": ["time", "lat", "lon"],
+                "fill_value": 0.0,
+                "sources": [
+                    {
+                        "home_url": "",
+                        "data_url": "",
+                        "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
+                        "attributions": [],
+                        "processing_steps": [
+
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Sentinel-2", "Reflectances"]
+                }
+            },
+            {
+                "name": "B03",
+                "long_name": "Reflectance in band B03",
+                "units": "n.a.",
+                "dtype": "float32",
+                "dims": ["time", "lat", "lon"],
+                "fill_value": 0.0,
+                "sources": [
+                    {
+                        "home_url": "",
+                        "data_url": "",
+                        "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
+                        "attributions": [],
+                        "processing_steps": [
+
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Sentinel-2", "Reflectances"]
+                }
+            },
+            {
+                "name": "B04",
+                "long_name": "Reflectance in band B04",
+                "units": "n.a.",
+                "dtype": "float32",
+                "dims": ["time", "lat", "lon"],
+                "fill_value": 0.0,
+                "sources": [
+                    {
+                        "home_url": "",
+                        "data_url": "",
+                        "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
+                        "attributions": [],
+                        "processing_steps": [
+
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Sentinel-2", "Reflectances"]
+                }
+            },
+            {
+                "name": "B05",
+                "long_name": "Reflectance in band B05",
+                "units": "n.a.",
+                "dtype": "float32",
+                "dims": ["time", "lat", "lon"],
+                "fill_value": 0.0,
+                "sources": [
+                    {
+                        "home_url": "",
+                        "data_url": "",
+                        "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
+                        "attributions": [],
+                        "processing_steps": [
+
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Sentinel-2", "Reflectances"]
+                }
+            },
+            {
+                "name": "B06",
+                "long_name": "Reflectance in band B06",
+                "units": "n.a.",
+                "dtype": "float32",
+                "dims": ["time", "lat", "lon"],
+                "fill_value": 0.0,
+                "sources": [
+                    {
+                        "home_url": "",
+                        "data_url": "",
+                        "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
+                        "attributions": [],
+                        "processing_steps": [
+
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Sentinel-2", "Reflectances"]
+                }
+            },
+            {
+                "name": "B07",
+                "long_name": "Reflectance in band B07",
+                "units": "n.a.",
+                "dtype": "float32",
+                "dims": ["time", "lat", "lon"],
+                "fill_value": 0.0,
+                "sources": [
+                    {
+                        "home_url": "",
+                        "data_url": "",
+                        "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
+                        "attributions": [],
+                        "processing_steps": [
+
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Sentinel-2", "Reflectances"]
+                }
+            },
+            {
+                "name": "B8A",
+                "long_name": "Reflectance in band B8A",
+                "units": "n.a.",
+                "dtype": "float32",
+                "dims": ["time", "lat", "lon"],
+                "fill_value": 0.0,
+                "sources": [
+                    {
+                        "home_url": "",
+                        "data_url": "",
+                        "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
+                        "attributions": [],
+                        "processing_steps": [
+
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Sentinel-2", "Reflectances"]
+                }
+            }
+        ],
+        "sources": [
+            {
+                "name": "Sentinel Hub S2L2A",
+                "variable_names": ["B02", "B03", "B04", "B05", "B06", "B07", "B8A"],
+                "store_id": "sentinelhub"
+            }
+        ]
+    }
+}
