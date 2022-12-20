@@ -32,7 +32,7 @@
             "Conventions": "CF-1.9",
             "acknowledgment": "DeepExtremes project, DeepESDL project",
             "contributor_name": "Brockmann Consult GmbH",
-            "contributor_url": "www.brockmann-geomatics.se",
+            "contributor_url": "www.brockmann-consult.de",
             "creator_email": "info@brockmann-consult.de",
             "creator_name": "Brockmann Consult GmbH",
             "creator_url": "www.brockmann-consult.de",
@@ -56,7 +56,7 @@
                         "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
                         "attributions": [],
                         "processing_steps": [
-
+                            "Read S2L2A"
                         ],
                         "remarks": ""
                     }
@@ -82,7 +82,7 @@
                         "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
                         "attributions": [],
                         "processing_steps": [
-
+                            "Read S2L2A"
                         ],
                         "remarks": ""
                     }
@@ -108,7 +108,7 @@
                         "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
                         "attributions": [],
                         "processing_steps": [
-
+                            "Read S2L2A"
                         ],
                         "remarks": ""
                     }
@@ -134,7 +134,7 @@
                         "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
                         "attributions": [],
                         "processing_steps": [
-
+                            "Read S2L2A"
                         ],
                         "remarks": ""
                     }
@@ -160,7 +160,7 @@
                         "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
                         "attributions": [],
                         "processing_steps": [
-
+                            "Read S2L2A"
                         ],
                         "remarks": ""
                     }
@@ -186,7 +186,7 @@
                         "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
                         "attributions": [],
                         "processing_steps": [
-
+                            "Read S2L2A"
                         ],
                         "remarks": ""
                     }
@@ -212,7 +212,7 @@
                         "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
                         "attributions": [],
                         "processing_steps": [
-
+                            "Read S2L2A"
                         ],
                         "remarks": ""
                     }
@@ -227,8 +227,12 @@
         ],
         "sources": [
             {
-                "name": "Sentinel Hub S2L2A",
-                "variable_names": ["B02", "B03", "B04", "B05", "B06", "B07", "B8A"],
+                "name": "Sentinel Hub",
+                "datasets": {
+                    "S2L2A": {
+                        "variable_names": ["B02", "B03", "B04", "B05", "B06", "B07", "B8A"]
+                    }
+                },
                 "store_id": "sentinelhub"
             }
         ]

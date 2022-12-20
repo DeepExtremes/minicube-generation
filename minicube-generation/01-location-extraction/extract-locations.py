@@ -21,22 +21,22 @@ def extract_locations(min_lon: float, max_lon:float,
     for i, location_file in enumerate(location_files):
         ds = xr.open_zarr(f'../../Locations/{location_file}')
         layer = ds.layer.sel(lon=slice(min_lon, max_lon),
-                             lat=slice(min_lat, max_lat))
+                             lat=slice(max_lat, min_lat))
         layer_locations = _extract_locations_from_layer(layer, i + 1)
         all_locations.extend(layer_locations)
 
     version ='unknown'
     with open('locationversions.py', 'r') as v:
-        version = v.read()
+        version = v.read().split('=')[-1]
     date = datetime.now().strftime('%Y-%m-%d')
-    filename = f'minicube_locations_v{version}_{date}_' \
+    filename = f'../minicube_locations_v{version}_{date}_' \
                f'({min_lon}_{max_lon}_{min_lat}_{max_lat}).csv'
     with open(filename, 'w+') as output:
-        output.write("Longitude\tLatitude\tClass")
+        output.write("Longitude\tLatitude\tClass\n")
         for location in all_locations:
             output.write(f'{location[0]}\t'
                          f'{location[1]}\t'
-                         f'{location[2]}')
+                         f'{location[2]}\n')
 
 
 def _extract_locations_from_layer(da: xr.DataArray, cci_layer_id: int):
@@ -44,7 +44,8 @@ def _extract_locations_from_layer(da: xr.DataArray, cci_layer_id: int):
     layer_locations = []
     for layer in range(1, 7):
         layer_layer_frame = layer_frame[layer_frame['layer'] == layer]
-        if layer_layer_frame.value_counts()[0] > 0:
+        if len(layer_layer_frame.value_counts()) > 0 and \
+                layer_layer_frame.value_counts()[0] > 0:
             sample_frame = layer_layer_frame.sample(n=1)
             lat, lon = sample_frame.index[0]
             layer_locations.append(
