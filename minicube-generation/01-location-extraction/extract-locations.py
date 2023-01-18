@@ -22,6 +22,7 @@ def extract_locations(min_lon: float, max_lon:float,
         ds = xr.open_zarr(f'../../Locations/{location_file}')
         layer = ds.layer.sel(lon=slice(min_lon, max_lon),
                              lat=slice(max_lat, min_lat))
+        print(layer)
         layer_locations = _extract_locations_from_layer(layer, i + 1)
         all_locations.extend(layer_locations)
 
@@ -40,12 +41,15 @@ def extract_locations(min_lon: float, max_lon:float,
 
 
 def _extract_locations_from_layer(da: xr.DataArray, cci_layer_id: int):
+    print(da)
     layer_frame = da.squeeze().to_dataframe(name='layer')
+    print(layer_frame)
     layer_locations = []
     for layer in range(1, 7):
         layer_layer_frame = layer_frame[layer_frame['layer'] == layer]
-        if len(layer_layer_frame.value_counts()) > 0 and \
-                layer_layer_frame.value_counts()[0] > 0:
+        print(f'Examining layer {layer} from CCI Layer {cci_layer_id}')
+        if len(layer_layer_frame.value_counts()) > 0 and layer_layer_frame.value_counts()[0] > 0:
+            print(f'Extracting layer {layer} from CCI Layer {cci_layer_id}')
             sample_frame = layer_layer_frame.sample(n=1)
             lat, lon = sample_frame.index[0]
             layer_locations.append(
