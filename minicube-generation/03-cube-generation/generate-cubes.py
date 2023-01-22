@@ -12,7 +12,7 @@ from xcube.core.store import DataStore
 from xcube.core.store import new_data_store
 from xcube.core.mldataset import MultiLevelDataset
 from xcube.core.resampling import resample_in_space
-
+from xcube.core.update import update_dataset_chunk_encoding
 
 def _set_up_sources(source_configs: List[dict],
                     client_id: str,
@@ -236,6 +236,9 @@ def _chunk_by_time(ds_source: xr.Dataset, time_chunk_size:int) -> xr.Dataset:
     for data_var in ds.data_vars:
         if 'time' in ds[data_var].dims:
             ds[data_var] = ds[data_var].chunk(chunks={'time': time_chunk_size})
+            ds = update_dataset_chunk_encoding(ds,
+                                               chunk_sizes={'time': time_chunk_size},
+                                               format_name='zarr')
     return ds
 
 
