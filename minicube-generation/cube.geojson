@@ -15,7 +15,7 @@
         "recipe": "https://github.com/bcdev/deepextremes/minicube-generation",
         "changes": "https://github.com/bcdev/deepextremes/minicube-generation/CHANGES.md",
         "license": "Terms and conditions of the DeepESDL data distribution",
-        "time_range": ["2016-01-01", "2022-09-30"],
+        "time_range": ["2016-01-01", "2022-10-10"],
         "time_period": "5D",
         "spatial_ref": "",
         "spatial_bbox": [],
@@ -27,10 +27,10 @@
             "geospatial_lat_min": "",
             "geospatial_lat_max": "",
             "temporal_coverage_start": "2016-01-01 00:00:00",
-            "temporal_coverage_end": "2022-09-30 23:59:59",
+            "temporal_coverage_end": "2022-10-10 23:59:59",
             "keywords": ["minicube", "events", "extremes"],
             "Conventions": "CF-1.9",
-            "acknowledgment": "DeepExtremes project, DeepESDL project",
+            "acknowledgment": "DeepExtremes project",
             "contributor_name": "Brockmann Consult GmbH",
             "contributor_url": "www.brockmann-consult.de",
             "creator_email": "info@brockmann-consult.de",
@@ -39,7 +39,8 @@
             "institution": "Brockmann Consult GmbH",
             "project": "DeepExtremes",
             "publisher_email": "info@brockmann-consult.de",
-            "publisher_name": "Brockmann Consult GmbH"
+            "publisher_name": "Brockmann Consult GmbH",
+            "class": ""
         },
         "variables": [
             {
@@ -56,7 +57,8 @@
                         "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
                         "attributions": [],
                         "processing_steps": [
-                            "Read S2L2A"
+                            "Read S2L2A",
+                            "Chunk by time / 165"
                         ],
                         "remarks": ""
                     }
@@ -82,7 +84,8 @@
                         "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
                         "attributions": [],
                         "processing_steps": [
-                            "Read S2L2A"
+                            "Read S2L2A",
+                            "Chunk by time / 165"
                         ],
                         "remarks": ""
                     }
@@ -108,7 +111,8 @@
                         "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
                         "attributions": [],
                         "processing_steps": [
-                            "Read S2L2A"
+                            "Read S2L2A",
+                            "Chunk by time / 165"
                         ],
                         "remarks": ""
                     }
@@ -134,7 +138,8 @@
                         "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
                         "attributions": [],
                         "processing_steps": [
-                            "Read S2L2A"
+                            "Read S2L2A",
+                            "Chunk by time / 165"
                         ],
                         "remarks": ""
                     }
@@ -160,7 +165,8 @@
                         "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
                         "attributions": [],
                         "processing_steps": [
-                            "Read S2L2A"
+                            "Read S2L2A",
+                            "Chunk by time / 165"
                         ],
                         "remarks": ""
                     }
@@ -186,7 +192,8 @@
                         "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
                         "attributions": [],
                         "processing_steps": [
-                            "Read S2L2A"
+                            "Read S2L2A",
+                            "Chunk by time / 165"
                         ],
                         "remarks": ""
                     }
@@ -212,7 +219,8 @@
                         "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
                         "attributions": [],
                         "processing_steps": [
-                            "Read S2L2A"
+                            "Read S2L2A",
+                            "Chunk by time / 165"
                         ],
                         "remarks": ""
                     }
@@ -222,6 +230,731 @@
                     "color_value_min": 0.0,
                     "color_value_max": 1.0,
                     "keywords": ["Sentinel-2", "Reflectances"]
+                }
+            },
+            {
+                "name": "cop_dem",
+                "long_name": "Copernicus DEM GLO-30",
+                "units": "meter",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://registry.opendata.aws/copernicus-dem/",
+                        "data_url": "https://registry.opendata.aws/copernicus-dem/",
+                        "license_url": "https://spacedata.copernicus.eu/documents/20126/0/CSCDA_ESA_Mission-specific+Annex.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Copernicus DEM",
+                            "Resample spatially to S2L2A",
+                            "Rename from to / band_1 cop_dem"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Sentinel-2", "Reflectances"]
+                }
+            },
+            {
+                "name": "lccs_class",
+                "long_name": "Land cover class defined in LCCS",
+                "units": "",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://catalogue.ceda.ac.uk/uuid/b382ebe6679d44b8b0e68ea4ef4b701c",
+                        "data_url": "https://catalogue.ceda.ac.uk/uuid/b382ebe6679d44b8b0e68ea4ef4b701c",
+                        "license_url": "http://licences.ceda.ac.uk/image/data_access_condition/esacci_landcover_terms_and_conditions.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read ESACCI-LC-L4-LCCS-Map-300m-P1Y-1992-2015-v2.0.7b.zarr",
+                            "Pick last time value",
+                            "Subset spatially around center / 1",
+                            "Resample spatially to S2L2A / 300"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Sentinel-2", "Reflectances"]
+                }
+            },
+            {
+                "name": "e_max",
+                "long_name": "Evaporation, daily maximum",
+                "units": "m of water equivalent",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Total Evaporation",
+                            "Pick / max",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / max",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "e_min",
+                "long_name": "Evaporation, daily minimum",
+                "units": "m of water equivalent",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Total Evaporation",
+                            "Pick / min",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / min",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "e_mean",
+                "long_name": "Evaporation, daily mean",
+                "units": "m of water equivalent",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Total Evaporation",
+                            "Pick / mean",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / mean",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "pev_max",
+                "long_name": "Potential evaporation, daily maximum",
+                "units": "m",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Potential Evaporation",
+                            "Pick / max",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / max",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "pev_min",
+                "long_name": "Potential evaporation, daily minimum",
+                "units": "m",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Potential Evaporation",
+                            "Pick / min",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / min",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "pev_mean",
+                "long_name": "Potential evaporation, daily mean",
+                "units": "m",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Potential Evaporation",
+                            "Pick / mean",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / mean",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "slhf_max",
+                "long_name": "Surface latent heat flux, daily maximum",
+                "units": "J m**-2",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Surface Latent Heat Flux",
+                            "Pick / max",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / max",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "slhf_min",
+                "long_name": "Surface latent heat flux, daily minimum",
+                "units": "J m**-2",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Surface Latent Heat Flux",
+                            "Pick / min",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / min",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "slhf_mean",
+                "long_name": "Surface latent heat flux, daily mean",
+                "units": "J m**-2",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Surface Latent Heat Flux",
+                            "Pick / mean",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / mean",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "sp_max",
+                "long_name": "Surface pressure, daily maximum",
+                "units": "Pa",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Surface Pressure",
+                            "Pick / max",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / max",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "sp_min",
+                "long_name": "Surface pressure, daily minimum",
+                "units": "Pa",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Surface Pressure",
+                            "Pick / min",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / min",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "sp_mean",
+                "long_name": "Surface pressure, daily mean",
+                "units": "Pa",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Surface Pressure",
+                            "Pick / mean",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / mean",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "sshf_max",
+                "long_name": "Surface sensible heat flux, daily max",
+                "units": "J m**-2",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Surface Sensible Heat Flux",
+                            "Pick / max",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / max",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "sshf_min",
+                "long_name": "Surface sensible heat flux, daily min",
+                "units": "J m**-2",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Surface Sensible Heat Flux",
+                            "Pick / min",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / min",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "sshf_mean",
+                "long_name": "Surface sensible heat flux, daily mean",
+                "units": "J m**-2",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Surface Sensible Heat Flux",
+                            "Pick / mean",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / mean",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "ssr_max",
+                "long_name": "Surface net solar radiation, daily max",
+                "units": "J m**-2",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Surface Net Solar Radiation",
+                            "Pick / max",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / max",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "ssr_min",
+                "long_name": "Surface net solar radiation, daily min",
+                "units": "J m**-2",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Surface Net Solar Radiation",
+                            "Pick / min",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / min",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "ssr_mean",
+                "long_name": "Surface net solar radiation, daily mean",
+                "units": "J m**-2",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Surface Net Solar Radiation",
+                            "Pick / mean",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / mean",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "t2m_max",
+                "long_name": "2 metre temperature, daily max",
+                "units": "K",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land 2m Temperature",
+                            "Pick / max",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / max",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "t2m_min",
+                "long_name": "2 metre temperature, daily min",
+                "units": "K",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land 2m Temperature",
+                            "Pick / min",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / min",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "t2m_mean",
+                "long_name": "2 metre temperature, daily mean",
+                "units": "K",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land 2m Temperature",
+                            "Pick / mean",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / mean",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "tp_max",
+                "long_name": "Total precipitation, daily max",
+                "units": "m",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Total Precipitation",
+                            "Pick / max",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / max",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "tp_min",
+                "long_name": "Total precipitation, daily minimum",
+                "units": "m",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Total Precipitation",
+                            "Pick / min",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / min",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
+                }
+            },
+            {
+                "name": "tp_mean",
+                "long_name": "Total precipitation, daily mean",
+                "units": "m",
+                "dtype": "float32",
+                "sources": [
+                    {
+                        "home_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "data_url": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land",
+                        "license_url": "https://cds.climate.copernicus.eu/api/v2/terms/static/licence-to-use-copernicus-products.pdf",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read Era-5 Land Total Precipitation",
+                            "Pick / mean",
+                            "Pick center spatial value",
+                            "Resample temporally to S2L2A / mean",
+                            "Chunk by time / 495"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["Era-5", "Land"]
                 }
             }
         ],
@@ -234,7 +967,199 @@
                     }
                 },
                 "store_id": "sentinelhub"
-            }
+            },
+            {
+                "name": "Copernicus DEM 30m",
+                "datasets": {
+                    "": {
+                        "variable_names": ["band_1"]
+                    }
+                },
+                "store_id": "s3",
+                "store_params": {
+                    "root": "copernicus-dem-30m",
+                    "storage_options": {
+                        "anon": "True"
+                    }
+                }
+            },
+            {
+                "name": "CCI Map",
+                "datasets": {
+                    "ESACCI-LC-L4-LCCS-Map-300m-P1Y-1992-2015-v2.0.7b.zarr": {
+                        "variable_names": ["lccs_class"]
+                    }
+                },
+                "store_id": "ccizarr"
+            },
+            {
+                "name": "Era-5 Land Total Evaporation",
+                "datasets": {
+                    "": {
+                        "variable_names": [
+                            "e_max", "e_min", "e_mean"
+                        ]
+                    }
+                },
+                "store_id": "s3",
+                "store_params": {
+                    "root": "deepextremes/era5land/e",
+                    "storage_options": {
+                        "anon": "False",
+                        "client_kwargs": {
+                            "aws_access_key_id": "",
+                            "aws_secret_access_key": ""
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Era-5 Land Potential Evaporation",
+                "datasets": {
+                    "": {
+                        "variable_names": [
+                            "pev_max", "pev_min", "pev_mean"
+                        ]
+                    }
+                },
+                "store_id": "s3",
+                "store_params": {
+                    "root": "deepextremes/era5land/pev",
+                    "storage_options": {
+                        "anon": "False",
+                        "client_kwargs": {
+                            "aws_access_key_id": "",
+                            "aws_secret_access_key": ""
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Era-5 Land Surface Latent Heat Flux",
+                "datasets": {
+                    "": {
+                        "variable_names": [
+                            "slhf_max", "slhf_min", "slhf_mean"
+                        ]
+                    }
+                },
+                "store_id": "s3",
+                "store_params": {
+                    "root": "deepextremes/era5land/slhf",
+                    "storage_options": {
+                        "anon": "False",
+                        "client_kwargs": {
+                            "aws_access_key_id": "",
+                            "aws_secret_access_key": ""
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Era-5 Land Surface Pressure",
+                "datasets": {
+                    "": {
+                        "variable_names": [
+                            "sp_max", "sp_min", "sp_mean"
+                        ]
+                    }
+                },
+                "store_id": "s3",
+                "store_params": {
+                    "root": "deepextremes/era5land/sp",
+                    "storage_options": {
+                        "anon": "False",
+                        "client_kwargs": {
+                            "aws_access_key_id": "",
+                            "aws_secret_access_key": ""
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Era-5 Land Surface Sensible Heat Flux",
+                "datasets": {
+                    "": {
+                        "variable_names": [
+                            "sshf_max", "sshf_min", "sshf_mean"
+                        ]
+                    }
+                },
+                "store_id": "s3",
+                "store_params": {
+                    "root": "deepextremes/era5land/sshf",
+                    "storage_options": {
+                        "anon": "False",
+                        "client_kwargs": {
+                            "aws_access_key_id": "",
+                            "aws_secret_access_key": ""
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Era-5 Land Surface Net Solar Radiation",
+                "datasets": {
+                    "": {
+                        "variable_names": [
+                            "ssr_max", "ssr_min", "ssr_mean"
+                        ]
+                    }
+                },
+                "store_id": "s3",
+                "store_params": {
+                    "root": "deepextremes/era5land/ssr",
+                    "storage_options": {
+                        "anon": "False",
+                        "client_kwargs": {
+                            "aws_access_key_id": "",
+                            "aws_secret_access_key": ""
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Era-5 Land 2m Temperature",
+                "datasets": {
+                    "": {
+                        "variable_names": [
+                            "t2m_max", "t2m_min", "t2m_mean"
+                        ]
+                    }
+                },
+                "store_id": "s3",
+                "store_params": {
+                    "root": "deepextremes/era5land/t2m",
+                    "storage_options": {
+                        "anon": "False",
+                        "client_kwargs": {
+                            "aws_access_key_id": "",
+                            "aws_secret_access_key": ""
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Era-5 Land Total Precipitation",
+                "datasets": {
+                    "": {
+                        "variable_names": [
+                            "tp_max", "tp_min", "tp_mean"
+                        ]
+                    }
+                },
+                "store_id": "s3",
+                "store_params": {
+                    "root": "deepextremes/era5land/tp",
+                    "storage_options": {
+                        "anon": "False",
+                        "client_kwargs": {
+                            "aws_access_key_id": "",
+                            "aws_secret_access_key": ""
+                        }
+                    }
+                }
+            }                                                                                
         ]
     }
 }

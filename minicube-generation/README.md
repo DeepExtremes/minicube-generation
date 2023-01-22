@@ -7,14 +7,14 @@ project.
 Move to `01-location-extraction` and execute `extract-locations.py`.
 This file expects four additional coordinates: minimum longitude, 
 maximum longitude, minimum latitude and maximum longitude, so run it like, 
-e.g., `extract-locations.py 25 35 50 60`. 
+e.g., `extract-locations.py 20 30 50 60`. 
 It will expect `.zarr`-files in the `Locations` folder at project level.
 There is a file `locationversions.py` here that will keep track of the way
 the locations are extracted.
 The output is a `.csv`-file in the `minicube-generation`-folder, 
 and it will carry the date, the bounding box, and the version in its name. 
 
-Next, move to `01-config-generation` and run `generate-config.py` to create 
+Next, move to `02-config-generation` and run `generate-config.py` to create 
 cube-specific `.geojson`-files that can serve as inputs for the cube generation.
 You may pass to this script explicitly a location file created in the previous
 step, if you dont't do so, the script will look for a valid file itself.
@@ -27,5 +27,5 @@ This script expects five arguments: The first is either a single minicube
 configuration geojson file, or a folder containing several of these files.
 Folders must end with an`*`. The second parameter is the sentinelhub client id,
 the third one the sentinelhub client secret, 
-the fourth one the aws access key id, the fifht one the aws secret access key.
-The miincubes are written directly to the `deepextremes` bucket on AWS.
+the fourth one the aws access key id, the fifth one the aws secret access key.
+The minicubes are written to the `deepextremes/minicubes` bucket on AWS.

@@ -30,7 +30,7 @@ def extract_locations(min_lon: float, max_lon:float,
         version = v.read().split('=')[-1]
     date = datetime.now().strftime('%Y-%m-%d')
     filename = f'../minicube_locations_v{version}_{date}_' \
-               f'({min_lon}_{max_lon}_{min_lat}_{max_lat}).csv'
+               f'{min_lon}_{max_lon}_{min_lat}_{max_lat}.csv'
     with open(filename, 'w+') as output:
         output.write("Longitude\tLatitude\tClass\n")
         for location in all_locations:
@@ -44,8 +44,7 @@ def _extract_locations_from_layer(da: xr.DataArray, cci_layer_id: int):
     layer_locations = []
     for layer in range(1, 7):
         layer_layer_frame = layer_frame[layer_frame['layer'] == layer]
-        if len(layer_layer_frame.value_counts()) > 0 and \
-                layer_layer_frame.value_counts()[0] > 0:
+        if len(layer_layer_frame.value_counts()) > 0 and layer_layer_frame.value_counts()[0] > 0:
             sample_frame = layer_layer_frame.sample(n=1)
             lat, lon = sample_frame.index[0]
             layer_locations.append(

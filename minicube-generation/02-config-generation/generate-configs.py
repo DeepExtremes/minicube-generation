@@ -3,6 +3,7 @@ import glob
 import json
 import math
 import numpy as np
+import os
 import pandas as pd
 import sys
 
@@ -14,6 +15,22 @@ _TITLE_TEMPLATE = "Minicube at {lon} {lat}"
 _DESCRIPTION_TEMPLATE = "The minicube covering the area around {lon} and {lat}"
 _SPATIAL_RES = 20
 _HALF_RES = 64 * _SPATIAL_RES
+_ERA5_VARIABLE_NAMES = [
+    "e_max", "e_min", "e_mean", "pev_max", "pev_min", "pev_mean", "slhf_max",
+    "slhf_min", "slhf_mean", "sp_max", "sp_min", "sp_mean", "sshf_max",
+    "sshf_min", "sshf_mean", "ssr_max", "ssr_min", "ssr_mean", "t2m_max",
+    "t2m_min", "t2m_mean", "tp_max", "tp_min", "tp_mean"
+]
+_ERA5_VARIABLE_MAP = {
+    '2m Temperature': 't2m',
+    'Potential Evaporation': 'pev',
+    'Surface Latent Heat Flux': 'slhf',
+    'Surface Net Solar Radiation': 'ssr',
+    'Surface Pressure': 'sp',
+    'Surface Sensible Heat Flux': 'sshf',
+    'Total Evaporation': 'e',
+    'Total Precipitation': 'tp'
+}
 
 
 def _get_crs(lon: float, lat: float) -> str:
@@ -24,11 +41,39 @@ def _get_crs(lon: float, lat: float) -> str:
     return f'EPSG:{epsg_code}'
 
 
+def _get_dem_file_path(lon: int, lat: int) -> str:
+    if lon < 0:
+        lon_str = f'W{int(abs(lon - 1)):03}'
+    else:
+        lon_str = f'E{int(abs(lon)):03}'
+    if lat < 0:
+        lat_str = f'S{int(abs(lat - 1)):02}'
+    else:
+        lat_str = f'N{int(abs(lat)):02}'
+    return f'Copernicus_DSM_COG_10_{lat_str}_00_{lon_str}_00_DEM/Copernicus_DSM_COG_10_{lat_str}_00_{lon_str}_00_DEM.tif'
+
+
+def _get_era5_file_path(lon: int, lat: int, var_name: str) -> str:
+    lon_new = int(math.floor(lon / 10) * 10)
+    if lon_new < 0:
+        lon_str = f'W{int(abs(lon_new)):03}'
+    else:
+        lon_str = f'E{int(abs(lon_new)):03}'
+    lat_new = int(math.floor(lat / 10) * 10)
+    if lat_new < 0:
+        lat_str = f'S{int(abs(lat_new)):02}'
+    else:
+        lat_str = f'N{int(abs(lat_new)):02}'
+    return f'era5land_{var_name}_{lat_str}_{lon_str}_v1.zarr'
+
+
 def generate_minicube_configs(location_file: str):
     minicube_locations = pd.read_csv(location_file, delimiter="\t")
     version ='unknown'
     with open('../version.py', 'r') as v:
-        version = v.read()
+        version = v.read().split('=')[1]
+    if not os.path.exists(f'../configs/{version}'):
+        os.makedirs(f'../configs/{version}/')
     with open('../cube.geojson', 'r') as template:
         t = json.load(template)
         for minicube_location in minicube_locations.iterrows():
@@ -68,7 +113,41 @@ def generate_minicube_configs(location_file: str):
             t['properties']['metadata']['geospatial_lon_max'] = max(lons)
             t['properties']['metadata']['geospatial_lat_min'] = min(lats)
             t['properties']['metadata']['geospatial_lat_max'] = max(lats)
-            with open(f'../configs/{data_id}.geojson', 'w+') as mc_json:
+            t['properties']['metadata']['class'] = minicube_location[1].Class
+            dem_file_path = _get_dem_file_path(center_lon, center_lat)
+            for variable in t['properties']['variables']:
+                if variable['name'] == 'cop_dem':
+                    variable['sources'][0]['processing_steps'][0] = f'Read {dem_file_path}'
+                    break
+            for source in t['properties']['sources']:
+                if source['name'] == 'Copernicus DEM 30m':
+                    current_key = list(source['datasets'].keys())[0]
+                    dem_datasets_dict_save = source['datasets'][current_key]
+                    source['datasets'] = {
+                        dem_file_path: dem_datasets_dict_save
+                    }
+                    break
+            for variable in t['properties']['variables']:
+                if variable['name'] in _ERA5_VARIABLE_NAMES:
+                    var_name_start = variable['name'].split('_')[0]
+                    era5_file_path = _get_era5_file_path(center_lon,
+                                                         center_lat,
+                                                         var_name_start)
+                    variable['sources'][0]['processing_steps'][0] = \
+                        f'Read {era5_file_path}'
+            for source in t['properties']['sources']:
+                if source['name'].startswith('Era-5 Land'):
+                    current_key = list(source['datasets'].keys())[0]
+                    era5_datasets_dict_save = source['datasets'][current_key]
+                    long_var_name = source['name'].split('Era-5 Land ')[1]
+                    var_name = _ERA5_VARIABLE_MAP[long_var_name]
+                    source_era5_file_path = _get_era5_file_path(center_lon,
+                                                                center_lat,
+                                                                var_name)
+                    source['datasets'] = {
+                        source_era5_file_path: era5_datasets_dict_save
+                    }
+            with open(f'../configs/{version}/{data_id}.geojson', 'w+') as mc_json:
                 json.dump(t, mc_json, indent=4)
 
 
