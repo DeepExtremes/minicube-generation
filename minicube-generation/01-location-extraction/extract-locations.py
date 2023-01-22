@@ -44,7 +44,8 @@ def _extract_locations_from_layer(da: xr.DataArray, cci_layer_id: int):
     layer_locations = []
     for layer in range(1, 7):
         layer_layer_frame = layer_frame[layer_frame['layer'] == layer]
-        if len(layer_layer_frame.value_counts()) > 0 and layer_layer_frame.value_counts()[0] > 0:
+        if len(layer_layer_frame.value_counts()) > 0 and \
+                layer_layer_frame.value_counts()[0] > 0:
             sample_frame = layer_layer_frame.sample(n=1)
             lat, lon = sample_frame.index[0]
             layer_locations.append(
