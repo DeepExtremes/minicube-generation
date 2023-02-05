@@ -8,7 +8,7 @@ from datetime import timedelta
 from xcube.core.store import new_data_store
 
 _START = datetime(2016, 1, 1)
-_NEW_START = datetime(2016, 1, 1)
+_NEW_START = datetime(2016, 1, 1).strftime('%Y-%m-%d')
 _END = datetime(2022, 10, 31)
 
 _SOURCE_STORE = new_data_store('cds')
@@ -34,9 +34,10 @@ def _get_era5_file_path(lon: int, lat: int, var_name: str) -> str:
 
 def _create_era5_cube(min_lon: int, max_lon: int,
                       min_lat: int, max_lat: int,
-                      var_long_name: str, var_name: str):
+                      var_long_name: str, var_name: str,
+                      new_start_time: str):
     file_path = _get_era5_file_path(min_lon, min_lat, var_name)
-    start = _NEW_START
+    start = datetime.strptime(new_start_time, '%Y-%m-%d')
     print(f'Creating cube {file_path}')
     while start < _END:
         stop = start + timedelta(days=7)
@@ -82,10 +83,11 @@ def _create_era5_cube(min_lon: int, max_lon: int,
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 7:
+    if len(sys.argv) < 7 or len(sys.argv) > 8:
         raise ValueError('Expected coordinates '
                          'MIN_LON, MAX_LON, MIN_LAT, MAX_LAT, '
-                         'var_long_name, var_short_name')
+                         'var_long_name, var_short_name,'
+                         'optionally start_date in format yyyy-mm-dd')
     else:
         coords = sys.argv[1:]
         _create_era5_cube(int(coords[0]),
@@ -93,4 +95,6 @@ if __name__ == "__main__":
                           int(coords[2]),
                           int(coords[3]),
                           str(coords[4]),
-                          str(coords[5]))
+                          str(coords[5]),
+                          str(coords[6] if len(coords) == 7 else _NEW_START)
+                          )
