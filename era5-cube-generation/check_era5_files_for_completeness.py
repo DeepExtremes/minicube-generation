@@ -54,9 +54,6 @@ def _check_for_completeness():
             formatted_new_start_date = new_start_date.strftime('%Y-%m-%d')
             lat, lon = _get_lat_lon_from_era5_file_path(var_ds_id)
             var_long_name = VAR_NAMES[var_name]
-            # print(f'cmd: python generate-era5-cube.py {lon} {lon + 10} '
-            #       f'{lat} {lat + 10} {var_long_name} {var_name}',
-            #       f'{formatted_new_start_date}')
             subprocess.Popen(['python', 'generate-era5-cube.py',
                               f'{lon}', f'{lon + 10}',
                               f'{lat}', f'{lat + 10}',
