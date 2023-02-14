@@ -16,6 +16,6 @@ if __name__ == "__main__":
     aws_access_key_id = sys.argv[4]
     aws_secret_access_key = sys.argv[5]
     for geojson_file in geojson_files:
-        subprocess.run(['python', 'generate-cube.py', '{geojson_file}',
+        subprocess.run(['python', 'generate-cube.py', f'{geojson_file}',
                         f'{client_id}', f'{client_secret}',
                         f'{aws_access_key_id}', f'{aws_secret_access_key}'])
