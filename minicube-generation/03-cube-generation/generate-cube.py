@@ -186,6 +186,8 @@ def _write_ds(ds: xr.Dataset, aws_access_key_id: str,
 
 def generate_cube(mc_config: dict, client_id: str, client_secret: str,
                   aws_access_key_id: str, aws_secret_access_key:str):
+    print(f'Processing minicube configuration '
+          f'{mc_config["properties"]["data_id"]}')
     variable_configs = mc_config['properties']['variables']
     processing_steps_set = set()
     for vc in variable_configs:
@@ -195,6 +197,7 @@ def generate_cube(mc_config: dict, client_id: str, client_secret: str,
     sources = mc_config['properties']['sources']
     datasets = {}
     for source in sources:
+        print(f'Read {source["name"]}')
         datasets.update(
             _get_source_datasets(
                 source, client_id, client_secret, aws_access_key_id,
