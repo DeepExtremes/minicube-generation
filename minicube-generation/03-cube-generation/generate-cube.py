@@ -119,8 +119,8 @@ def _execute_processing_step(processing_step: str,
             time_period=mc_config['properties']['time_period'],
             resampling_method=params_string
         )
-    if processing_step == 'Pick last time value':
-        return _pick_last_time_value(ps_ds)
+    if processing_step == 'Pick time value':
+        return _pick_time_value(ps_ds, index=int(params_string))
     if processing_step.startswith('Subset spatially around center'):
         _, center_lon, center_lat, _ = \
             mc_config['properties']['data_id'].split('_')
@@ -152,6 +152,11 @@ def _execute_processing_step(processing_step: str,
             ds_source=ps_ds,
             time_chunk_size=int(params_string)
         )
+    if processing_step.startswith('Adjust bound coordinates'):
+        return _adjust_bound_coordinates(
+            ds_source=ps_ds
+        )
+
     raise ValueError(f'Processing step "{processing_step}" not found')
 
 
@@ -234,6 +239,12 @@ def generate_cube(mc_config: dict, client_id: str, client_secret: str,
 # processing step implementations
 
 
+def _adjust_bound_coordinates(ds_source: xr.Dataset) -> xr.Dataset:
+    bounds_vars = [data_var for data_var in ds_source.data_vars
+                   if 'bounds' in data_var or 'bnds' in data_var]
+    return ds_source.set_coords(bounds_vars)
+
+
 def _chunk_by_time(ds_source: xr.Dataset, time_chunk_size:int) -> xr.Dataset:
     ds = ds_source
     for data_var in ds.data_vars:
@@ -260,8 +271,8 @@ def _pick_center_spatial_value(ds_source: xr.Dataset,
     return ds.drop_vars(['lat', 'lon'])
 
 
-def _pick_last_time_value(ds: xr.Dataset) -> xr.Dataset:
-    return ds.isel({'time': -1})
+def _pick_time_value(ds: xr.Dataset, index: int) -> xr.Dataset:
+    return ds.isel({'time': index})
 
 
 def _rename_from_to(ds_source: xr.Dataset, before:str, after: str) \
@@ -281,7 +292,9 @@ def _resample_spatially(ds_source: xr.Dataset, ds_target: xr.Dataset,
     try:
         ds = ds_source.rio.reproject(target_crs)
     except rioxarray.exceptions.MissingCRS:
-        ds = ds_source
+        source_gm = GridMapping.from_dataset(ds_source)
+        ds = ds_source.rio.write_crs(source_gm.crs)
+        ds = ds.rio.reproject(target_gm.crs)
     ds = resample_in_space(ds, target_gm=target_gm)
     if adjusted_target_gm:
         ds = resample_in_space(ds, target_gm=adjusted_target_gm)
@@ -292,8 +305,12 @@ def _resample_spatially(ds_source: xr.Dataset, ds_target: xr.Dataset,
                              for var_name in new_gm.xy_var_names})
         ds = ds.rename_vars({'crs': f'crs_{spatial_resolution}'})
     else:
-        ds = ds.assign(x=ds_target.x)
-        ds = ds.assign(y=ds_target.y)
+        if 'x' in ds_target.dims and 'y' in ds_target.dims:
+            ds = ds.assign(x=ds_target.x)
+            ds = ds.assign(y=ds_target.y)
+        elif 'lat' in ds_target.dims and 'lon' in ds_target.dims:
+            ds = ds.assign(lat=ds_target.lat)
+            ds = ds.assign(lon=ds_target.lon)
     return ds
 
 

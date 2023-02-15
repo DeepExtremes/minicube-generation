@@ -270,8 +270,9 @@
                         "license_url": "http://licences.ceda.ac.uk/image/data_access_condition/esacci_landcover_terms_and_conditions.pdf",
                         "attributions": [],
                         "processing_steps": [
-                            "Read ESACCI-LC-L4-LCCS-Map-300m-P1Y-1992-2015-v2.0.7b.zarr",
-                            "Pick last time value",
+                            "Read LC-1x2160x2160_v1.zarr",
+                            "Adjust bound coordinates",
+                            "Pick time value / 6",
                             "Subset spatially around center / 1",
                             "Resample spatially to S2L2A / 300"
                         ],
@@ -986,11 +987,17 @@
             {
                 "name": "CCI Map",
                 "datasets": {
-                    "ESACCI-LC-L4-LCCS-Map-300m-P1Y-1992-2015-v2.0.7b.zarr": {
+                    "LC-1x2160x2160_v1.zarrr": {
                         "variable_names": ["lccs_class"]
                     }
                 },
-                "store_id": "ccizarr"
+                "store_id": "s3",
+                "store_params": {
+                    "root": "deep-esdl-public",
+                    "storage_options": {
+                        "anon": "True"
+                    }
+                }
             },
             {
                 "name": "Era-5 Land Total Evaporation",
