@@ -233,6 +233,58 @@
                 }
             },
             {
+                "name": "SCL",
+                "long_name": "Scene Classification Layer",
+                "units": "n.a.",
+                "dtype": "uint8",
+                "dims": ["time", "lat", "lon"],
+                "flag_values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+                "flag_meanings": ["no_data", "saturated_or_defective",
+                    "dark_area_pixels", "cloud_shadows", "vegetation", "bare_soils",
+                     "water", "clouds_low_probability_or_unclassified",
+                      "clouds_medium_probability", "clouds_high_probability",
+                      "cirrus", "snow_or_ice"],
+                "sources": [
+                    {
+                        "home_url": "",
+                        "data_url": "",
+                        "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read S2L2A",
+                            "Chunk by time / 165"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "keywords": ["Sentinel-2"]
+                }
+            },
+            {
+                "name": "CLM",
+                "long_name": "S2 Cloud Mask",
+                "units": "n.a.",
+                "dtype": "float32",
+                "dims": ["time", "lat", "lon"],
+                "sources": [
+                    {
+                        "home_url": "",
+                        "data_url": "",
+                        "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read S2L2A",
+                            "Chunk by time / 165"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "keywords": ["Sentinel-2"]
+                }
+            },
+            {
                 "name": "cop_dem",
                 "long_name": "Copernicus DEM GLO-30",
                 "units": "meter",
@@ -263,6 +315,7 @@
                 "long_name": "Land cover class defined in LCCS",
                 "units": "",
                 "dtype": "float32",
+                "sources": [
                 "sources": [
                     {
                         "home_url": "https://catalogue.ceda.ac.uk/uuid/b382ebe6679d44b8b0e68ea4ef4b701c",
@@ -964,7 +1017,7 @@
                 "name": "Sentinel Hub",
                 "datasets": {
                     "S2L2A": {
-                        "variable_names": ["B02", "B03", "B04", "B05", "B06", "B07", "B8A"]
+                        "variable_names": ["B02", "B03", "B04", "B05", "B06", "B07", "B8A", "SCL", "CLM"]
                     }
                 },
                 "store_id": "sentinelhub"
