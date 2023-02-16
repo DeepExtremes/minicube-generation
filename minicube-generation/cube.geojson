@@ -316,7 +316,6 @@
                 "units": "",
                 "dtype": "float32",
                 "sources": [
-                "sources": [
                     {
                         "home_url": "https://catalogue.ceda.ac.uk/uuid/b382ebe6679d44b8b0e68ea4ef4b701c",
                         "data_url": "https://catalogue.ceda.ac.uk/uuid/b382ebe6679d44b8b0e68ea4ef4b701c",
@@ -1010,6 +1009,64 @@
                     "color_value_max": 1.0,
                     "keywords": ["Era-5", "Land"]
                 }
+            },
+            {
+                "name": "ndvi_climatology_mean",
+                "long_name": "Mean Landsat NDVI (1984-2020)",
+                "units": "",
+                "dtype": "float32",
+                "valid_min": 0,
+                "valid_max": 1,
+                "fill_value": "nan",
+                "sources": [
+                    {
+                        "home_url": "https://docs.digitalearthafrica.org/en/latest/data_specs/NDVI_Climatology_specs.html",
+                        "data_url": "https://docs.digitalearthafrica.org/en/latest/data_specs/NDVI_Climatology_specs.html#Data-Access",
+                        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read ndvi_climatology_mean",
+                            "Aggregate monthly / ndvi_climatology_stddev",
+                            "Resample spatially to S2L2A"
+                        ],
+                        "remarks": "Only available for Africa"
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["NDVI", "Landsat", "Climatology"]
+                }
+            },
+            {
+                "name": "ndvi_climatology_stddev",
+                "long_name": "Standard Deviation of NDVI (1984-2020)",
+                "units": "",
+                "dtype": "float32",
+                "valid_min": 0,
+                "valid_max": 1,
+                "fill_value": "nan",
+                "sources": [
+                    {
+                        "home_url": "https://docs.digitalearthafrica.org/en/latest/data_specs/NDVI_Climatology_specs.html",
+                        "data_url": "https://docs.digitalearthafrica.org/en/latest/data_specs/NDVI_Climatology_specs.html#Data-Access",
+                        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read ndvi_climatology_stddev",
+                            "Aggregate monthly / ndvi_climatology_stddev",
+                            "Resample spatially to S2L2A"
+                        ],
+                        "remarks": "Only available for Africa"
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 1.0,
+                    "keywords": ["NDVI", "Landsat", "Climatology"]
+                }
             }
         ],
         "sources": [
@@ -1219,7 +1276,99 @@
                         }
                     }
                 }
-            }                                                                                
+            },
+            {
+                "name": "NDVI Climatology",
+                "datasets": {
+                    "ndvi_climatology_mean": {
+                        "dataarrays": {
+                            "mean_jan": {
+                                "path": ""
+                            },
+                            "mean_feb": {
+                                "path": ""
+                            },
+                            "mean_mar": {
+                                "path": ""
+                            },
+                            "mean_apr": {
+                                "path": ""
+                            },
+                            "mean_may": {
+                                "path": ""
+                            },
+                            "mean_jun": {
+                                "path": ""
+                            },
+                            "mean_jul": {
+                                "path": ""
+                            },
+                            "mean_aug": {
+                                "path": ""
+                            },
+                            "mean_sep": {
+                                "path": ""
+                            },
+                            "mean_oct": {
+                                "path": ""
+                            },
+                            "mean_nov": {
+                                "path": ""
+                            },
+                            "mean_dec": {
+                                "path": ""
+                            }
+                        }
+                    },
+                    "ndvi_climatology_stddev": {
+                        "dataarrays": {
+                            "stddev_jan": {
+                                "path": ""
+                            },
+                            "stddev_feb": {
+                                "path": ""
+                            },
+                            "stddev_mar": {
+                                "path": ""
+                            },
+                            "stddev_apr": {
+                                "path": ""
+                            },
+                            "stddev_may": {
+                                "path": ""
+                            },
+                            "stddev_jun": {
+                                "path": ""
+                            },
+                            "stddev_jul": {
+                                "path": ""
+                            },
+                            "stddev_aug": {
+                                "path": ""
+                            },
+                            "stddev_sep": {
+                                "path": ""
+                            },
+                            "stddev_oct": {
+                                "path": ""
+                            },
+                            "stddev_nov": {
+                                "path": ""
+                            },
+                            "stddev_dec": {
+                                "path": ""
+                            }
+                        }
+                    }
+                },
+                "storage_options": {
+                    "anon": "True",
+                    "client_kwargs": {
+                        "region_name": "af-south-1"
+                    }
+                },
+                "filesystem": "s3"
+            }
         ]
     }
 }

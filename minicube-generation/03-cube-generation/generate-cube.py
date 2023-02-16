@@ -1,35 +1,21 @@
 import json
+import fsspec
 import rioxarray
 import sys
 import xarray as xr
-
 from typing import Dict
-from typing import List
 
 from xcube.core.gridmapping import GridMapping
-from xcube.core.store import DataStore
 from xcube.core.store import new_data_store
 from xcube.core.mldataset import MultiLevelDataset
 from xcube.core.resampling import resample_in_space
 from xcube.core.update import update_dataset_chunk_encoding
 
 
-def _set_up_sources(source_configs: List[dict],
-                    client_id: str,
-                    client_secret: str) -> Dict[str, DataStore]:
-    sources = {}
-    for source_config in source_configs:
-        if 'store_id' in source_config:
-            if source_config['store_id'] == 'sentinelhub':
-                store_params = source_config.get('store_params', {})
-                store_params['client_id'] = client_id
-                store_params['client_secret'] = client_secret
-                source_config['store_params'] = store_params
-            sources[source_config['name']] = new_data_store(
-                source_config['store_id'],
-                **source_config.get('store_params', {})
-            )
-    return sources
+_MONTHS = dict(
+    jan=1, feb=2, mar=3, apr=4, may=5, jun=6,
+    jul=7, aug=8, sep=9, oct=10, nov=11, dec=12
+)
 
 
 def _get_source_datasets(source_config: dict,
@@ -92,6 +78,27 @@ def _get_source_datasets(source_config: dict,
                         non_requested_vars.append(var)
                 source_ds = source_ds.drop_vars(non_requested_vars)
             datasets[dataset_name] = source_ds
+    if 'filesystem' in source_config:
+        if source_config.get('storage_options', {}).\
+                get('anon') == "True":
+            source_config['storage_options']['anon'] = True
+        elif source_config.get('storage_options', {}).\
+                get('anon') == "False":
+            source_config['storage_options']['anon'] = False
+        fs = fsspec.filesystem(
+            source_config['filesystem'],
+            **source_config.get('storage_options')
+        )
+        for dataset_name in source_config['datasets'].keys():
+            data_arrays = []
+            for var_name, da_dict in \
+                    source_config['datasets'][dataset_name]['dataarrays'].\
+                            items():
+                file_like = fs.open(da_dict['path'])
+                data_arrays.append(
+                    rioxarray.open_rasterio(file_like).rename(var_name)
+                )
+            datasets[dataset_name] = xr.merge(data_arrays)
     return datasets
 
 
@@ -156,7 +163,11 @@ def _execute_processing_step(processing_step: str,
         return _adjust_bound_coordinates(
             ds_source=ps_ds
         )
-
+    if processing_step.startswith('Aggregate monthly /'):
+        return _aggregate_monthly(
+            ds_source=ps_ds,
+            aggregated_var_name=params_string
+        )
     raise ValueError(f'Processing step "{processing_step}" not found')
 
 
@@ -243,6 +254,23 @@ def _adjust_bound_coordinates(ds_source: xr.Dataset) -> xr.Dataset:
     bounds_vars = [data_var for data_var in ds_source.data_vars
                    if 'bounds' in data_var or 'bnds' in data_var]
     return ds_source.set_coords(bounds_vars)
+
+
+def _aggregate_monthly(ds_source: xr.Dataset, aggregated_var_name: str) \
+        -> xr.Dataset:
+    data_arrays = []
+    for data_var in ds_source.data_vars:
+        month = data_var.split('_')[-1]
+        data_arrays.append(xr.DataArray(
+            name=aggregated_var_name,
+            data=ds_source[data_var],
+            coords={'month': [_MONTHS[month]],
+                    "y": ds_source.y,
+                    "x": ds_source.x},
+            dims=["month", "y", "x"]
+        ))
+    ds = xr.combine_by_coords(data_arrays)
+    return ds.assign_coords(spatial_ref=ds_source.spatial_ref)
 
 
 def _chunk_by_time(ds_source: xr.Dataset, time_chunk_size:int) -> xr.Dataset:

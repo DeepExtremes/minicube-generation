@@ -1,14 +1,17 @@
 from datetime import datetime
+import geopandas as gpd
 import glob
 import json
 import math
 import numpy as np
 import os
 import pandas as pd
-import sys
-
 from pyproj import CRS
 from pyproj import Proj
+from shapely.geometry import Point
+import sys
+from typing import Optional
+
 
 _ID_TEMPLATE = "mc_{lon}_{lat}_{version}"
 _TITLE_TEMPLATE = "Minicube at {lon} {lat}"
@@ -31,6 +34,11 @@ _ERA5_VARIABLE_MAP = {
     'Total Evaporation': 'e',
     'Total Precipitation': 'tp'
 }
+_REGIONS = gpd.read_file(
+    'https://explorer.digitalearth.africa/api/regions/ndvi_climatology_ls'
+)
+_SHORT_MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
+                 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 
 
 def _get_crs(lon: float, lat: float) -> str:
@@ -65,6 +73,19 @@ def _get_era5_file_path(lon: int, lat: int, var_name: str) -> str:
     else:
         lat_str = f'N{int(abs(lat_new)):02}'
     return f'era5land_{var_name}_{lat_str}_{lon_str}_v1.zarr'
+
+
+def _get_deafrica_ndvi_file_path(lon: float, lat: float, var_name: str) \
+        -> Optional[str]:
+    point = Point(lon, lat)
+    containing_regions = _REGIONS[_REGIONS.geometry.contains(point)]
+    if len(containing_regions) == 0:
+        return
+    region_code = containing_regions.iloc[0].region_code
+    return f'deafrica-services/ndvi_climatology_ls/1-0-0/' \
+           f'{region_code[0:4]}/{region_code[4:]}/1984--P37Y/' \
+           f'ndvi_climatology_ls_{region_code[0:4]}{region_code[4:]}_' \
+           f'1984--P37Y_{var_name}.tif'
 
 
 def generate_minicube_configs(location_file: str):
@@ -126,7 +147,20 @@ def generate_minicube_configs(location_file: str):
                     source['datasets'] = {
                         dem_file_path: dem_datasets_dict_save
                     }
-                    break
+                elif source['name'] == 'NDVI Climatology':
+                    for ds_value_dict in source['datasets'].values():
+                        for da_key, da_dict in \
+                                ds_value_dict['dataarrays'].items():
+                            da_path = _get_deafrica_ndvi_file_path(
+                                center_lon,
+                                center_lat,
+                                str(da_key)
+                            )
+                            if da_path is None:
+                                # remove NDVI Climatology
+                                t['properties']['sources'].remove(source)
+                                continue
+                            da_dict['path'] = da_path
             for variable in t['properties']['variables']:
                 if variable['name'] in _ERA5_VARIABLE_NAMES:
                     var_name_start = variable['name'].split('_')[0]
