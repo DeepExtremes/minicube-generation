@@ -1,0 +1,23 @@
+name: deepextremes
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python < 3.10
+  - pip
+  # Production
+  - rioxarray
+  - requests
+  - gdown
+  - jupyterlab
+  - numpy
+  - pytorch
+  - pytorch-lightning
+  - tensorflow
+  - xcube
+  - xcube-cds
+  - xcube-sh >= 0.10.1
+  - pip:
+      - maskay
+      - segmentation-models-pytorch
