@@ -1,4 +1,4 @@
-name: deepextremes
+name: deepextremes-cube-gen
 
 channels:
   - conda-forge
