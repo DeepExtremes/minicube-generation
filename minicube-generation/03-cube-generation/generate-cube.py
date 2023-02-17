@@ -19,8 +19,6 @@ _MONTHS = dict(
 
 
 def _get_source_datasets(source_config: dict,
-                         client_id: str,
-                         client_secret: str,
                          aws_access_key_id: str,
                          aws_secret_access_key: str,
                          mc_config: dict) -> Dict[str, xr.Dataset]:
@@ -47,7 +45,7 @@ def _get_source_datasets(source_config: dict,
                 source_store.get_open_data_params_schema(dataset_name)
             open_properties = \
                 list(open_schema.to_dict().get('properties').keys())
-            props = {}
+            props = source_config.get('open_params', {})
             if 'variable_names' in open_properties:
                 props['variable_names'] = variable_names['variable_names']
             if 'bbox' in open_properties:

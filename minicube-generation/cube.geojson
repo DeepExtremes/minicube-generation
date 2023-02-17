@@ -1077,7 +1077,10 @@
                         "variable_names": ["B02", "B03", "B04", "B05", "B06", "B07", "B8A", "SCL", "CLM"]
                     }
                 },
-                "store_id": "sentinelhub"
+                "store_id": "sentinelhub",
+                "open_params": {
+                    "mosaicking_period": "leastCC"
+                }
             },
             {
                 "name": "Copernicus DEM 30m",
