@@ -26,11 +26,6 @@ def _get_source_datasets(source_config: dict,
                          mc_config: dict) -> Dict[str, xr.Dataset]:
     datasets = {}
     if 'store_id' in source_config:
-        if source_config['store_id'] == 'sentinelhub':
-            store_params = source_config.get('store_params', {})
-            store_params['client_id'] = client_id
-            store_params['client_secret'] = client_secret
-            source_config['store_params'] = store_params
         if source_config.get('store_params', {}).get('storage_options', {}).\
                 get('anon') == "True":
             source_config['store_params']['storage_options']['anon'] = True
@@ -181,27 +176,21 @@ def _finalize_dataset(ds: xr.Dataset, mc_config: dict) -> xr.Dataset:
     return ds
 
 
-def _write_ds(ds: xr.Dataset, aws_access_key_id: str,
-              aws_secret_access_key: str, mc_config: dict):
+def _write_ds(ds: xr.Dataset, mc_config: dict):
     s3_store = new_data_store(
         "s3",
-        root="deepextremes",
-        storage_options=dict(
-            anon=False,
-            client_kwargs=dict(
-                aws_access_key_id=aws_access_key_id,
-                aws_secret_access_key=aws_secret_access_key
-            )
-        )
+        root="deepextremes-minicubes"
     )
     print(f'Writing dataset {ds.data_id}')
     version = mc_config['properties']['version']
-    s3_store.write_data(ds, f"minicubes/{version}/{ds.data_id}.zarr")
+    s3_store.write_data(ds, f"{version}/{ds.data_id}.zarr")
     print(f'Finished writing dataset {ds.data_id}')
 
 
-def generate_cube(mc_config: dict, client_id: str, client_secret: str,
-                  aws_access_key_id: str, aws_secret_access_key:str):
+def generate_cube(mc_config: dict,
+                  aws_access_key_id: str,
+                  aws_secret_access_key:str
+                  ):
     print(f'Processing minicube configuration '
           f'{mc_config["properties"]["data_id"]}')
     variable_configs = mc_config['properties']['variables']
@@ -216,7 +205,7 @@ def generate_cube(mc_config: dict, client_id: str, client_secret: str,
         print(f'Read {source["name"]}')
         datasets.update(
             _get_source_datasets(
-                source, client_id, client_secret, aws_access_key_id,
+                source, aws_access_key_id,
                 aws_secret_access_key, mc_config
             )
         )
@@ -245,7 +234,7 @@ def generate_cube(mc_config: dict, client_id: str, client_secret: str,
 
     ds = _finalize_dataset(ds, mc_config)
 
-    _write_ds(ds, aws_access_key_id, aws_secret_access_key, mc_config)
+    _write_ds(ds, mc_config)
 
 # processing step implementations
 
@@ -372,18 +361,14 @@ def _subset_spatially_around_center(ds: xr.Dataset,
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 6:
+    if len(sys.argv) > 4:
         raise ValueError('Too many arguments')
     geojson_file = sys.argv[1]
-    client_id = sys.argv[2]
-    client_secret = sys.argv[3]
-    aws_access_key_id = sys.argv[4]
-    aws_secret_access_key = sys.argv[5]
+    aws_access_key_id = sys.argv[2]
+    aws_secret_access_key = sys.argv[3]
     with open(geojson_file, 'r') as gjf:
         generate_cube(
             json.load(gjf),
-            client_id,
-            client_secret,
             aws_access_key_id,
             aws_secret_access_key
         )
