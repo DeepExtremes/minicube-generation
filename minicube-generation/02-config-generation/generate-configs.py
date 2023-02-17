@@ -130,6 +130,12 @@ def generate_minicube_configs(location_file: str):
             t['properties']['spatial_bbox'] = [xmin, ymin, xmax, ymax]
             t['properties']['metadata']['date_modified'] = \
                 datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            t['properties']['metadata']['event_label'] = \
+                minicube_location[1].EventLabel
+            t['properties']['metadata']['event_start_time'] = \
+                minicube_location[1].EventStart
+            t['properties']['metadata']['event_end_time'] = \
+                minicube_location[1].EventEnd
             t['properties']['metadata']['geospatial_lon_min'] = min(lons)
             t['properties']['metadata']['geospatial_lon_max'] = max(lons)
             t['properties']['metadata']['geospatial_lat_min'] = min(lats)
