@@ -25,6 +25,7 @@ MAX_NUM_PARALLEL_PROCESSES = 12
 
 
 running_processes = {}
+safe_datasets = []
 
 
 def _get_lat_lon_from_era5_file_path(era5_file_path: str) -> (int, int, str):
@@ -72,6 +73,8 @@ def _start_next_processes(num_running_processes: int):
         lon, lat = lon_lat_combination
         for var_name in VAR_NAMES.keys():
             era5_file_name = _get_era5_file_name(lon, lat, var_name)
+            if era5_file_name in safe_datasets:
+                continue
             if var_stores[var_name].has_data(era5_file_name):
                 # check whether there is a process running
                 running_process = running_processes.get(era5_file_name)
@@ -84,6 +87,7 @@ def _start_next_processes(num_running_processes: int):
                 if last_datetime == END_TIMESTAMP:
                     # dataset is good
                     print(f'Checked {era5_file_name}, all fine')
+                    safe_datasets.append(era5_file_name)
                     continue
                 # dataset is incomplete, need to fill
                 formatted_last_datetime = last_datetime.strftime('%Y-%m-%d')
@@ -105,19 +109,25 @@ def _generate_era5_cube(lon: int, lat: int, var_name: str,
     var_long_name = VAR_NAMES[var_name]
     era5_file_name = _get_era5_file_name(lon, lat, var_name)
     print(f'Starting processing of {era5_file_name}')
-    # running_processes[era5_file_name] = \
-    #     subprocess.Popen(["srun", "--time=48:00:00", "--partition=long-serial",
-    #                       "python", "generate-era5-cube.py",
-    #                       f'{lon}', f'{lon + 10}',
-    #                       f'{lat}', f'{lat + 10}',
-    #                       f'{var_long_name}', f'{var_name}',
-    #                       f'{formatted_new_start_date}'])
+    running_processes[era5_file_name] = \
+        subprocess.Popen(["srun", "--time=48:00:00", "--partition=long-serial",
+                          "python", "generate-era5-cube.py",
+                          f'{lon}', f'{lon + 10}',
+                          f'{lat}', f'{lat + 10}',
+                          f'{var_long_name}', f'{var_name}',
+                          f'{formatted_new_start_date}'])
 
 
 def _check_running_processes():
+    processes_to_remove = []
     for process_name, process in running_processes.items():
-        if process.returncode is not None:
-            running_processes.pop(process_name)
+        if process.poll() is not None:
+            print(f'Process {process_name} has code {process.returncode}, will end')
+            processes_to_remove.append(process_name)
+        else:
+            print(f'Process {process_name} has no return code, is still running')
+    for process in processes_to_remove:
+        running_processes.pop(process)
     return len(running_processes.items())
 
 
@@ -127,7 +137,7 @@ def generate_era5_cubes():
         num_running_processes =  _check_running_processes()
         if num_running_processes < MAX_NUM_PARALLEL_PROCESSES:
             _start_next_processes(num_running_processes)
-        time.sleep(3600)
+        time.sleep(2700)
         num_runs += 1
 
 
