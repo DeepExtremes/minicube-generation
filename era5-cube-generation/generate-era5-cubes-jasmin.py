@@ -1,3 +1,4 @@
+from datetime import datetime
 from datetime import timedelta
 import math
 import pandas as pd
@@ -18,6 +19,7 @@ VAR_NAMES = {
     'e': 'total_evaporation',
     'tp': 'total_precipitation'
 }
+_NEW_START = datetime(2016, 1, 1).strftime('%Y-%m-%d')
 END_TIMESTAMP = pd.Timestamp(2022, 10, 31)
 ONE_DAY = timedelta(days=1)
 MAX_NUM_RUNS = 95
@@ -105,7 +107,7 @@ def _start_next_processes(num_running_processes: int):
 
 
 def _generate_era5_cube(lon: int, lat: int, var_name: str,
-                        formatted_new_start_date: str = None):
+                        formatted_new_start_date: str = _NEW_START):
     var_long_name = VAR_NAMES[var_name]
     era5_file_name = _get_era5_file_name(lon, lat, var_name)
     print(f'Starting processing of {era5_file_name}')
