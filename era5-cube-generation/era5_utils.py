@@ -5,8 +5,8 @@ RECTS = [
     [0, 50, 0, 30], # Northern Africa
     [10, 30, -40, 0], # Southwestern Africa
     [30, 50, -30, 0], # Southeastern Africa
-    [50, 60, 10, 29], # Oman
-    [50, 90, 20, 80], # Western Asia
+    [50, 60, 10, 20], # Oman
+    [50, 90, 20, 60], # Western Asia
     [70, 90, 0, 20], # India
     [90, 170, 50, 60], # Mongolia
     [90, 150, 30, 50], # China
@@ -29,7 +29,7 @@ RECTS = [
     [-120, -70, 20, 60], # USA
     [-70, -50, 40, 60], # Newfoundland
     [-130, -120, 30, 60], # Pacific Coast
-    [90, 160, 60, 80], # Northern Asia
+    [50, 160, 60, 80], # Northern Asia
     [160, 180, 60, 70], # Far East
     [-130, -110, 60, 80], # Nunavut
     [-140, -130, 50, 70], # Eastern Alaska
