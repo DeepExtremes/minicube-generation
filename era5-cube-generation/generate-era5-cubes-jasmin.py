@@ -6,7 +6,7 @@ import time
 
 from xcube.core.store import new_data_store
 
-from .era5_utils import get_list_of_combinations
+from era5_utils import get_list_of_combinations
 
 VAR_NAMES = {
     't2m': '2m_temperature',
@@ -76,14 +76,19 @@ def _start_next_processes(num_running_processes: int):
                 # check whether there is a process running
                 running_process = running_processes.get(era5_file_name)
                 if running_process is not None:
+                    print(f'{era5_file_name} is currently being processed')
                     continue
                 # check whether dataset holds all time steps
                 var_ds = var_stores[var_name].open_data(era5_file_name)
                 last_datetime = pd.to_datetime(str(var_ds.time[-1].values))
                 if last_datetime == END_TIMESTAMP:
                     # dataset is good
+                    print(f'Checked {era5_file_name}, all fine')
                     continue
                 # dataset is incomplete, need to fill
+                formatted_last_datetime = last_datetime.strftime('%Y-%m-%d')
+                print(f'Last timestamp of {era5_file_name} was '
+                      f'{formatted_last_datetime}, will add missing time steps')
                 new_start_date = last_datetime + ONE_DAY
                 formatted_new_start_date = new_start_date.strftime('%Y-%m-%d')
                 _generate_era5_cube(lon, lat, var_name, formatted_new_start_date)
@@ -114,7 +119,6 @@ def _check_running_processes():
         if process.returncode is not None:
             running_processes.pop(process_name)
     return len(running_processes.items())
-
 
 
 def generate_era5_cubes():

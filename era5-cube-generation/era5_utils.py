@@ -38,6 +38,7 @@ RECTS = [
     [-180, -150, 50, 70] # Bering Sea
 ]
 
+
 def _get_combinations_from_rect(min_lon: int, max_lon: int, min_lat: int, max_lat: int):
     lon_lat_combinations = []
     lon = min_lon
@@ -54,5 +55,5 @@ def _get_combinations_from_rect(min_lon: int, max_lon: int, min_lat: int, max_la
 def get_list_of_combinations():
     lon_lat_combinations = []
     for rect in RECTS:
-        lon_lat_combinations.extend(rect[0], rect[1], rect[2], rect[3])
+        lon_lat_combinations.extend(_get_combinations_from_rect(rect[0], rect[1], rect[2], rect[3]))
     return lon_lat_combinations
