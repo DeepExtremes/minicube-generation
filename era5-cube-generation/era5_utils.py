@@ -1,7 +1,7 @@
 RECTS = [
-    [0, 50, 30, 70], # Europe
-    [-10, 0, 40, 60], # GB
-    [-20, 0, 0, 40], # Western Africa
+    # [0, 50, 30, 70], # Europe
+    # [-10, 0, 30, 60], # GB
+    # [-20, 0, 0, 30], # Western Africa
     [0, 50, 0, 30], # Northern Africa
     [10, 30, -40, 0], # Southwestern Africa
     [30, 50, -30, 0], # Southeastern Africa
