@@ -17,7 +17,7 @@ _ID_TEMPLATE = "mc_{lon}_{lat}_{version}"
 _TITLE_TEMPLATE = "Minicube at {lon} {lat}"
 _DESCRIPTION_TEMPLATE = "The minicube covering the area around {lon} and {lat}"
 _SPATIAL_RES = 20
-_HALF_RES = 64 * _SPATIAL_RES
+_HALF_IMAGE_SIZE = 64 * _SPATIAL_RES
 _ERA5_VARIABLE_NAMES = [
     "e_max", "e_min", "e_mean", "pev_max", "pev_min", "pev_mean", "slhf_max",
     "slhf_min", "slhf_mean", "sp_max", "sp_min", "sp_mean", "sshf_max",
@@ -105,10 +105,10 @@ def generate_minicube_configs(location_file: str):
             crs = _get_crs(center_lon, center_lat)
             utm_proj = Proj(crs)
             x, y = utm_proj(center_lon, center_lat)
-            xmin = x - _HALF_RES
-            xmax = x + _HALF_RES
-            ymin = y - _HALF_RES
-            ymax = y + _HALF_RES
+            xmin = x - _HALF_IMAGE_SIZE
+            xmax = x + _HALF_IMAGE_SIZE
+            ymin = y - _HALF_IMAGE_SIZE
+            ymax = y + _HALF_IMAGE_SIZE
             lons, lats = utm_proj(
                 (xmin, xmin, xmax, xmax, xmin),
                 (ymin, ymax, ymax, ymin, ymin),
