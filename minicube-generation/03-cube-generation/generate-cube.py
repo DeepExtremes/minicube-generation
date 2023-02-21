@@ -120,7 +120,7 @@ def _execute_processing_step(processing_step: str,
             time_period=mc_config['properties']['time_period'],
             resampling_method=params_string
         )
-    if processing_step == 'Pick time value':
+    if processing_step.startswith('Pick time value'):
         return _pick_time_value(ps_ds, index=int(params_string))
     if processing_step.startswith('Subset spatially around center'):
         _, center_lon, center_lat, _ = \
