@@ -11,7 +11,7 @@ _CLOUD_MASK_NAMES = [
 def _compute_mask_for_timestep(ds_slice: xr.Dataset,
                                model,
                                predictor: maskay.Predictor) -> xr.Dataset:
-    print(f'Processing cloud mask for {ds_slice.time}')
+    print(f'Processing cloud mask for {ds_slice.time[0].values}')
     tensor = maskay.TensorSat(
         Aerosol=ds_slice.B01 * 10000,
         Blue=ds_slice.B02 * 10000,
