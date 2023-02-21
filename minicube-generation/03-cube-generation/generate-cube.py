@@ -11,6 +11,7 @@ from xcube.core.mldataset import MultiLevelDataset
 from xcube.core.resampling import resample_in_space
 from xcube.core.update import update_dataset_chunk_encoding
 
+from maskay-cloud-mask import compute_cloud_mask
 
 _MONTHS = dict(
     jan=1, feb=2, mar=3, apr=4, may=5, jun=6,
@@ -161,6 +162,8 @@ def _execute_processing_step(processing_step: str,
             ds_source=ps_ds,
             aggregated_var_name=params_string
         )
+    if processing_step.startswith('Compute Maskay Cloud Mask'):
+        return compute_cloud_mask(ds_source=ps_ds)
     raise ValueError(f'Processing step "{processing_step}" not found')
 
 
