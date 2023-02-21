@@ -24,7 +24,7 @@ def _get_random_point(ds: xr.DataArray):
 
 
 def extract_event_locations(min_lon: float, max_lon: float,
-                            min_lat: float, max_lat:float):
+                            min_lat: float, max_lat: float):
     storage_options = dict(
         anon=True,
         client_kwargs=dict(
@@ -36,11 +36,9 @@ def extract_event_locations(min_lon: float, max_lon: float,
         'xaida/v2/EventStats_ranked_pot0.01_ne0.1_tcmp_Sdiam3_T5_2016_2021.csv'
     )
     events_frame = pd.read_csv(event_stats, delimiter=',')
-    # refrain from events that happened very early for the moment
-    sub_frame = events_frame[events_frame.start_time > '2018-01-01']
 
     # collecting data from events that are entirely within the specified bounds
-    sub_frame = sub_frame[sub_frame.longitude_min > min_lon]
+    sub_frame = events_frame[events_frame.longitude_min > min_lon]
     sub_frame = sub_frame[sub_frame.longitude_max < max_lon]
     sub_frame = sub_frame[sub_frame.latitude_min > min_lat]
     sub_frame = sub_frame[sub_frame.latitude_max < max_lat]
@@ -49,7 +47,8 @@ def extract_event_locations(min_lon: float, max_lon: float,
     sub_frame = sub_frame[sub_frame.area > 7.]
 
     label_cube_store = fsspec.get_mapper(
-        'https://s3.bgc-jena.mpg.de:9000/xaida/v2/labelcube_ranked_pot0.01_ne0.1_tcmp_Sdiam3_T5_2016_2021.zarr'
+        'https://s3.bgc-jena.mpg.de:9000/xaida/v2/'
+        'labelcube_ranked_pot0.01_ne0.1_tcmp_Sdiam3_T5_2016_2021.zarr'
     )
     label_cube = xr.open_zarr(label_cube_store)
 
@@ -114,7 +113,9 @@ def extract_event_locations(min_lon: float, max_lon: float,
     filename = f'../minicube_locations_v{version}_{date}_' \
                f'{min_lon - 180}_{max_lon - 180}_{min_lat}_{max_lat}.csv'
     with open(filename, 'w+') as output:
-        output.write("Longitude\tLatitude\tClass\tEventStart\tEventEnd\tEventLabel\n")
+        output.write(
+            "Longitude\tLatitude\tClass\tEventStart\tEventEnd\tEventLabel\n"
+        )
         for location in all_locations:
             output.write(f'{location[0]}\t'
                          f'{location[1]}\t'
@@ -131,4 +132,4 @@ if __name__ == "__main__":
     else:
         coords = sys.argv[1:]
         extract_event_locations(float(coords[0]), float(coords[1]),
-                          float(coords[2]), float(coords[3]))
+                                float(coords[2]), float(coords[3]))
