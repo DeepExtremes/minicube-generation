@@ -1026,7 +1026,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read ndvi_climatology_mean",
-                            "Aggregate monthly / ndvi_climatology_stddev",
+                            "Aggregate monthly / ndvi_climatology_mean",
                             "Resample spatially to S2L2A"
                         ],
                         "remarks": "Only available for Africa"
