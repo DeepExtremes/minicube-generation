@@ -11,6 +11,7 @@ _CLOUD_MASK_NAMES = [
 def _compute_mask_for_timestep(ds_slice: xr.Dataset,
                                model,
                                predictor: maskay.Predictor) -> xr.Dataset:
+    print(f'Processing cloud mask for {ds_slice.time}')
     tensor = maskay.TensorSat(
         Aerosol=ds_slice.B01 * 10000,
         Blue=ds_slice.B02 * 10000,
@@ -32,11 +33,12 @@ def _compute_mask_for_timestep(ds_slice: xr.Dataset,
     data_arrays = []
     for index in range(len(_CLOUD_MASK_NAMES)):
         data_arrays.append(cm_ds[index].expand_dims(dim={
-            'time': ds_slice.expand_dims(dim='time').time}).rename(_CLOUD_MASK_NAMES[index]))
+            'time': ds_slice.expand_dims(dim='time').time})
+                           .rename(_CLOUD_MASK_NAMES[index]))
     return xr.combine_by_coords(data_arrays)
 
 
-def compute_cloud_mask(source_ds: xr.Dataset) -> xr.Dataset:
+def compute_cloud_mask(ds_source: xr.Dataset) -> xr.Dataset:
     model = UnetMobV2()
     predictor = maskay.Predictor(
         cropsize=128,
@@ -45,14 +47,14 @@ def compute_cloud_mask(source_ds: xr.Dataset) -> xr.Dataset:
         quiet=False
     )
 
-    target_ds = _compute_mask_for_timestep(
-        source_ds.isel(time=0), model, predictor
+    ds_target = _compute_mask_for_timestep(
+        ds_source.isel(time=0), model, predictor
     )
-    if len(source_ds.time) > 1:
-        for ti in range(1, len(source_ds.time)):
-            ds_slice = source_ds.isel(time=ti)
-            time_step_ds = _compute_mask_for_timestep(
+    if len(ds_source.time) > 1:
+        for ti in range(1, len(ds_source.time)):
+            ds_slice = ds_source.isel(time=ti)
+            ds_time_step = _compute_mask_for_timestep(
                 ds_slice, model, predictor
             )
-            target_ds = xr.concat([target_ds, time_step_ds], dim='time')
-    return target_ds
+            ds_target = xr.concat([ds_target, ds_time_step], dim='time')
+    return ds_target
