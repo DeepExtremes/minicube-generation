@@ -58,7 +58,8 @@ def _get_dem_file_path(lon: int, lat: int) -> str:
         lat_str = f'S{int(abs(lat - 1)):02}'
     else:
         lat_str = f'N{int(abs(lat)):02}'
-    return f'Copernicus_DSM_COG_10_{lat_str}_00_{lon_str}_00_DEM/Copernicus_DSM_COG_10_{lat_str}_00_{lon_str}_00_DEM.tif'
+    return f'Copernicus_DSM_COG_10_{lat_str}_00_{lon_str}_00_DEM/' \
+           f'Copernicus_DSM_COG_10_{lat_str}_00_{lon_str}_00_DEM.tif'
 
 
 def _get_era5_file_path(lon: int, lat: int, var_name: str) -> str:
@@ -114,7 +115,8 @@ def generate_minicube_configs(location_file: str):
                 (ymin, ymax, ymax, ymin, ymin),
                 inverse=True
             )
-            geospatial_bbox = np.swapaxes(np.asarray((lons, lats)), 0, 1).tolist()
+            geospatial_bbox = \
+                np.swapaxes(np.asarray((lons, lats)), 0, 1).tolist()
             t['geometry']['coordinates'][0] = geospatial_bbox
             t['properties']['title'] = _TITLE_TEMPLATE.\
                 format(lon=center_lon_readable, lat=center_lat_readable)
@@ -144,7 +146,8 @@ def generate_minicube_configs(location_file: str):
             dem_file_path = _get_dem_file_path(center_lon, center_lat)
             for variable in t['properties']['variables']:
                 if variable['name'] == 'cop_dem':
-                    variable['sources'][0]['processing_steps'][0] = f'Read {dem_file_path}'
+                    variable['sources'][0]['processing_steps'][0] = \
+                        f'Read {dem_file_path}'
                     break
             for source in t['properties']['sources']:
                 if source['name'] == 'Copernicus DEM 30m':
@@ -154,6 +157,7 @@ def generate_minicube_configs(location_file: str):
                         dem_file_path: dem_datasets_dict_save
                     }
                 elif source['name'] == 'NDVI Climatology':
+                    break_loop = False
                     for ds_value_dict in source['datasets'].values():
                         for da_key, da_dict in \
                                 ds_value_dict['dataarrays'].items():
@@ -165,8 +169,11 @@ def generate_minicube_configs(location_file: str):
                             if da_path is None:
                                 # remove NDVI Climatology
                                 t['properties']['sources'].remove(source)
-                                continue
+                                break_loop = True
+                                break
                             da_dict['path'] = da_path
+                        if break_loop:
+                            break
             for variable in t['properties']['variables']:
                 if variable['name'] in _ERA5_VARIABLE_NAMES:
                     var_name_start = variable['name'].split('_')[0]
@@ -187,7 +194,8 @@ def generate_minicube_configs(location_file: str):
                     source['datasets'] = {
                         source_era5_file_path: era5_datasets_dict_save
                     }
-            with open(f'../configs/{version}/{data_id}.geojson', 'w+') as mc_json:
+            with open(f'../configs/{version}/{data_id}.geojson',
+                      'w+') as mc_json:
                 json.dump(t, mc_json, indent=4)
 
 
