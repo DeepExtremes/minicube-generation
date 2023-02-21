@@ -11,9 +11,9 @@ RECTS = [
     [90, 170, 50, 60], # Mongolia
     [90, 150, 30, 50], # China
     [90, 130, 10, 30], # Indochina
-    [90, 130, -10, 10], # indonesia
+    [90, 130, -10, 10], # Indonesia
     [110, 130, -40, -10], # Western Australia
-    [130, 140, -40, -10], # Central Australia
+    [130, 140, -40, 0], # Central Australia
     [140, 150, -50, 0], # Eastern Australia
     [150, 160, -40, -20], # Far Eastern Australia
     [160, 170, -50, -40], # Southwestern New Zealand
@@ -31,7 +31,7 @@ RECTS = [
     [-130, -120, 30, 60], # Pacific Coast
     [50, 160, 60, 80], # Northern Asia
     [160, 180, 60, 70], # Far East
-    [-130, -110, 60, 80], # Nunavut
+    [-130, -10, 60, 80], # Nunavut
     [-140, -130, 50, 70], # Eastern Alaska
     [-150, -140, 60, 70], # Central Alaska
     [-160, -150, 70, 80], # Northern Alaska
