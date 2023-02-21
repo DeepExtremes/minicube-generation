@@ -1083,7 +1083,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L1C",
-                            "Compute Maskay Cloud Mask"
+                            "Compute Cloud Mask (maskay)"
                         ],
                         "remarks": ""
                     }

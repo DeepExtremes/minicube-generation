@@ -322,7 +322,8 @@ def _resample_spatially(ds_source: xr.Dataset, ds_target: xr.Dataset,
                              for dim_name in new_gm.xy_dim_names})
         ds = ds.rename_vars({var_name: f'{var_name}_{spatial_resolution}'
                              for var_name in new_gm.xy_var_names})
-        ds = ds.rename_vars({'crs': f'crs_{spatial_resolution}'})
+        if 'crs' in ds:
+            ds = ds.rename_vars({'crs': f'crs_{spatial_resolution}'})
     else:
         if 'x' in ds_target.dims and 'y' in ds_target.dims:
             ds = ds.assign(x=ds_target.x)
