@@ -149,6 +149,7 @@ def generate_minicube_configs(location_file: str):
                     variable['sources'][0]['processing_steps'][0] = \
                         f'Read {dem_file_path}'
                     break
+            no_ndvi_climatology = False
             for source in t['properties']['sources']:
                 if source['name'] == 'Copernicus DEM 30m':
                     current_key = list(source['datasets'].keys())[0]
@@ -157,7 +158,6 @@ def generate_minicube_configs(location_file: str):
                         dem_file_path: dem_datasets_dict_save
                     }
                 elif source['name'] == 'NDVI Climatology':
-                    break_loop = False
                     for ds_value_dict in source['datasets'].values():
                         for da_key, da_dict in \
                                 ds_value_dict['dataarrays'].items():
@@ -169,11 +169,12 @@ def generate_minicube_configs(location_file: str):
                             if da_path is None:
                                 # remove NDVI Climatology
                                 t['properties']['sources'].remove(source)
-                                break_loop = True
+                                no_ndvi_climatology = True
                                 break
                             da_dict['path'] = da_path
-                        if break_loop:
+                        if no_ndvi_climatology:
                             break
+            remove_variables = []
             for variable in t['properties']['variables']:
                 if variable['name'] in _ERA5_VARIABLE_NAMES:
                     var_name_start = variable['name'].split('_')[0]
@@ -182,6 +183,11 @@ def generate_minicube_configs(location_file: str):
                                                          var_name_start)
                     variable['sources'][0]['processing_steps'][0] = \
                         f'Read {era5_file_path}'
+                if variable['name'].startswith('ndvi_climatology') \
+                        and no_ndvi_climatology:
+                    remove_variables.append(variable)
+            for variable in remove_variables:
+                t['properties']['variables'].remove(variable)
             for source in t['properties']['sources']:
                 if source['name'].startswith('Era-5 Land'):
                     current_key = list(source['datasets'].keys())[0]
