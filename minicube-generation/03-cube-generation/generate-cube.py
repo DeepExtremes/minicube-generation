@@ -1,5 +1,6 @@
 import json
 import fsspec
+import os
 import rioxarray
 import sys
 import xarray as xr
@@ -178,13 +179,22 @@ def _finalize_dataset(ds: xr.Dataset, mc_config: dict) -> xr.Dataset:
 
 
 def _write_ds(ds: xr.Dataset, mc_config: dict):
+    print(f'Writing dataset {ds.data_id}')
+    s3_key = os.environ["S3_USER_STORAGE_KEY"]
+    s3_secret = os.environ["S3_USER_STORAGE_SECRET"]
     s3_store = new_data_store(
         "s3",
-        root="deepextremes-minicubes"
+        root="deepextremes-minicubes",
+        storage_options=dict(
+            anon=False,
+            key=s3_key,
+            secret=s3_secret
+        )
     )
-    print(f'Writing dataset {ds.data_id}')
     version = mc_config['properties']['version']
     s3_store.write_data(ds, f"{version}/{ds.data_id}.zarr")
+    # enable to write local
+    # ds.to_zarr(f"{version}/{ds.data_id}.zarr")
     print(f'Finished writing dataset {ds.data_id}')
 
 
