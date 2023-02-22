@@ -1,3 +1,12 @@
+## Changes in 0.3
+* Include NDVI Climatologies for regions over Africa
+* Include maskay cloud mask (no gpu support yet)
+* Include event ids, start time and end time in 
+* Include Scene Classification Layer and S2 Cloud Mask
+* Use better Land Cover Map
+* Removed need to set sentinelhub credentials
+* Use S2 images with least cloud coverage
+
 ## Changes in 0.0.2
 * Include Era5 Land data, CCI Land Cover Map, and Copernicus DEM
 * Integrated Processing steps for resampling temporally, resampling spatially,
