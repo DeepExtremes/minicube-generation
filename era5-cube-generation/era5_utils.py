@@ -7,35 +7,34 @@ RECTS = [
     [30, 50, -30, 0], # Southeastern Africa
     [50, 60, 10, 20], # Oman
     [50, 90, 20, 60], # Western Asia
-    [70, 90, 0, 20], # India
-    [90, 170, 50, 60], # Mongolia
-    [90, 150, 30, 50], # China
-    [90, 130, 10, 30], # Indochina
-    [90, 130, -10, 10], # Indonesia
-    [110, 130, -40, -10], # Western Australia
-    [130, 140, -40, 0], # Central Australia
-    [140, 150, -50, 0], # Eastern Australia
-    [150, 160, -40, -20], # Far Eastern Australia
+    [90, 130, 20, 60], # Eastern Asia
+    [70, 130, 0, 20], # Southern Asia
+    [130, 170, 50, 60], # Kamchatka
+    [130, 150, 30, 50], # Japan
+    [100, 120, -10, 0], # Indonesia
+    [120, 150, -20, 0], # Northern Australia
+    [110, 160, -40, -20], # Australia
+    [140, 150, -50, -40], # Tasmania
     [160, 170, -50, -40], # Southwestern New Zealand
     [170, 180, -50, -30], # Eastern New Zealand
     [-80, -60, -60, -40], # Patagonia
     [-80, -50, -40, -30], # Gran Chaco
     [-80, -40, -30, 0], # Central Southern America
     [-40, -30, -20, 0], # Eastern Brasil
-    [-90, -80, -10, 0], # Ecuador
-    [-60, -50, 0, 10], # Guyana
-    [-90, -60, 0, 20], # Caribbean
-    [-110, -90, 10, 20], # Central America
-    [-120, -70, 20, 60], # USA
+    [-90, -50, 0, 10], # Colombia
+    [-110, -70, 10, 30], # Mexico
+    [-120, -110, 20, 30], # Baja California
+    [-130, -100, 30, 60], # Western USA
+    [-100, -70, 30, 60], # Eastern USA
     [-70, -50, 40, 60], # Newfoundland
-    [-130, -120, 30, 60], # Pacific Coast
     [50, 160, 60, 80], # Northern Asia
     [160, 180, 60, 70], # Far East
-    [-130, -10, 60, 80], # Nunavut
+    [-130, 10, 60, 80], # Nunavut
     [-140, -130, 50, 70], # Eastern Alaska
     [-150, -140, 60, 70], # Central Alaska
     [-160, -150, 70, 80], # Northern Alaska
-    [-180, -150, 50, 70] # Bering Sea
+    [-170, -150, 50, 70], # Bering Sea
+    [-180, -170, 60, 70] # Anadyr
 ]
 
 
