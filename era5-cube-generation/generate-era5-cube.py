@@ -32,20 +32,22 @@ def _get_era5_file_path(lon: int, lat: int, var_name: str) -> str:
            f'era5land_{var_name}_{lat_str}_{lon_str}_v{version}.zarr'
 
 
-def _create_era5_cube(min_lon: int, max_lon: int,
-                      min_lat: int, max_lat: int,
-                      var_long_name: str, var_name: str,
-                      new_start_time: str):
+def _build_era5_cube(min_lon: int, max_lon: int,
+                     min_lat: int, max_lat: int,
+                     var_long_name: str, var_name: str,
+                     new_start_time: str):
     file_path = _get_era5_file_path(min_lon, min_lat, var_name)
     start = datetime.strptime(new_start_time, '%Y-%m-%d')
-    print(f'Creating cube {file_path}')
+    print(f'Building cube {file_path}')
     while start < _END:
         stop = start + timedelta(days=7)
         while stop.month != start.month:
             stop -= timedelta(days=1)
         start_str = start.strftime('%Y-%m-%d')
         stop_str = stop.strftime('%Y-%m-%d')
-        print(f'Adding time step from {start_str} to {stop_str}')
+        print(f'Requesting time step from {start_str} to {stop_str} '
+              f'for {var_name} between lon {min_lon} and {max_lon} '
+              f'and lat {min_lat} and {max_lat}')
         era5 = _SOURCE_STORE.open_data(
             'reanalysis-era5-land',
             variable_names=[var_long_name],
@@ -90,11 +92,11 @@ if __name__ == "__main__":
                          'optionally start_date in format yyyy-mm-dd')
     else:
         coords = sys.argv[1:]
-        _create_era5_cube(int(coords[0]),
-                          int(coords[1]),
-                          int(coords[2]),
-                          int(coords[3]),
-                          str(coords[4]),
-                          str(coords[5]),
-                          str(coords[6] if len(coords) == 7 else _NEW_START)
-                          )
+        _build_era5_cube(int(coords[0]),
+                         int(coords[1]),
+                         int(coords[2]),
+                         int(coords[3]),
+                         str(coords[4]),
+                         str(coords[5]),
+                         str(coords[6] if len(coords) == 7 else _NEW_START)
+                         )
