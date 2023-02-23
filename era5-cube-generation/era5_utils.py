@@ -5,7 +5,7 @@ RECTS = [
     [0, 50, 0, 30], # Northern Africa
     [10, 30, -40, 0], # Southwestern Africa
     [30, 50, -30, 0], # Southeastern Africa
-    [50, 60, 10, 20], # Oman
+    # [50, 60, 10, 20], # Oman
     [50, 90, 20, 60], # Western Asia
     [90, 130, 20, 60], # Eastern Asia
     [70, 130, 0, 20], # Southern Asia
