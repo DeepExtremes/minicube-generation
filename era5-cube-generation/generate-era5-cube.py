@@ -82,6 +82,7 @@ def _build_era5_cube(min_lon: int, max_lon: int,
                 drop=True)
             ds_new_only.to_zarr(file_path, append_dim='time', consolidated=True)
         start = stop + timedelta(1)
+    print(f'Building of {file_path} successfully finished')
 
 
 if __name__ == "__main__":
