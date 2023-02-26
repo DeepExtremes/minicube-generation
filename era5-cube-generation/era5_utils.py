@@ -6,9 +6,12 @@ RECTS = [
     [10, 30, -40, 0], # Southwestern Africa
     [30, 50, -30, 0], # Southeastern Africa
     # [50, 60, 10, 20], # Oman
-    [50, 90, 20, 60], # Western Asia
-    [90, 130, 20, 60], # Eastern Asia
-    [70, 130, 0, 20], # Southern Asia
+    [50, 90, 20, 40], # Middle East
+    [50, 90, 40, 60], # Kazakhstan
+    [90, 130, 40, 60], # Mongolia
+    [90, 130, 20, 40], # China
+    [70, 100, 0, 20], # India
+    [100, 130, 0, 20], # Indochina
     [130, 170, 50, 60], # Kamchatka
     [130, 150, 30, 50], # Japan
     [100, 120, -10, 0], # Indonesia
@@ -19,8 +22,9 @@ RECTS = [
     [170, 180, -50, -30], # Eastern New Zealand
     [-80, -60, -60, -40], # Patagonia
     [-80, -50, -40, -30], # Gran Chaco
-    [-80, -40, -30, 0], # Central Southern America
-    [-40, -30, -20, 0], # Eastern Brasil
+    [-80, -60, -30, 0], # Peru
+    [-60, -40, -30, 0], # Brazil
+    [-40, -30, -20, 0], # Eastern Brazil
     [-90, -50, 0, 10], # Colombia
     [-110, -70, 10, 30], # Mexico
     [-120, -110, 20, 30], # Baja California
