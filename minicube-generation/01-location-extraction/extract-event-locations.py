@@ -33,7 +33,7 @@ def extract_event_locations(min_lon: float, max_lon: float,
     )
     fs = fsspec.filesystem('s3', **storage_options)
     event_stats = fs.open(
-        'xaida/v2/EventStats_ranked_pot0.01_ne0.1_tcmp_Sdiam3_T5_2016_2021.csv'
+        'xaida/v2/EventStats_ranked_pot0.01_ne0.1_cmp_2016_2021.csv'
     )
     events_frame = pd.read_csv(event_stats, delimiter=',')
 
