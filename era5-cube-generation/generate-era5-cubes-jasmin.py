@@ -23,7 +23,7 @@ _NEW_START = datetime(2016, 1, 1).strftime('%Y-%m-%d')
 END_TIMESTAMP = pd.Timestamp(2022, 10, 31)
 ONE_DAY = timedelta(days=1)
 MAX_NUM_RUNS = 95
-MAX_NUM_PARALLEL_PROCESSES = 12
+MAX_NUM_PARALLEL_PROCESSES = 8
 
 
 running_processes = {}
