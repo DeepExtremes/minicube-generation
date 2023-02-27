@@ -2,35 +2,35 @@ RECTS = [
     # [0, 50, 30, 70], # Europe
     # [-10, 0, 30, 60], # GB
     # [-20, 0, 0, 30], # Western Africa
-    [0, 50, 0, 30], # Northern Africa
-    [10, 30, -40, 0], # Southwestern Africa
-    [30, 50, -30, 0], # Southeastern Africa
+    # [0, 50, 0, 30], # Northern Africa                 J
+    [10, 30, -40, 0], # Southwestern Africa             BC
+    # [30, 50, -30, 0], # Southeastern Africa           L
     # [50, 60, 10, 20], # Oman
-    [50, 90, 20, 40], # Middle East
-    [50, 90, 40, 60], # Kazakhstan
-    [90, 130, 40, 60], # Mongolia
-    [90, 130, 20, 40], # China
-    [70, 100, 0, 20], # India
-    [100, 130, 0, 20], # Indochina
-    [130, 170, 50, 60], # Kamchatka
-    [130, 150, 30, 50], # Japan
-    [100, 120, -10, 0], # Indonesia
-    [120, 150, -20, 0], # Northern Australia
-    [110, 160, -40, -20], # Australia
-    [140, 150, -50, -40], # Tasmania
-    [160, 170, -50, -40], # Southwestern New Zealand
-    [170, 180, -50, -30], # Eastern New Zealand
-    [-80, -60, -60, -40], # Patagonia
-    [-80, -50, -40, -30], # Gran Chaco
-    [-80, -60, -30, 0], # Peru
-    [-60, -40, -30, 0], # Brazil
-    [-40, -30, -20, 0], # Eastern Brazil
-    [-90, -50, 0, 10], # Colombia
-    [-110, -70, 10, 30], # Mexico
-    [-120, -110, 20, 30], # Baja California
-    [-130, -100, 30, 60], # Western USA
-    [-100, -70, 30, 60], # Eastern USA
-    [-70, -50, 40, 60], # Newfoundland
+    [50, 90, 20, 40], # Middle East                     J
+    [50, 90, 40, 60], # Kazakhstan                      L
+    [90, 130, 40, 60], # Mongolia                       BC
+    [90, 130, 20, 40], # China                          J
+    [70, 100, 0, 20], # India                           L
+    [100, 130, 0, 20], # Indochina                      BC
+    [130, 170, 50, 60], # Kamchatka                     J
+    [130, 150, 30, 50], # Japan                         L
+    [100, 120, -10, 0], # Indonesia                     BC
+    [120, 150, -20, 0], # Northern Australia            BC
+    [110, 160, -40, -20], # Australia                   J
+    [140, 150, -50, -40], # Tasmania                    L
+    [160, 170, -50, -40], # Southwestern New Zealand    L
+    [170, 180, -50, -30], # Eastern New Zealand         L
+    [-80, -60, -60, -40], # Patagonia                   BC
+    [-80, -50, -40, -30], # Gran Chaco                  J
+    [-80, -60, -30, 0], # Peru                          L
+    [-60, -40, -30, 0], # Brazil                        BC
+    [-40, -30, -20, 0], # Eastern Brazil                J
+    [-90, -50, 0, 10], # Colombia                       J
+    [-110, -70, 10, 30], # Mexico                       L
+    [-120, -110, 20, 30], # Baja California             BC
+    [-130, -100, 30, 60], # Western USA                 BC
+    [-100, -70, 30, 60], # Eastern USA                  J
+    [-70, -50, 40, 60], # Newfoundland                  L
     [50, 160, 60, 80], # Northern Asia
     [160, 180, 60, 70], # Far East
     [-130, 10, 60, 80], # Nunavut
