@@ -1,7 +1,10 @@
+from datetime import datetime
+import geopandas as gpd
 import json
 import fsspec
 import os
 import rioxarray
+from shapely.geometry import Polygon
 import sys
 import xarray as xr
 from typing import Dict
@@ -85,15 +88,21 @@ def _get_source_datasets(source_config: dict,
             **source_config.get('storage_options')
         )
         for dataset_name in source_config['datasets'].keys():
-            data_arrays = []
-            for var_name, da_dict in \
-                    source_config['datasets'][dataset_name]['dataarrays'].\
-                            items():
-                file_like = fs.open(da_dict['path'])
-                data_arrays.append(
-                    rioxarray.open_rasterio(file_like).rename(var_name)
+            if 'path' in source_config['datasets'][dataset_name]:
+                mapper = fsspec.get_mapper(
+                    source_config['datasets'][dataset_name]['path']
                 )
-            datasets[dataset_name] = xr.merge(data_arrays)
+                datasets[dataset_name] = xr.open_zarr(mapper)
+            else:
+                data_arrays = []
+                for var_name, da_dict in \
+                        source_config['datasets'][dataset_name]['dataarrays'].\
+                                items():
+                    file_like = fs.open(da_dict['path'])
+                    data_arrays.append(
+                        rioxarray.open_rasterio(file_like).rename(var_name)
+                    )
+                datasets[dataset_name] = xr.merge(data_arrays)
     return datasets
 
 
@@ -120,6 +129,15 @@ def _execute_processing_step(processing_step: str,
             time_range=mc_config['properties']['time_range'],
             time_period=mc_config['properties']['time_period'],
             resampling_method=params_string
+        )
+    if processing_step.startswith('Move longitude'):
+        return _move_longitude(
+            ds_source=ps_ds
+        )
+    if processing_step.startswith('Subset temporally'):
+        return _subset_temporally(
+            ds_source=ps_ds,
+            time_range=mc_config['properties']['time_range']
         )
     if processing_step.startswith('Pick time value'):
         return _pick_time_value(ps_ds, index=int(params_string))
@@ -173,6 +191,9 @@ def _finalize_dataset(ds: xr.Dataset, mc_config: dict) -> xr.Dataset:
     mc_config['properties'].pop('sources')
     vc_dict = {vc['name']: vc for vc in variable_properties}
     ds = ds.assign_attrs(**mc_config['properties'])
+    ds = ds.assign_attrs({
+        'creation_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    })
     for variable_name, attrs in vc_dict.items():
         ds[variable_name] = ds[variable_name].assign_attrs(attrs)
     return ds
@@ -196,6 +217,52 @@ def _write_ds(ds: xr.Dataset, mc_config: dict):
     # enable to write local
     # ds.to_zarr(f"{version}/{ds.data_id}.zarr")
     print(f'Finished writing dataset {ds.data_id}')
+
+
+def _get_gdf_from_mc(mc: xr.Dataset) -> gpd.GeoDataFrame:
+    mc_id = mc.attrs.get('data_id')
+    version = mc.attrs.get('version')
+    path = f'deepextremes-minicubes/{version}/{mc_id}.zarr'
+    creation_date = mc.attrs.get('creation_date')
+    events = str([(
+        mc.attrs.get('metadata', {}).get('event_label'),
+        mc.attrs.get('metadata', {}).get('event_start_time'),
+        mc.attrs.get('metadata', {}).get('event_end_time')
+    )])
+
+    lon_min = mc.attrs.get('metadata', {}).get('geospatial_lon_min')
+    lon_max = mc.attrs.get('metadata', {}).get('geospatial_lon_max')
+    lat_min = mc.attrs.get('metadata', {}).get('geospatial_lat_min')
+    lat_max = mc.attrs.get('metadata', {}).get('geospatial_lat_max')
+
+    geometry = Polygon([[lon_min, lat_min], [lon_max, lat_min], [lon_max, lat_max], [lon_min, lat_max]])
+    reg_gdf = gpd.GeoDataFrame(
+        {
+            'mc_id': mc_id,
+            'path': path,
+            'version': version,
+            'geometry': geometry,
+            'creation_date': creation_date,
+            'events': events,
+            'remarks': None
+        },
+        index=[0]
+    )
+    return reg_gdf
+
+
+def _write_entry(ds: xr.Dataset):
+    s3_key = os.environ["S3_USER_STORAGE_KEY"]
+    s3_secret = os.environ["S3_USER_STORAGE_SECRET"]
+    storage_options = dict(
+        anon=False,
+        key=s3_key,
+        secret=s3_secret
+    )
+    fs = fsspec.filesystem('s3', **storage_options)
+    gdf = _get_gdf_from_mc(ds)
+    with fs.open('deepextremes-minicubes/mc_registry.csv', 'a') as registry:
+        registry.write(gdf.to_csv(header=False, index=False))
 
 
 def generate_cube(mc_config: dict,
@@ -248,6 +315,8 @@ def generate_cube(mc_config: dict,
 
     _write_ds(ds, mc_config)
 
+    _write_entry(ds)
+
 # processing step implementations
 
 
@@ -285,6 +354,10 @@ def _chunk_by_time(ds_source: xr.Dataset, time_chunk_size:int) -> xr.Dataset:
     return ds
 
 
+def _move_longitude(ds_source: xr.Dataset) -> xr.Dataset:
+    return ds_source.assign(longitude=ds_source.longitude - 180.0)
+
+
 def _pick(ds: xr.Dataset, ending: str) -> xr.Dataset:
     vars_to_be_removed = []
     for var in ds.data_vars:
@@ -296,8 +369,13 @@ def _pick(ds: xr.Dataset, ending: str) -> xr.Dataset:
 def _pick_center_spatial_value(ds_source: xr.Dataset,
                                center_lat: float,
                                center_lon: float) -> xr.Dataset:
-    ds = ds_source.sel(lat=center_lat, lon=center_lon, method='nearest')
-    return ds.drop_vars(['lat', 'lon'])
+    if 'lat' in ds_source.coords and 'lon' in ds_source.coords:
+        ds = ds_source.sel(lat=center_lat, lon=center_lon, method='nearest')
+        return ds.drop_vars(['lat', 'lon'])
+    ds = ds_source.sel(latitude=center_lat,
+                       longitude=center_lon,
+                       method='nearest')
+    return ds.drop_vars(['latitude', 'longitude'])
 
 
 def _pick_time_value(ds: xr.Dataset, index: int) -> xr.Dataset:
@@ -371,6 +449,11 @@ def _subset_spatially_around_center(ds: xr.Dataset,
         return ds.sel(lat=slice(max_lat, min_lat), lon=slice(min_lon, max_lon))
     else:
         return ds.sel(lat=slice(min_lat, max_lat), lon=slice(min_lon, max_lon))
+
+
+def _subset_temporally(ds_source: xr.Dataset, time_range) \
+        -> xr.Dataset:
+    return ds_source.sel(time=slice(time_range[0], time_range[1]))
 
 
 if __name__ == "__main__":

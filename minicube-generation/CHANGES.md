@@ -1,3 +1,7 @@
+## Changes in 0.3.1
+* Include Columns from Event and Label Cubes to include all event information
+
+
 ## Changes in 0.3
 * Include NDVI Climatologies for regions over Africa
 * Include maskay cloud mask (no gpu support yet)
