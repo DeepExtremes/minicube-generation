@@ -2,16 +2,18 @@ RECTS = [
     # [0, 50, 30, 70], # Europe
     # [-10, 0, 30, 60], # GB
     # [-20, 0, 0, 30], # Western Africa
-    [0, 50, 0, 30], # Northern Africa
-    [10, 30, -40, 0], # Southwestern Africa
-    [30, 50, -30, 0], # Southeastern Africa
+    # [0, 50, 0, 30], # Northern Africa
+    # [10, 30, -40, 0], # Southwestern Africa
+    # [30, 50, -30, 0], # Southeastern Africa     L
     # [50, 60, 10, 20], # Oman
     [50, 90, 20, 40], # Middle East
     [50, 90, 40, 60], # Kazakhstan
     [90, 130, 40, 60], # Mongolia
     [90, 130, 20, 40], # China
     [70, 100, 0, 20], # India
-    [100, 130, 0, 20], # Indochina
+    [100, 110, 10, 20], # Indochina
+    [100, 120, 0, 10], # Malaysia
+    [120, 130, 0, 20], # Philippines
     [130, 170, 50, 60], # Kamchatka
     [130, 150, 30, 50], # Japan
     [100, 120, -10, 0], # Indonesia
