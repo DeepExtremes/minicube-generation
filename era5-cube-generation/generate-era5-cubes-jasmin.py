@@ -3,6 +3,7 @@ from datetime import timedelta
 import math
 import pandas as pd
 import subprocess
+import sys
 import time
 
 from xcube.core.store import new_data_store
@@ -64,7 +65,7 @@ def _get_era5_file_name(lon: int, lat: int, var_name: str) -> str:
     return f'era5land_{var_name}_{lat_str}_{lon_str}_v{version}.zarr'
 
 
-def _start_next_processes(num_running_processes: int):
+def _start_next_processes(num_running_processes: int, cds_api_key: str = None):
     var_stores = {}
     for var_name in VAR_NAMES.keys():
         var_stores[var_name] = new_data_store(
@@ -97,10 +98,14 @@ def _start_next_processes(num_running_processes: int):
                       f'{formatted_last_datetime}, will add missing time steps')
                 new_start_date = last_datetime + ONE_DAY
                 formatted_new_start_date = new_start_date.strftime('%Y-%m-%d')
-                _generate_era5_cube(lon, lat, var_name, formatted_new_start_date)
+                _generate_era5_cube(lon,
+                                    lat,
+                                    var_name,
+                                    formatted_new_start_date,
+                                    cds_api_key)
             else:
                 # dataset is missing, create
-                _generate_era5_cube(lon, lat, var_name)
+                _generate_era5_cube(lon, lat, var_name, _NEW_START, cds_api_key)
             num_running_processes += 1
             if num_running_processes >= MAX_NUM_PARALLEL_PROCESSES:
                 return
@@ -117,7 +122,9 @@ def _generate_era5_cube(lon: int, lat: int, var_name: str,
                           f'{lon}', f'{lon + 10}',
                           f'{lat}', f'{lat + 10}',
                           f'{var_long_name}', f'{var_name}',
-                          f'{formatted_new_start_date}'])
+                          f'{formatted_new_start_date}',
+                          f'{cds_api_key}']
+                         )
 
 
 def _check_running_processes():
@@ -133,15 +140,16 @@ def _check_running_processes():
     return len(running_processes.items())
 
 
-def generate_era5_cubes():
+def generate_era5_cubes(cds_api_key: str = None):
     num_runs = 0
     while(num_runs < MAX_NUM_RUNS):
         num_running_processes =  _check_running_processes()
         if num_running_processes < MAX_NUM_PARALLEL_PROCESSES:
-            _start_next_processes(num_running_processes)
+            _start_next_processes(num_running_processes, cds_api_key)
         time.sleep(2700)
         num_runs += 1
 
 
 if __name__ == "__main__":
-    generate_era5_cubes()
+    cds_api_key = sys.argv[1] if len(sys.argv) == 2 else None
+    generate_era5_cubes(cds_api_key)
