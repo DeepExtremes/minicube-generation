@@ -57,8 +57,11 @@ def _get_combinations_from_rect(min_lon: int, max_lon: int, min_lat: int, max_la
     return lon_lat_combinations
 
 
-def get_list_of_combinations():
+def get_list_of_combinations(half: int = None):
     lon_lat_combinations = []
-    for rect in RECTS:
-        lon_lat_combinations.extend(_get_combinations_from_rect(rect[0], rect[1], rect[2], rect[3]))
+    for i, rect in enumerate(RECTS):
+        if half and i % 2 == half:
+            lon_lat_combinations.extend(
+                _get_combinations_from_rect(rect[0], rect[1], rect[2], rect[3])
+            )
     return lon_lat_combinations

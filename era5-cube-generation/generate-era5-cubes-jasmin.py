@@ -65,14 +65,16 @@ def _get_era5_file_name(lon: int, lat: int, var_name: str) -> str:
     return f'era5land_{var_name}_{lat_str}_{lon_str}_v{version}.zarr'
 
 
-def _start_next_processes(num_running_processes: int, cds_api_key: str = None):
+def _start_next_processes(num_running_processes: int,
+                          cds_api_key: str = None):
     var_stores = {}
     for var_name in VAR_NAMES.keys():
         var_stores[var_name] = new_data_store(
             "s3",
             root=f"deepextremes/era5land/{var_name}/"
         )
-    for lon_lat_combination in get_list_of_combinations():
+    switch = 0 if cds_api_key == None else 1
+    for lon_lat_combination in get_list_of_combinations(switch):
         lon, lat = lon_lat_combination
         for var_name in VAR_NAMES.keys():
             era5_file_name = _get_era5_file_name(lon, lat, var_name)
