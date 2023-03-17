@@ -114,7 +114,8 @@ def _start_next_processes(num_running_processes: int,
 
 
 def _generate_era5_cube(lon: int, lat: int, var_name: str,
-                        formatted_new_start_date: str = _NEW_START):
+                        formatted_new_start_date: str = _NEW_START,
+                        cds_api_key: str = None):
     var_long_name = VAR_NAMES[var_name]
     era5_file_name = _get_era5_file_name(lon, lat, var_name)
     print(f'Starting processing of {era5_file_name}')
