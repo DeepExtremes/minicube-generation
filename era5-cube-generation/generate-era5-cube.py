@@ -34,11 +34,13 @@ def _build_era5_cube(min_lon: int, max_lon: int,
                      min_lat: int, max_lat: int,
                      var_long_name: str, var_name: str,
                      new_start_time: str,
-                     cds_api_key: str):
-    store_params = dict()
+                     cds_api_key: str = None):
     if cds_api_key:
+        store_params = dict()
         store_params['cds_api_key'] = cds_api_key
-    source_store = new_data_store('cds', **store_params)
+        source_store = new_data_store('cds', **store_params)
+    else:
+        source_store = new_data_store('cds')
     file_path = _get_era5_file_path(min_lon, min_lat, var_name)
     start = datetime.strptime(new_start_time, '%Y-%m-%d')
     print(f'Building cube {file_path}')
@@ -104,5 +106,5 @@ if __name__ == "__main__":
                          str(coords[4]),
                          str(coords[5]),
                          str(coords[6] if len(coords) > 6 else _NEW_START),
-                         str(coords[7] if len(coords) > 7 else None),
+                         str(coords[7]) if len(coords) > 7 else None
                          )
