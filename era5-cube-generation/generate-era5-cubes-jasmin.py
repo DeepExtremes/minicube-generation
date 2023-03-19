@@ -73,7 +73,7 @@ def _start_next_processes(num_running_processes: int,
             "s3",
             root=f"deepextremes/era5land/{var_name}/"
         )
-    switch = 0 if cds_api_key == None else 1
+    switch = 0 if cds_api_key is None else 1
     for lon_lat_combination in get_list_of_combinations(switch):
         lon, lat = lon_lat_combination
         for var_name in VAR_NAMES.keys():
@@ -119,15 +119,16 @@ def _generate_era5_cube(lon: int, lat: int, var_name: str,
     var_long_name = VAR_NAMES[var_name]
     era5_file_name = _get_era5_file_name(lon, lat, var_name)
     print(f'Starting processing of {era5_file_name}')
+    open_command = ["srun", "--time=48:00:00", "--partition=long-serial",
+                    "python", "generate-era5-cube.py",
+                    f'{lon}', f'{lon + 10}',
+                    f'{lat}', f'{lat + 10}',
+                    f'{var_long_name}', f'{var_name}',
+                    f'{formatted_new_start_date}']
+    if cds_api_key is not None:
+        open_command.append(f'{cds_api_key}')
     running_processes[era5_file_name] = \
-        subprocess.Popen(["srun", "--time=48:00:00", "--partition=long-serial",
-                          "python", "generate-era5-cube.py",
-                          f'{lon}', f'{lon + 10}',
-                          f'{lat}', f'{lat + 10}',
-                          f'{var_long_name}', f'{var_name}',
-                          f'{formatted_new_start_date}',
-                          f'{cds_api_key}']
-                         )
+        subprocess.Popen(open_command)
 
 
 def _check_running_processes():
