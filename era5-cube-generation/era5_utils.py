@@ -11,26 +11,26 @@ RECTS = [
     # [90, 130, 40, 60], # Mongolia
     # [90, 130, 20, 40], # China
     # [100, 110, 10, 20],  # Indochina
-    [110, 160, -40, -20],  # Australia
-    [-80, -60, -30, 0],  # Peru
-    [-60, -40, -30, 0],  # Brazil
-    [-130, -100, 30, 60],  # Western USA
-    [-100, -70, 30, 60],  # Eastern USA
-    [50, 160, 60, 70],  # Russia
+    # [110, 160, -40, -20],  # Australia
+    # [-80, -60, -30, 0],  # Peru
+    # [-60, -40, -30, 0],  # Brazil
+    # [-130, -100, 30, 60],  # Western USA
+    # [-100, -70, 30, 60],  # Eastern USA
+    # [50, 160, 60, 70],  # Russia
+    # [160, 180, 60, 70],  # Far East
     [-130, -90, 60, 70],  # Nunavut
-    [160, 180, 60, 70],  # Far East
     [-140, -130, 50, 70],  # Eastern Alaska
-    [-150, -140, 60, 70],  # Central Alaska
     [120, 150, -20, 0],  # Northern Australia
     [-80, -60, -60, -40],  # Patagonia
+    [-150, -140, 60, 70],  # Central Alaska
     [-110, -70, 10, 30],  # Mexico
     [-90, -50, 0, 10],  # Colombia
     [70, 100, 0, 20], # India
     [100, 120, 0, 10], # Malaysia
     [120, 130, 0, 20], # Philippines
+    [100, 120, -10, 0], # Indonesia
     [130, 170, 50, 60], # Kamchatka
     [130, 150, 30, 50], # Japan
-    [100, 120, -10, 0], # Indonesia
     [140, 150, -50, -40], # Tasmania
     [160, 170, -50, -40], # Southwestern New Zealand
     [170, 180, -50, -30], # Eastern New Zealand
@@ -38,12 +38,14 @@ RECTS = [
     [-40, -30, -20, 0], # Eastern Brazil
     [-120, -110, 20, 30], # Baja California
     [-70, -50, 40, 60], # Newfoundland
-    [50, 160, 70, 80], # Northern Asia
-    [-130, -90, 70, 80], # Victoria Island
-    [-90, 10, 60, 80], # Greenland
-    [-160, -150, 70, 80], # Northern Alaska
+    [-180, -170, 60, 70],  # Anadyr
+    [-90, -50, 60, 70], # Baffin Island
+    [-50, 10, 60, 70], # Southern Greenland
     [-170, -150, 50, 70], # Bering Sea
-    [-180, -170, 60, 70] # Anadyr
+    # [-90, 10, 70, 80], # Northern Greenland
+    # [50, 160, 70, 80], # Northern Asia
+    # [-130, -90, 70, 80], # Victoria Island
+    # [-160, -150, 70, 80], # Northern Alaska
 ]
 
 
