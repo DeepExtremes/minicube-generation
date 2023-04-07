@@ -76,8 +76,7 @@ def get_list_of_combinations(switch: int = None):
     lon_lat_combinations = []
     for i, rect in enumerate(RECTS):
         if switch is not None and i % 3 == switch:
-            continue
-        lon_lat_combinations.extend(
-            _get_combinations_from_rect(rect[0], rect[1], rect[2], rect[3])
-        )
+            lon_lat_combinations.extend(
+                _get_combinations_from_rect(rect[0], rect[1], rect[2], rect[3])
+            )
     return lon_lat_combinations
