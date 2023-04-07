@@ -30,8 +30,8 @@ RECTS = [
     [110, 160, 70, 80],  # Northeastern Siberia         5
     [-90, -70, 70, 80],  # Southern Ellesmere Island    2
     [-100, -90, 70, 80],  # Queen Elizabeth Islands     1
-    [-100, -70, 70, 80],  # Northern Ellesmere Island   3
-    [-70, -40, 70, 80],  # Northwestern Greenland       3
+    [-100, -70, 80, 90],  # Northern Ellesmere Island   3
+    [-70, -40, 80, 90],  # Northwestern Greenland       3
 
     [-70, -50, 40, 60],  # Newfoundland                 3
     [-110, -70, 10, 30],  # Mexico                      5
@@ -54,7 +54,7 @@ RECTS = [
 
     # [-70, 10, 70, 80], # Greenland                      6
     # [-130, -100, 70, 80], # Victoria Island             3
-    # [-40, -10, 70, 80],  # Northeastern Greenland       3
+    # [-40, -10, 80, 90],  # Northeastern Greenland       3
     # [-160, -150, 70, 80], # Northern Alaska             1
 ]
 
