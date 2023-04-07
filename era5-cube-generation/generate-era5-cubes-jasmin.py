@@ -73,7 +73,12 @@ def _start_next_processes(num_running_processes: int,
             "s3",
             root=f"deepextremes/era5land/{var_name}/"
         )
-    switch = 0 if cds_api_key is None else 1
+    if cds_api_key is not None and cds_api_key.startswith('180832'):
+        switch = 1
+    elif cds_api_key is not None and cds_api_key.startswith('179656'):
+        switch = 2
+    else:
+        switch = 0
     for lon_lat_combination in get_list_of_combinations(switch):
         lon, lat = lon_lat_combination
         for var_name in VAR_NAMES.keys():

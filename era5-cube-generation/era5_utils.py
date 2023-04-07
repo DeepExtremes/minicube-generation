@@ -26,18 +26,18 @@ RECTS = [
     [130, 170, 50, 60],  # Kamchatka                    3
     [-90, -50, 60, 70],  # Baffin Island                4
     [-170, -150, 50, 70],  # Bering Sea                 4
-    [50, 110, 70, 80],  # Taimyr                        6
     [110, 160, 70, 80],  # Northeastern Siberia         5
+    [50, 110, 70, 80],  # Taimyr                        6
     [-90, -70, 70, 80],  # Southern Ellesmere Island    2
-    [-100, -90, 70, 80],  # Queen Elizabeth Islands     1
     [-100, -70, 80, 90],  # Northern Ellesmere Island   3
+    [-100, -90, 70, 80],  # Queen Elizabeth Islands     1
     [-70, -40, 80, 90],  # Northwestern Greenland       3
 
-    [-70, -50, 40, 60],  # Newfoundland                 3
-    [-110, -70, 10, 30],  # Mexico                      5
     [-90, -50, 0, 10],  # Colombia                      2
-    [120, 150, -20, 0],  # Northern Australia           1
+    [-110, -70, 10, 30],  # Mexico                      5
+    [-70, -50, 40, 60],  # Newfoundland                 3
     [100, 120, 0, 10],  # Malaysia                      2
+    [120, 150, -20, 0],  # Northern Australia           1
     [-40, -30, -20, 0],  # Eastern Brazil               2
     [-180, -170, 60, 70],  # Anadyr                     1
 
@@ -48,8 +48,8 @@ RECTS = [
     [120, 130, 0, 20],  # Philippines                   2
     [100, 120, -10, 0],  # Indonesia                    2
     [140, 150, -50, -40],  # Tasmania                   1
-    [170, 180, -50, -30],  # Eastern New Zealand        2
     [160, 170, -50, -40],  # Southwestern New Zealand   1
+    [170, 180, -50, -30],  # Eastern New Zealand        2
     [-120, -110, 20, 30],  # Baja California            1
 
     # [-70, 10, 70, 80], # Greenland                      6
@@ -72,10 +72,10 @@ def _get_combinations_from_rect(min_lon: int, max_lon: int, min_lat: int, max_la
     return lon_lat_combinations
 
 
-def get_list_of_combinations(half: int = None):
+def get_list_of_combinations(switch: int = None):
     lon_lat_combinations = []
     for i, rect in enumerate(RECTS):
-        if half is not None and i % 2 == half:
+        if switch is not None and i % 3 == switch:
             continue
         lon_lat_combinations.extend(
             _get_combinations_from_rect(rect[0], rect[1], rect[2], rect[3])
