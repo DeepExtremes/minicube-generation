@@ -6,6 +6,7 @@ import sys
 import xarray as xr
 
 
+_MAX_NUM_VALID_EVENTS = 8
 _TIME_FORMAT = '%Y-%m-%d'
 
 
@@ -48,7 +49,7 @@ def extract_event_locations(min_lon: float, max_lon: float,
 
     label_cube_store = fsspec.get_mapper(
         'https://s3.bgc-jena.mpg.de:9000/xaida/v2/'
-        'labelcube_ranked_pot0.01_ne0.1_tcmp_Sdiam3_T5_2016_2021.zarr'
+        'labelcube_ranked_pot0.01_ne0.1_cmp_2016_2021.zarr'
     )
     label_cube = xr.open_zarr(label_cube_store)
 
@@ -75,14 +76,16 @@ def extract_event_locations(min_lon: float, max_lon: float,
             {
                 'time': slice(start_time,
                               end_time),
-                'longitude': slice(float(longitude_min) - 1.0,
-                                   float(longitude_max) + 1.0),
-                'latitude': slice(float(latitude_max) + 1.0,
-                                  float(latitude_min) - 1.0)
+                'longitude': slice(float(longitude_min) - 0.5,
+                                   float(longitude_max) + 0.5),
+                'latitude': slice(float(latitude_max) + 0.5,
+                                  float(latitude_min) - 0.5)
             }
         )
         num_event_locations_found = 0
-        while num_event_locations_found < 20:
+        num_non_event_locations_found = 0
+        while num_event_locations_found < 10 and \
+                num_non_event_locations_found < 10:
             random_point = _get_random_point(sub_label)
             event_occurrences = np.where(sub_label.sel(
                 {
@@ -91,19 +94,28 @@ def extract_event_locations(min_lon: float, max_lon: float,
                 },
                 method='nearest').values == int(label))[0]
             if len(event_occurrences) == 0:
-                continue
-            print(f'Found valid location at long {random_point[0]}, '
-                  f'lat {random_point[1]}')
-            event_start = sub_label.time[event_occurrences[0]].values
-            event_start = pd.to_datetime(event_start).strftime(_TIME_FORMAT)
-            event_end = sub_label.time[event_occurrences[-1]].values
-            event_end = pd.to_datetime(event_end).strftime(_TIME_FORMAT)
-            location = (random_point[0] - 180., random_point[1], '_',
-                        event_start, event_end, label)
-            all_locations.append(location)
-            num_event_locations_found += 1
+                if num_non_event_locations_found < 10:
+                    print(f'Found non-event location at '
+                          f'long {random_point[0]}, lat {random_point[1]}')
+                    location = (random_point[0] - 180., random_point[1], '_',
+                                '_', '_', label, 'True')
+                    all_locations.append(location)
+                    num_non_event_locations_found += 1
+                else:
+                    continue
+            elif num_event_locations_found < 10:
+                print(f'Found valid location at long {random_point[0]}, '
+                      f'lat {random_point[1]}')
+                event_start = sub_label.time[event_occurrences[0]].values
+                event_start = pd.to_datetime(event_start).strftime(_TIME_FORMAT)
+                event_end = sub_label.time[event_occurrences[-1]].values
+                event_end = pd.to_datetime(event_end).strftime(_TIME_FORMAT)
+                location = (random_point[0] - 180., random_point[1], '_',
+                            event_start, event_end, label, 'False')
+                all_locations.append(location)
+                num_event_locations_found += 1
         num_valid_events += 1
-        if num_valid_events > 2:
+        if num_valid_events == _MAX_NUM_VALID_EVENTS:
             break
 
     version ='unknown'
@@ -114,7 +126,8 @@ def extract_event_locations(min_lon: float, max_lon: float,
                f'{min_lon - 180}_{max_lon - 180}_{min_lat}_{max_lat}.csv'
     with open(filename, 'w+') as output:
         output.write(
-            "Longitude\tLatitude\tClass\tEventStart\tEventEnd\tEventLabel\n"
+            "Longitude\tLatitude\tClass\tEventStart\tEventEnd\tEventLabel"
+            "\tOutsideEvent\n"
         )
         for location in all_locations:
             output.write(f'{location[0]}\t'
@@ -122,7 +135,8 @@ def extract_event_locations(min_lon: float, max_lon: float,
                          f'{location[2]}\t'
                          f'{location[3]}\t'
                          f'{location[4]}\t'
-                         f'{location[5]}\n')
+                         f'{location[5]}\t'
+                         f'{location[6]}\n')
 
 
 if __name__ == "__main__":

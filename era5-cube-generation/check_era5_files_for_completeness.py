@@ -42,17 +42,22 @@ def _check_for_completeness():
             root=f"deepextremes/era5land/{var_name}/"
         )
         for var_ds_id in var_store.get_data_ids():
+            lat, lon = _get_lat_lon_from_era5_file_path(var_ds_id)
+            if lon < 45 or lon > 65 or lat > 35 or lat < 15:
+                # print(f'Will not check {var_ds_id}')
+                continue
             var_ds = var_store.open_data(var_ds_id)
             last_datetime = pd.to_datetime(str(var_ds.time[-1].values))
             if last_datetime == END_TIMESTAMP:
                 print(f'Checked {var_ds_id}, all fine')
                 continue
             formatted_last_datetime = last_datetime.strftime('%Y-%m-%d')
-            print(f'Last timestamp of {var_ds_id} was '
-                  f'{formatted_last_datetime}, will add missing time steps')
+            # print(f'Last timestamp of {var_ds_id} was '
+            #       f'{formatted_last_datetime}, will add missing time steps')
             new_start_date = last_datetime + ONE_DAY
             formatted_new_start_date = new_start_date.strftime('%Y-%m-%d')
-            lat, lon = _get_lat_lon_from_era5_file_path(var_ds_id)
+            print(f'Last timestamp of {var_ds_id} was '
+                  f'{formatted_last_datetime}, will add missing time steps')
             var_long_name = VAR_NAMES[var_name]
             subprocess.Popen(['python', 'generate-era5-cube.py',
                               f'{lon}', f'{lon + 10}',

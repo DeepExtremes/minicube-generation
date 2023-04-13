@@ -11,8 +11,6 @@ _START = datetime(2016, 1, 1)
 _NEW_START = datetime(2016, 1, 1).strftime('%Y-%m-%d')
 _END = datetime(2022, 10, 31)
 
-_SOURCE_STORE = new_data_store('cds')
-
 
 def _get_era5_file_path(lon: int, lat: int, var_name: str) -> str:
     lon_new = int(math.floor(lon / 10) * 10)
@@ -35,7 +33,14 @@ def _get_era5_file_path(lon: int, lat: int, var_name: str) -> str:
 def _build_era5_cube(min_lon: int, max_lon: int,
                      min_lat: int, max_lat: int,
                      var_long_name: str, var_name: str,
-                     new_start_time: str):
+                     new_start_time: str,
+                     cds_api_key: str = None):
+    if cds_api_key:
+        store_params = dict()
+        store_params['cds_api_key'] = cds_api_key
+        source_store = new_data_store('cds', **store_params)
+    else:
+        source_store = new_data_store('cds')
     file_path = _get_era5_file_path(min_lon, min_lat, var_name)
     start = datetime.strptime(new_start_time, '%Y-%m-%d')
     print(f'Building cube {file_path}')
@@ -48,7 +53,7 @@ def _build_era5_cube(min_lon: int, max_lon: int,
         print(f'Requesting time step from {start_str} to {stop_str} '
               f'for {var_name} between lon {min_lon} and {max_lon} '
               f'and lat {min_lat} and {max_lat}')
-        era5 = _SOURCE_STORE.open_data(
+        era5 = source_store.open_data(
             'reanalysis-era5-land',
             variable_names=[var_long_name],
             bbox=[min_lon, min_lat, max_lon, max_lat],
@@ -86,11 +91,12 @@ def _build_era5_cube(min_lon: int, max_lon: int,
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 7 or len(sys.argv) > 8:
+    if len(sys.argv) < 7 or len(sys.argv) > 9:
         raise ValueError('Expected coordinates '
                          'MIN_LON, MAX_LON, MIN_LAT, MAX_LAT, '
                          'var_long_name, var_short_name,'
-                         'optionally start_date in format yyyy-mm-dd')
+                         'optionally start_date in format yyyy-mm-dd '
+                         'and a cds_api_key')
     else:
         coords = sys.argv[1:]
         _build_era5_cube(int(coords[0]),
@@ -99,5 +105,6 @@ if __name__ == "__main__":
                          int(coords[3]),
                          str(coords[4]),
                          str(coords[5]),
-                         str(coords[6] if len(coords) == 7 else _NEW_START)
+                         str(coords[6] if len(coords) > 6 else _NEW_START),
+                         str(coords[7]) if len(coords) > 7 else None
                          )
