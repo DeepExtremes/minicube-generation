@@ -1226,7 +1226,7 @@
                             "Pick center spatial value",
                             "Rename from to / layer events",
                             "Rename from to / time event_time",
-                            "Chunk by time / 2192"
+                            "Rechunk by to / time 2192"
                         ],
                         "remarks": "values coding for *types of Discrete Extreme Occurrences*. First bit is set to 1 where P(X~Tmax) > 0.99. Second to fourth bits are set to 1 where P(X~PEI) < 0.01, for PEI~30, PEI~90 and PEI~180 respectively. Fifth bit is for non extremes, i.e. where all four indicators lie in the middle of their distribution (P(X) > 0.1 AND P(X) < 0.9)."
                     }
