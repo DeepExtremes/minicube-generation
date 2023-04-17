@@ -22,11 +22,11 @@ RECTS = [
     # [-140, -130, 50, 70],  # Eastern Alaska
     # [-150, -140, 60, 70],  # Central Alaska
 
-    [-80, -50, -40, -30],  # Gran Chaco                 2
-    [130, 170, 50, 60],  # Kamchatka                    3
-    [-90, -50, 60, 70],  # Baffin Island                4
-    [-170, -150, 50, 70],  # Bering Sea                 4
-    [110, 160, 70, 80],  # Northeastern Siberia         5
+    # [-80, -50, -40, -30],  # Gran Chaco                 2
+    # [130, 170, 50, 60],  # Kamchatka                    3
+    # [-90, -50, 60, 70],  # Baffin Island                4
+    # [-170, -150, 50, 70],  # Bering Sea                 4
+    # [110, 160, 70, 80],  # Northeastern Siberia         5
     [50, 110, 70, 80],  # Taimyr                        6
     [-90, -70, 70, 80],  # Southern Ellesmere Island    2
     [-100, -70, 80, 90],  # Northern Ellesmere Island   3
@@ -42,10 +42,10 @@ RECTS = [
     [-180, -170, 60, 70],  # Anadyr                     1
 
     [70, 100, 0, 20],  # India                          4
-    [-50, 10, 60, 70],  # Southern Greenland            4
-    [130, 150, 30, 50],  # Japan                        3
     [-80, -60, -60, -40],  # Patagonia                  2
+    [130, 150, 30, 50],  # Japan                        3
     [120, 130, 0, 20],  # Philippines                   2
+    [-50, 10, 60, 70],  # Southern Greenland            4
     [100, 120, -10, 0],  # Indonesia                    2
     [140, 150, -50, -40],  # Tasmania                   1
     [160, 170, -50, -40],  # Southwestern New Zealand   1
@@ -75,8 +75,8 @@ def _get_combinations_from_rect(min_lon: int, max_lon: int, min_lat: int, max_la
 def get_list_of_combinations(switch: int = None):
     lon_lat_combinations = []
     for i, rect in enumerate(RECTS):
-        if switch is not None and i % 3 == switch:
-            lon_lat_combinations.extend(
-                _get_combinations_from_rect(rect[0], rect[1], rect[2], rect[3])
-            )
+        # if switch is not None and i % 3 == switch:
+        lon_lat_combinations.extend(
+            _get_combinations_from_rect(rect[0], rect[1], rect[2], rect[3])
+        )
     return lon_lat_combinations
