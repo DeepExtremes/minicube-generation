@@ -58,7 +58,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Chunk by time / 165"
+                            "Rechunk to by / time 165"
                         ],
                         "remarks": ""
                     }
@@ -85,7 +85,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Chunk by time / 165"
+                            "Rechunk by to / time 165"
                         ],
                         "remarks": ""
                     }
@@ -112,7 +112,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Chunk by time / 165"
+                            "Rechunk by to / time 165"
                         ],
                         "remarks": ""
                     }
@@ -139,7 +139,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Chunk by time / 165"
+                            "Rechunk by to / time 165"
                         ],
                         "remarks": ""
                     }
@@ -166,7 +166,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Chunk by time / 165"
+                            "Rechunk by to / time 165"
                         ],
                         "remarks": ""
                     }
@@ -193,7 +193,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Chunk by time / 165"
+                            "Rechunk by to / time 165"
                         ],
                         "remarks": ""
                     }
@@ -220,7 +220,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Chunk by time / 165"
+                            "Rechunk by to / time 165"
                         ],
                         "remarks": ""
                     }
@@ -252,7 +252,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Chunk by time / 165"
+                            "Rechunk by to / time 165"
                         ],
                         "remarks": ""
                     }
@@ -275,7 +275,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Chunk by time / 165"
+                            "Rechunk by to / time 165"
                         ],
                         "remarks": ""
                     }
@@ -354,7 +354,7 @@
                             "Pick / max",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / max",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -382,7 +382,7 @@
                             "Pick / min",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / min",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -410,7 +410,7 @@
                             "Pick / mean",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / mean",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -438,7 +438,7 @@
                             "Pick / max",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / max",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -466,7 +466,7 @@
                             "Pick / min",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / min",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -494,7 +494,7 @@
                             "Pick / mean",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / mean",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -522,7 +522,7 @@
                             "Pick / max",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / max",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -550,7 +550,7 @@
                             "Pick / min",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / min",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -578,7 +578,7 @@
                             "Pick / mean",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / mean",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -606,7 +606,7 @@
                             "Pick / max",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / max",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -634,7 +634,7 @@
                             "Pick / min",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / min",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -662,7 +662,7 @@
                             "Pick / mean",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / mean",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -690,7 +690,7 @@
                             "Pick / max",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / max",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -718,7 +718,7 @@
                             "Pick / min",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / min",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -746,7 +746,7 @@
                             "Pick / mean",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / mean",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -774,7 +774,7 @@
                             "Pick / max",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / max",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -802,7 +802,7 @@
                             "Pick / min",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / min",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -830,7 +830,7 @@
                             "Pick / mean",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / mean",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -858,7 +858,7 @@
                             "Pick / max",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / max",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -886,7 +886,7 @@
                             "Pick / min",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / min",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -914,7 +914,7 @@
                             "Pick / mean",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / mean",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -942,7 +942,7 @@
                             "Pick / max",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / max",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -970,7 +970,7 @@
                             "Pick / min",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / min",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -998,7 +998,7 @@
                             "Pick / mean",
                             "Pick center spatial value",
                             "Resample temporally to S2L2A / mean",
-                            "Chunk by time / 495"
+                            "Rechunk by to / time 495"
                         ],
                         "remarks": ""
                     }
@@ -1195,7 +1195,7 @@
                             "Pick center spatial value",
                             "Rename from to / layer event_labels",
                             "Rename from to / time event_time",
-                            "Chunk by time / 2192"
+                            "Rechunk by to / event_time 2192"
                         ],
                         "remarks": ""
                     }
@@ -1226,7 +1226,7 @@
                             "Pick center spatial value",
                             "Rename from to / layer events",
                             "Rename from to / time event_time",
-                            "Chunk by time / 2192"
+                            "Rechunk by to / event_time 2192"
                         ],
                         "remarks": "values coding for *types of Discrete Extreme Occurrences*. First bit is set to 1 where P(X~Tmax) > 0.99. Second to fourth bits are set to 1 where P(X~PEI) < 0.01, for PEI~30, PEI~90 and PEI~180 respectively. Fifth bit is for non extremes, i.e. where all four indicators lie in the middle of their distribution (P(X) > 0.1 AND P(X) < 0.9)."
                     }

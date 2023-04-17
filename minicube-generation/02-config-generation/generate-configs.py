@@ -1,4 +1,5 @@
 from datetime import datetime
+import copy
 import geopandas as gpd
 import glob
 import json
@@ -99,6 +100,7 @@ def generate_minicube_configs(location_file: str):
     with open('../cube.geojson', 'r') as template:
         t = json.load(template)
         for minicube_location in minicube_locations.iterrows():
+            tc = copy.deepcopy(t)
             center_lon = minicube_location[1].Longitude
             center_lon_readable = "{:.2f}".format(center_lon)
             center_lat = minicube_location[1].Latitude
@@ -117,40 +119,40 @@ def generate_minicube_configs(location_file: str):
             )
             geospatial_bbox = \
                 np.swapaxes(np.asarray((lons, lats)), 0, 1).tolist()
-            t['geometry']['coordinates'][0] = geospatial_bbox
-            t['properties']['title'] = _TITLE_TEMPLATE.\
+            tc['geometry']['coordinates'][0] = geospatial_bbox
+            tc['properties']['title'] = _TITLE_TEMPLATE.\
                 format(lon=center_lon_readable, lat=center_lat_readable)
             data_id = _ID_TEMPLATE.format(lon=center_lon_readable,
                                           lat=center_lat_readable,
                                           version=version)
-            t['properties']['data_id'] = data_id
-            t['properties']['description'] = _DESCRIPTION_TEMPLATE.\
+            tc['properties']['data_id'] = data_id
+            tc['properties']['description'] = _DESCRIPTION_TEMPLATE.\
                 format(lon=center_lon_readable, lat=center_lat_readable)
-            t['properties']['version'] = version
-            t['properties']['spatial_res'] = _SPATIAL_RES
-            t['properties']['spatial_ref'] = crs
-            t['properties']['spatial_bbox'] = [xmin, ymin, xmax, ymax]
-            t['properties']['metadata']['date_modified'] = \
+            tc['properties']['version'] = version
+            tc['properties']['spatial_res'] = _SPATIAL_RES
+            tc['properties']['spatial_ref'] = crs
+            tc['properties']['spatial_bbox'] = [xmin, ymin, xmax, ymax]
+            tc['properties']['metadata']['date_modified'] = \
                 datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            t['properties']['metadata']['event_label'] = \
+            tc['properties']['metadata']['event_label'] = \
                 minicube_location[1].EventLabel
-            t['properties']['metadata']['event_start_time'] = \
+            tc['properties']['metadata']['event_start_time'] = \
                 minicube_location[1].EventStart
-            t['properties']['metadata']['event_end_time'] = \
+            tc['properties']['metadata']['event_end_time'] = \
                 minicube_location[1].EventEnd
-            t['properties']['metadata']['geospatial_lon_min'] = min(lons)
-            t['properties']['metadata']['geospatial_lon_max'] = max(lons)
-            t['properties']['metadata']['geospatial_lat_min'] = min(lats)
-            t['properties']['metadata']['geospatial_lat_max'] = max(lats)
-            t['properties']['metadata']['class'] = minicube_location[1].Class
+            tc['properties']['metadata']['geospatial_lon_min'] = min(lons)
+            tc['properties']['metadata']['geospatial_lon_max'] = max(lons)
+            tc['properties']['metadata']['geospatial_lat_min'] = min(lats)
+            tc['properties']['metadata']['geospatial_lat_max'] = max(lats)
+            tc['properties']['metadata']['class'] = minicube_location[1].Class
             dem_file_path = _get_dem_file_path(center_lon, center_lat)
-            for variable in t['properties']['variables']:
+            for variable in tc['properties']['variables']:
                 if variable['name'] == 'cop_dem':
                     variable['sources'][0]['processing_steps'][0] = \
                         f'Read {dem_file_path}'
                     break
             no_ndvi_climatology = False
-            for source in t['properties']['sources']:
+            for source in tc['properties']['sources']:
                 if source['name'] == 'Copernicus DEM 30m':
                     current_key = list(source['datasets'].keys())[0]
                     dem_datasets_dict_save = source['datasets'][current_key]
@@ -168,14 +170,14 @@ def generate_minicube_configs(location_file: str):
                             )
                             if da_path is None:
                                 # remove NDVI Climatology
-                                t['properties']['sources'].remove(source)
+                                tc['properties']['sources'].remove(source)
                                 no_ndvi_climatology = True
                                 break
                             da_dict['path'] = da_path
                         if no_ndvi_climatology:
                             break
             remove_variables = []
-            for variable in t['properties']['variables']:
+            for variable in tc['properties']['variables']:
                 if variable['name'] in _ERA5_VARIABLE_NAMES:
                     var_name_start = variable['name'].split('_')[0]
                     era5_file_path = _get_era5_file_path(center_lon,
@@ -187,8 +189,8 @@ def generate_minicube_configs(location_file: str):
                         and no_ndvi_climatology:
                     remove_variables.append(variable)
             for variable in remove_variables:
-                t['properties']['variables'].remove(variable)
-            for source in t['properties']['sources']:
+                tc['properties']['variables'].remove(variable)
+            for source in tc['properties']['sources']:
                 if source['name'].startswith('Era-5 Land'):
                     current_key = list(source['datasets'].keys())[0]
                     era5_datasets_dict_save = source['datasets'][current_key]
@@ -202,7 +204,7 @@ def generate_minicube_configs(location_file: str):
                     }
             with open(f'../configs/{version}/{data_id}.geojson',
                       'w+') as mc_json:
-                json.dump(t, mc_json, indent=4)
+                json.dump(tc, mc_json, indent=4)
 
 
 if __name__ == "__main__":

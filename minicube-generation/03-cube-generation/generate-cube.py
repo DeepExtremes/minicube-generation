@@ -167,10 +167,12 @@ def _execute_processing_step(processing_step: str,
             before=before,
             after=after
         )
-    if processing_step.startswith('Chunk by time /'):
-        return _chunk_by_time(
+    if processing_step.startswith('Rechunk by to /'):
+        dim_name, chunk_size = params_string.split(' ')
+        return _rechunk(
             ds_source=ps_ds,
-            time_chunk_size=int(params_string)
+            dim_name=dim_name,
+            chunk_size=int(chunk_size)
         )
     if processing_step.startswith('Adjust bound coordinates'):
         return _adjust_bound_coordinates(
@@ -343,13 +345,13 @@ def _aggregate_monthly(ds_source: xr.Dataset, aggregated_var_name: str) \
     return ds.assign_coords(spatial_ref=ds_source.spatial_ref)
 
 
-def _chunk_by_time(ds_source: xr.Dataset, time_chunk_size:int) -> xr.Dataset:
+def _rechunk(ds_source: xr.Dataset, dim_name: str, chunk_size:int) -> xr.Dataset:
     ds = ds_source
     for data_var in ds.data_vars:
-        if 'time' in ds[data_var].dims:
-            ds[data_var] = ds[data_var].chunk(chunks={'time': time_chunk_size})
+        if dim_name in ds[data_var].dims:
+            ds[data_var] = ds[data_var].chunk(chunks={dim_name: chunk_size})
             ds = update_dataset_chunk_encoding(ds,
-                                               chunk_sizes={'time': time_chunk_size},
+                                               chunk_sizes={dim_name: chunk_size},
                                                format_name='zarr')
     return ds
 
