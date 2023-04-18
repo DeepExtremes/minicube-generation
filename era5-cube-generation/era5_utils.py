@@ -28,18 +28,19 @@ RECTS = [
     # [-170, -150, 50, 70],  # Bering Sea                 4
     # [110, 160, 70, 80],  # Northeastern Siberia         5
     [50, 110, 70, 80],  # Taimyr                        6
-    [-90, -70, 70, 80],  # Southern Ellesmere Island    2
+    # [-90, -70, 70, 80],  # Southern Ellesmere Island    2
     [-100, -70, 80, 90],  # Northern Ellesmere Island   3
-    [-100, -90, 70, 80],  # Queen Elizabeth Islands     1
+    # [-100, -90, 70, 80],  # Queen Elizabeth Islands     1
     [-70, -40, 80, 90],  # Northwestern Greenland       3
 
     [-90, -50, 0, 10],  # Colombia                      2
-    [-110, -70, 10, 30],  # Mexico                      5
     [-70, -50, 40, 60],  # Newfoundland                 3
+    [-110, -70, 10, 30],  # Mexico                      5
     [100, 120, 0, 10],  # Malaysia                      2
-    [120, 150, -20, 0],  # Northern Australia           1
     [-40, -30, -20, 0],  # Eastern Brazil               2
+    [120, 150, -20, 0],  # Northern Australia           1
     [-180, -170, 60, 70],  # Anadyr                     1
+    [-70, -60, 10, 20],  # Antilles                     1
 
     [70, 100, 0, 20],  # India                          4
     [-80, -60, -60, -40],  # Patagonia                  2
@@ -55,6 +56,7 @@ RECTS = [
     # [-70, 10, 70, 80], # Greenland                      6
     # [-130, -100, 70, 80], # Victoria Island             3
     # [-40, -10, 80, 90],  # Northeastern Greenland       3
+
     # [-160, -150, 70, 80], # Northern Alaska             1
 ]
 
