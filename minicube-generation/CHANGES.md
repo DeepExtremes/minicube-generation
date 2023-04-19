@@ -1,6 +1,8 @@
-## Changes in 0.3.2 (in development)
-* Improved performance of cloud mask processing (using gpu, batch mode and dask)
-* Added script to restrict regions to Africa (where NDVI climatology is available)
+## Changes in 0.3.2
+* Improved performance of cloud mask processing 
+  (using gpu, batch mode and dask)
+* Added script to restrict regions to Africa 
+  (where NDVI climatology is available)
 
 ## Changes in 0.3.1
 * Include Columns from Event and Label Cubes to include all event information
