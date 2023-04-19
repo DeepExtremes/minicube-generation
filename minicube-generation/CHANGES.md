@@ -1,4 +1,4 @@
-## Changes in 0.3.3 (in development)
+## Changes in 0.3.3
 * fixed lc name
 
 ## Changes in 0.3.2
