@@ -1,3 +1,6 @@
+## Changes in 0.3.3 (in development)
+* fixed lc name
+
 ## Changes in 0.3.2
 * Improved performance of cloud mask processing 
   (using gpu, batch mode and dask)
