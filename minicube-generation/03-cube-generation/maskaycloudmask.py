@@ -10,7 +10,7 @@ _CLOUD_MASK_NAMES = [
 
 
 def compute_cloud_mask(ds_source: xr.Dataset,
-                       device: str = 'cpu',
+                       device: str = 'cuda',
                        batch_size: int = 15) -> xr.Dataset:
     model = UnetMobV3()
     predictor = maskay.Predictor(
