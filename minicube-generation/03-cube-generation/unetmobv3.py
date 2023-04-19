@@ -242,7 +242,7 @@ class UnetMobV3(Module):
                 cloud_clear = xr.DataArray(
                     batched_IP[index3, 0, XIPmin:XIPmax, YIPmin:YIPmax].reshape(1, cropsize, cropsize),
                     # name='Cloud Clear Probability',
-                    name='cloud_clear',
+                    name='cloud_clear_prob',
                     coords=coords,
                     dims=list(coords.keys())
                 )
