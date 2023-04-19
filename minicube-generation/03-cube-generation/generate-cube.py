@@ -421,6 +421,8 @@ def _resample_spatially(ds_source: xr.Dataset, ds_target: xr.Dataset,
         elif 'lat' in ds_target.dims and 'lon' in ds_target.dims:
             ds = ds.assign(lat=ds_target.lat)
             ds = ds.assign(lon=ds_target.lon)
+    if 'spatial_ref' in ds:
+        ds = ds.drop_vars('spatial_ref')
     return ds
 
 
