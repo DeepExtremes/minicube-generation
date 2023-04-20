@@ -27,11 +27,11 @@ RECTS = [
     # [-90, -50, 60, 70],  # Baffin Island                4
     # [-170, -150, 50, 70],  # Bering Sea                 4
     # [110, 160, 70, 80],  # Northeastern Siberia         5
-    [50, 110, 70, 80],  # Taimyr                        6
+    # [50, 110, 70, 80],  # Taimyr                        6
     # [-90, -70, 70, 80],  # Southern Ellesmere Island    2
-    [-100, -70, 80, 90],  # Northern Ellesmere Island   3
+    # [-100, -70, 80, 90],  # Northern Ellesmere Island   3
     # [-100, -90, 70, 80],  # Queen Elizabeth Islands     1
-    [-70, -40, 80, 90],  # Northwestern Greenland       3
+    # [-70, -40, 80, 90],  # Northwestern Greenland       3
 
     [-90, -50, 0, 10],  # Colombia                      2
     [-70, -50, 40, 60],  # Newfoundland                 3
