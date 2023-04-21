@@ -1,3 +1,6 @@
+## Changes on 0.3.4
+* Removed cloud mask from recipe 
+
 ## Changes in 0.3.3
 * fixed lc name
 
