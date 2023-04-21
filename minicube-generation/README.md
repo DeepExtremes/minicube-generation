@@ -32,3 +32,6 @@ Folders must end with an`*`. The second parameter the aws access key id
 and the third one the aws secret access key to access the `deepextremes` bucket
 holding auxiliary data.
 The minicubes are written to the `deepextremes-minicubes` bucket on AWS.
+
+In `04-pinger`, there is script `pinger.py` that will print an output line 
+every ten minutes. Run if needed. 

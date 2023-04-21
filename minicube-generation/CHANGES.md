@@ -1,4 +1,5 @@
 ## Changes in 0.3.5 (in development)
+* Added pinger script
 
 ## Changes in 0.3.4
 * Removed cloud mask from recipe 
