@@ -1,4 +1,7 @@
-## Changes on 0.3.4
+## Changes in 0.3.5 (in development)
+* Added check for existing minicubes 
+
+## Changes in 0.3.4
 * Removed cloud mask from recipe 
 
 ## Changes in 0.3.3

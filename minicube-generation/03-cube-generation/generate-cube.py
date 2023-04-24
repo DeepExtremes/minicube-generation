@@ -3,6 +3,7 @@ import geopandas as gpd
 import json
 import fsspec
 import os
+import pandas as pd
 import rioxarray
 from shapely.geometry import Polygon
 import sys
@@ -253,7 +254,7 @@ def _get_gdf_from_mc(mc: xr.Dataset) -> gpd.GeoDataFrame:
     return reg_gdf
 
 
-def _write_entry(ds: xr.Dataset):
+def _get_minicubes_fs() -> fsspec.filesystem:
     s3_key = os.environ["S3_USER_STORAGE_KEY"]
     s3_secret = os.environ["S3_USER_STORAGE_SECRET"]
     storage_options = dict(
@@ -261,7 +262,33 @@ def _write_entry(ds: xr.Dataset):
         key=s3_key,
         secret=s3_secret
     )
-    fs = fsspec.filesystem('s3', **storage_options)
+    return fsspec.filesystem('s3', **storage_options)
+
+
+def _already_registered(mc_config: dict) -> bool:
+    fs = _get_minicubes_fs()
+    mc_id = mc_config["properties"]["data_id"]
+    with fs.open('deepextremes-minicubes/mc_registry.csv', 'r') as gjreg:
+        gpdreg = gpd.GeoDataFrame(pd.read_csv(gjreg))
+        if len(gpdreg.loc[gpdreg['mc_id'] == mc_id]) > 0:
+            return True
+    return False
+
+
+def _remove_cube_if_exists(mc_config: dict):
+    # check whether minicube exists. If it does, we assume there is something wrong
+    #  with it as there is no registry entry, so we will delete it
+    fs = _get_minicubes_fs()
+    mc_id = mc_config["properties"]["data_id"]
+    version = mc_config['properties']['version']
+    path = f'deepextremes-minicubes/{version}/{mc_id}.zarr'
+    if fs.exists(path):
+        print('Found cube without entry, will remove')
+        fs.delete(path, recursive=True)
+
+
+def _write_entry(ds: xr.Dataset):
+    fs = _get_minicubes_fs()
     gdf = _get_gdf_from_mc(ds)
     with fs.open('deepextremes-minicubes/mc_registry.csv', 'a') as registry:
         registry.write(gdf.to_csv(header=False, index=False))
@@ -271,6 +298,12 @@ def generate_cube(mc_config: dict,
                   aws_access_key_id: str,
                   aws_secret_access_key:str
                   ):
+    if _already_registered(mc_config):
+        mc_id = mc_config["properties"]["data_id"]
+        print(f'Minicube {mc_id} for given configuration already exists, '
+              f'will not generate')
+        return
+    _remove_cube_if_exists(mc_config)
     print(f'Processing minicube configuration '
           f'{mc_config["properties"]["data_id"]}')
     variable_configs = mc_config['properties']['variables']
