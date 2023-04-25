@@ -3,8 +3,10 @@ import geopandas as gpd
 import json
 import fsspec
 import os
+import pandas as pd
 import rioxarray
 from shapely.geometry import Polygon
+import shutil
 import sys
 import xarray as xr
 from typing import Dict
@@ -253,7 +255,7 @@ def _get_gdf_from_mc(mc: xr.Dataset) -> gpd.GeoDataFrame:
     return reg_gdf
 
 
-def _write_entry(ds: xr.Dataset):
+def _get_minicubes_fs() -> fsspec.filesystem:
     s3_key = os.environ["S3_USER_STORAGE_KEY"]
     s3_secret = os.environ["S3_USER_STORAGE_SECRET"]
     storage_options = dict(
@@ -261,7 +263,33 @@ def _write_entry(ds: xr.Dataset):
         key=s3_key,
         secret=s3_secret
     )
-    fs = fsspec.filesystem('s3', **storage_options)
+    return fsspec.filesystem('s3', **storage_options)
+
+
+def _already_registered(mc_config: dict) -> bool:
+    fs = _get_minicubes_fs()
+    mc_id = mc_config["properties"]["data_id"]
+    with fs.open('deepextremes-minicubes/mc_registry.csv', 'r') as gjreg:
+        gpdreg = gpd.GeoDataFrame(pd.read_csv(gjreg))
+        if len(gpdreg.loc[gpdreg['mc_id'] == mc_id]) > 0:
+            return True
+    return False
+
+
+def _remove_cube_if_exists(mc_config: dict):
+    # check whether minicube exists. If it does, we assume there is something
+    # wrong with it as there is no registry entry, so we will delete it
+    fs = _get_minicubes_fs()
+    mc_id = mc_config["properties"]["data_id"]
+    version = mc_config['properties']['version']
+    path = f'deepextremes-minicubes/{version}/{mc_id}.zarr'
+    if fs.exists(path):
+        print(f'Cube {mc_id} has no entry, will remove')
+        fs.delete(path, recursive=True)
+
+
+def _write_entry(ds: xr.Dataset):
+    fs = _get_minicubes_fs()
     gdf = _get_gdf_from_mc(ds)
     with fs.open('deepextremes-minicubes/mc_registry.csv', 'a') as registry:
         registry.write(gdf.to_csv(header=False, index=False))
@@ -467,8 +495,20 @@ if __name__ == "__main__":
     aws_access_key_id = sys.argv[2]
     aws_secret_access_key = sys.argv[3]
     with open(geojson_file, 'r') as gjf:
-        generate_cube(
-            json.load(gjf),
-            aws_access_key_id,
-            aws_secret_access_key
-        )
+        mc_config = json.load(gjf)
+        already_registered = _already_registered(mc_config)
+        if already_registered:
+            mc_id = mc_config["properties"]["data_id"]
+            print(f'Minicube {mc_id} for given configuration already exists, '
+                  f'will not generate but move config to created folder')
+        else:
+            _remove_cube_if_exists(mc_config)
+            generate_cube(
+                mc_config,
+                aws_access_key_id,
+                aws_secret_access_key
+            )
+    split_geojson_file = geojson_file.split('/')
+    split_geojson_file.insert(-1, 'created')
+    new_file = '/'.join(split_geojson_file)
+    shutil.move(geojson_file, new_file)

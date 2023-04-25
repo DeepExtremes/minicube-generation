@@ -7,7 +7,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 4:
         raise ValueError('Too many arguments')
     geojson_location = sys.argv[1]
-    if geojson_location.endswith('*'):
+    if geojson_location.endswith('*.geojson'):
         geojson_files = glob.glob(geojson_location)
     else:
         geojson_files = [geojson_location]
