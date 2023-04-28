@@ -31,6 +31,9 @@ configuration geojson file, or a folder containing several of these files.
 Folders must end with an`*`. The second parameter the aws access key id  
 and the third one the aws secret access key to access the `deepextremes` bucket
 holding auxiliary data.
+There is a fourth optional parameter that expects an integer value. If you
+use this, generation processes will be started every minutes as indicated by
+this parameter. If omitted, processes are run consecutively.
 The minicubes are written to the `deepextremes-minicubes` bucket on AWS.
 
 In `04-pinger`, there is script `pinger.py` that will print an output line 
