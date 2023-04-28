@@ -33,14 +33,14 @@ RECTS = [
     # [-100, -90, 70, 80],  # Queen Elizabeth Islands     1
     # [-70, -40, 80, 90],  # Northwestern Greenland       3
 
-    [-90, -50, 0, 10],  # Colombia                      2
-    [-70, -50, 40, 60],  # Newfoundland                 3
-    [-110, -70, 10, 30],  # Mexico                      5
-    [100, 120, 0, 10],  # Malaysia                      2
-    [-40, -30, -20, 0],  # Eastern Brazil               2
-    [120, 150, -20, 0],  # Northern Australia           1
-    [-180, -170, 60, 70],  # Anadyr                     1
-    [-70, -60, 10, 20],  # Antilles                     1
+    # [-90, -50, 0, 10],  # Colombia                      2
+    # [-70, -50, 40, 60],  # Newfoundland                 3
+    # [-110, -70, 10, 30],  # Mexico                      5
+    # [100, 120, 0, 10],  # Malaysia                      2
+    # [-40, -30, -20, 0],  # Eastern Brazil               2
+    # [120, 150, -20, 0],  # Northern Australia           1
+    # [-180, -170, 60, 70],  # Anadyr                     1
+    # [-70, -60, 10, 20],  # Antilles                     1
 
     [70, 100, 0, 20],  # India                          4
     [-80, -60, -60, -40],  # Patagonia                  2
@@ -53,11 +53,24 @@ RECTS = [
     [170, 180, -50, -30],  # Eastern New Zealand        2
     [-120, -110, 20, 30],  # Baja California            1
 
-    # [-70, 10, 70, 80], # Greenland                      6
-    # [-130, -100, 70, 80], # Victoria Island             3
-    # [-40, -10, 80, 90],  # Northeastern Greenland       3
+    [-70, -40, 70, 80], # Eastern Central Greenland     3
+    [-40, -70, 70, 80], # Western Central Greenland     3
+    [-130, -100, 70, 80], # Victoria Island             3
+    [-40, -10, 80, 90],  # Northeastern Greenland       3
+    [40, 70, 80, 90],  # Franz Josef Land               3
+    [90, 100, 80, 90],  # Komsomolez                    3
+    [10, 20, 70, 90], # Eastern Spitsbergen             2
+    [20, 30, 70, 90], # Western Spitsbergen             2
+    [150, 170, -10, 0],  # Solomon Islands              2
+    [170, 180, 70, 80], # Eastern Wrangel Island        1
+    [-180, -170, 70, 80], # Western Wrangel Island      1
+    [-190, -80, -10, 0], # Ecuador                      1
+    [-60, -50, -60, -50], # Falklands                   1
+    [-160, -150, 70, 80],  # Northern Alaska            1
+    [150, 160, -20, -10], # Coral Sea                   1
+    [160, 180, -20, -10], # New Caledonia               1
+    [160, 180, -20, -10], # Fiji                        1
 
-    # [-160, -150, 70, 80], # Northern Alaska             1
 ]
 
 
