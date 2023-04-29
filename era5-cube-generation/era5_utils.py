@@ -70,6 +70,8 @@ RECTS = [
     [150, 160, -20, -10], # Coral Sea                   1
     [160, 180, -20, -10], # New Caledonia               1
     [160, 180, -20, -10], # Fiji                        1
+    [-160, -150, 20, 30], # Northern Hawaii             1
+    [-160, -150, 10, 20], # Southern Hawaii             1
 
 ]
 
