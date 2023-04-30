@@ -58,20 +58,23 @@ RECTS = [
     [-130, -100, 70, 80], # Victoria Island             3
     [-40, -10, 80, 90],  # Northeastern Greenland       3
     [40, 70, 80, 90],  # Franz Josef Land               3
-    [90, 100, 80, 90],  # Komsomolez                    3
+    [150, 180, -20, -10],  # Oceania                    3
     [10, 20, 70, 90], # Eastern Spitsbergen             2
     [20, 30, 70, 90], # Western Spitsbergen             2
     [150, 170, -10, 0],  # Solomon Islands              2
     [170, 180, 70, 80], # Eastern Wrangel Island        1
     [-180, -170, 70, 80], # Western Wrangel Island      1
+    [60, 80, -50, -40],  # Kergueles                    2
     [-190, -80, -10, 0], # Ecuador                      1
     [-60, -50, -60, -50], # Falklands                   1
     [-160, -150, 70, 80],  # Northern Alaska            1
-    [150, 160, -20, -10], # Coral Sea                   1
-    [160, 180, -20, -10], # New Caledonia               1
-    [160, 180, -20, -10], # Fiji                        1
+    [90, 100, 80, 90],  # Komsomolez                    1
     [-160, -150, 20, 30], # Northern Hawaii             1
     [-160, -150, 10, 20], # Southern Hawaii             1
+    [110, 120, 10, 20], # South China Sea               1
+    [90, 100, -10, 0], # Western Sumatra                1
+    [-40, -30, -60, -50], # Southern Georgia            1
+    [-180, -170, -20, -10], # Samoa                     1
 
 ]
 
