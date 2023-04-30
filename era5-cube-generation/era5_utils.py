@@ -62,15 +62,14 @@ RECTS = [
     [10, 20, 70, 90], # Eastern Spitsbergen             2
     [20, 30, 70, 90], # Western Spitsbergen             2
     [150, 170, -10, 0],  # Solomon Islands              2
+    [-190, -80, -10, 0],  # Ecuador                     1
+    [-160, -150, 10, 30],  # Hawaii                     2
+    [60, 80, -50, -40],  # Kergueles                    2
     [170, 180, 70, 80], # Eastern Wrangel Island        1
     [-180, -170, 70, 80], # Western Wrangel Island      1
-    [60, 80, -50, -40],  # Kergueles                    2
-    [-190, -80, -10, 0], # Ecuador                      1
     [-60, -50, -60, -50], # Falklands                   1
     [-160, -150, 70, 80],  # Northern Alaska            1
     [90, 100, 80, 90],  # Komsomolez                    1
-    [-160, -150, 20, 30], # Northern Hawaii             1
-    [-160, -150, 10, 20], # Southern Hawaii             1
     [110, 120, 10, 20], # South China Sea               1
     [90, 100, -10, 0], # Western Sumatra                1
     [-40, -30, -60, -50], # Southern Georgia            1
