@@ -54,7 +54,7 @@ RECTS = [
     [-120, -110, 20, 30],  # Baja California            1
 
     [-70, -40, 70, 80], # Eastern Central Greenland     3
-    [-40, -70, 70, 80], # Western Central Greenland     3
+    [-40, -10, 70, 80], # Western Central Greenland     3
     [-130, -100, 70, 80], # Victoria Island             3
     [-40, -10, 80, 90],  # Northeastern Greenland       3
     [40, 70, 80, 90],  # Franz Josef Land               3
