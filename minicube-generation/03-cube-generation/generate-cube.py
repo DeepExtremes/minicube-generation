@@ -240,6 +240,7 @@ def _get_gdf_from_mc(mc: xr.Dataset) -> gpd.GeoDataFrame:
     lat_max = mc.attrs.get('metadata', {}).get('geospatial_lat_max')
 
     geometry = Polygon([[lon_min, lat_min], [lon_max, lat_min], [lon_max, lat_max], [lon_min, lat_max]])
+    remarks = 'no climatology' if version.endswith('.n') else None
     reg_gdf = gpd.GeoDataFrame(
         {
             'mc_id': mc_id,
@@ -248,7 +249,7 @@ def _get_gdf_from_mc(mc: xr.Dataset) -> gpd.GeoDataFrame:
             'geometry': geometry,
             'creation_date': creation_date,
             'events': events,
-            'remarks': None
+            'remarks': remarks
         },
         index=[0]
     )
