@@ -301,12 +301,6 @@ def generate_cube(mc_config: dict,
                   aws_access_key_id: str,
                   aws_secret_access_key:str
                   ):
-    if _already_registered(mc_config):
-        mc_id = mc_config["properties"]["data_id"]
-        print(f'Minicube {mc_id} for given configuration already exists, '
-              f'will not generate')
-        return
-    _remove_cube_if_exists(mc_config)
     print(f'Processing minicube configuration '
           f'{mc_config["properties"]["data_id"]}')
     variable_configs = mc_config['properties']['variables']
