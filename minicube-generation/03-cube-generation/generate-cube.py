@@ -6,6 +6,7 @@ import os
 import pandas as pd
 import rioxarray
 from shapely.geometry import Polygon
+import shutil
 import sys
 import xarray as xr
 from typing import Dict
@@ -64,6 +65,8 @@ def _get_source_datasets(source_config: dict,
                 props['crs'] = mc_config['properties']['spatial_ref']
             if 'spatial_res' in open_properties:
                 props['spatial_res'] = mc_config['properties']['spatial_res']
+            if 'mosaicking_period' in open_properties:
+                props['mosaicking_period'] = mc_config['properties']['mosaicking_period']
             source_ds = source_store.open_data(
                 dataset_name,
                 **props
@@ -276,14 +279,14 @@ def _already_registered(mc_config: dict) -> bool:
 
 
 def _remove_cube_if_exists(mc_config: dict):
-    # check whether minicube exists. If it does, we assume there is something wrong
-    #  with it as there is no registry entry, so we will delete it
+    # check whether minicube exists. If it does, we assume there is something
+    # wrong with it as there is no registry entry, so we will delete it
     fs = _get_minicubes_fs()
     mc_id = mc_config["properties"]["data_id"]
     version = mc_config['properties']['version']
     path = f'deepextremes-minicubes/{version}/{mc_id}.zarr'
     if fs.exists(path):
-        print('Found cube without entry, will remove')
+        print(f'Cube {mc_id} has no entry, will remove')
         fs.delete(path, recursive=True)
 
 
@@ -500,8 +503,20 @@ if __name__ == "__main__":
     aws_access_key_id = sys.argv[2]
     aws_secret_access_key = sys.argv[3]
     with open(geojson_file, 'r') as gjf:
-        generate_cube(
-            json.load(gjf),
-            aws_access_key_id,
-            aws_secret_access_key
-        )
+        mc_config = json.load(gjf)
+        already_registered = _already_registered(mc_config)
+        if already_registered:
+            mc_id = mc_config["properties"]["data_id"]
+            print(f'Minicube {mc_id} for given configuration already exists, '
+                  f'will not generate but move config to created folder')
+        else:
+            _remove_cube_if_exists(mc_config)
+            generate_cube(
+                mc_config,
+                aws_access_key_id,
+                aws_secret_access_key
+            )
+    split_geojson_file = geojson_file.split('/')
+    split_geojson_file.insert(-1, 'created')
+    new_file = '/'.join(split_geojson_file)
+    shutil.move(geojson_file, new_file)

@@ -1,5 +1,11 @@
 ## Changes in 0.3.5 (in development)
-* Added check for existing minicubes 
+* Added pinger script
+* Move configuration files to dedicated folder after minicube creation
+* `generate_cubes.py` may now run cube generation processes in parallel. 
+  When the script is started with an additional parameter `minutes` it will
+  start a new process every given minutes. If the parameter is omitted,
+  the processes are run consecutively.
+* Added check for existing minicubes  
 
 ## Changes in 0.3.4
 * Removed cloud mask from recipe 
