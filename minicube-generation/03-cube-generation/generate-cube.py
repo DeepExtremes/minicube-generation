@@ -65,6 +65,8 @@ def _get_source_datasets(source_config: dict,
                 props['crs'] = mc_config['properties']['spatial_ref']
             if 'spatial_res' in open_properties:
                 props['spatial_res'] = mc_config['properties']['spatial_res']
+            if 'mosaicking_period' in open_properties:
+                props['mosaicking_period'] = mc_config['properties']['mosaicking_period']
             source_ds = source_store.open_data(
                 dataset_name,
                 **props
