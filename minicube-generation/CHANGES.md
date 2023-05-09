@@ -1,4 +1,4 @@
-## Changes in 0.3.5 (in development)
+## Changes in 0.3.5
 * Added pinger script
 * Move configuration files to dedicated folder after minicube creation
 * `generate_cubes.py` may now run cube generation processes in parallel. 
