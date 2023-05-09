@@ -5,6 +5,7 @@
   When the script is started with an additional parameter `minutes` it will
   start a new process every given minutes. If the parameter is omitted,
   the processes are run consecutively.
+* Include also sen2cor and s2cloudless cloud probabilities from sentinelhub
 
 ## Changes in 0.3.4
 * Removed cloud mask from recipe 
