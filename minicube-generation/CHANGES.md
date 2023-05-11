@@ -1,4 +1,5 @@
 ## Changes in 0.4 (in development)
+* Write data with encoding if provided
 
 ## Changes in 0.3.5
 * Added pinger script

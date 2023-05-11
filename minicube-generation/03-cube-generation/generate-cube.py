@@ -205,6 +205,14 @@ def _finalize_dataset(ds: xr.Dataset, mc_config: dict) -> xr.Dataset:
     return ds
 
 
+def _get_encoding_dict(mc_config: dict) -> dict:
+    encodings = {}
+    for variable_config in mc_config['properties']['variables']:
+        if 'encoding' in variable_config:
+            encodings[variable_config['name']] = variable_config['encoding']
+    return encodings
+
+
 def _write_ds(ds: xr.Dataset, mc_config: dict):
     print(f'Writing dataset {ds.data_id}')
     s3_key = os.environ["S3_USER_STORAGE_KEY"]
@@ -219,7 +227,8 @@ def _write_ds(ds: xr.Dataset, mc_config: dict):
         )
     )
     version = mc_config['properties']['version']
-    s3_store.write_data(ds, f"{version}/{ds.data_id}.zarr")
+    encodings = _get_encoding_dict()
+    s3_store.write_data(ds, f"{version}/{ds.data_id}.zarr", encoding=encodings)
     # enable to write local
     # ds.to_zarr(f"{version}/{ds.data_id}.zarr")
     print(f'Finished writing dataset {ds.data_id}')
