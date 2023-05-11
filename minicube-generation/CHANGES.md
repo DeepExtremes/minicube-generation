@@ -1,3 +1,5 @@
+## Changes in 0.4 (in development)
+
 ## Changes in 0.3.5
 * Added pinger script
 * Move configuration files to dedicated folder after minicube creation
