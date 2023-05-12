@@ -1,0 +1,13 @@
+{
+    "type": "Feature",
+    "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+            [
+            ]
+        ]
+    },
+    "properties": {
+        "base_minicube": ""
+    }
+}

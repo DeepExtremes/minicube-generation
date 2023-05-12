@@ -2,9 +2,7 @@
     "properties": {
         "metadata": {
             "configuration_versions": {
-                "climatology": {
-                    "digitalearth": 1.0
-                }
+                "digitalearth": 1.0
             }
         },
         "variables": [

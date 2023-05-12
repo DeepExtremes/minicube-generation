@@ -2,9 +2,7 @@
     "properties": {
         "metadata": {
             "configuration_versions": {
-                "cloudmask": {
-                    "sen2cor": 1.0
-                }
+                "sen2cor": 1.0
             }
         },
         "variables": [

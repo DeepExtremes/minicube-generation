@@ -2,9 +2,7 @@
     "properties": {
         "metadata": {
             "configuration_versions": {
-                "dem": {
-                    "copernicus": 1.0
-                }
+                "copernicus_dem": 1.0
             }
         },
         "variables": [
