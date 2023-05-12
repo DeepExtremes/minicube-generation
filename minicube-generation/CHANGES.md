@@ -1,11 +1,15 @@
-## Changes in 0.3.5 (in development)
+## Changes in 0.4 (in development)
+* Write data with encoding if provided
+
+## Changes in 0.3.5
 * Added pinger script
 * Move configuration files to dedicated folder after minicube creation
 * `generate_cubes.py` may now run cube generation processes in parallel. 
   When the script is started with an additional parameter `minutes` it will
   start a new process every given minutes. If the parameter is omitted,
   the processes are run consecutively.
-* Added check for existing minicubes  
+* Added check for existing minicubes
+* Include also sen2cor and s2cloudless cloud probabilities from sentinelhub
 
 ## Changes in 0.3.4
 * Removed cloud mask from recipe 

@@ -207,6 +207,35 @@ def generate_minicube_configs(location_file: str):
                 json.dump(tc, mc_json, indent=4)
 
 
+def _merge_configs(dict1, dict2):
+    merged_dict = dict1.copy()
+
+    for key, value in dict2.items():
+        if key in merged_dict:
+            current_value = merged_dict[key]
+            if isinstance(current_value, list) and isinstance(value, list):
+                if len(current_value) > 0 and isinstance(current_value[0], dict) and len(value) > 0 and isinstance(value[0], dict):
+                    out_list = []
+                    for sub_dict_1 in current_value:
+                        for sub_dict_2 in value:
+                            if sub_dict_1['name'] == sub_dict_2['name']:
+                                current_value.remove(sub_dict_1)
+                                value.remove(sub_dict_2)
+                                out_list.append(_merge_configs(sub_dict_1, sub_dict_2))
+                                break
+                    out_list += current_value
+                    out_list += value
+                    merged_dict[key] = out_list
+                else:
+                    merged_dict[key] = current_value + value
+            elif isinstance(current_value, dict) and isinstance(value, dict):
+                merged_dict[key] = _merge_configs(current_value, value)
+        else:
+            merged_dict[key] = value
+
+    return merged_dict
+
+
 if __name__ == "__main__":
     if len(sys.argv) == 2:
         location_file = sys.argv[1]

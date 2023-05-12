@@ -1,0 +1,93 @@
+{
+    "properties": {
+        "metadata": {
+            "configuration_versions": {
+                "events": 1.0
+            }
+        },
+        "variables": [
+            {
+                "name": "event_labels",
+                "long_name": "Event Labels",
+                "units": "",
+                "dtype": "float64",
+                "fill_value": 0,
+                "sources": [
+                    {
+                        "home_url": "",
+                        "data_url": "",
+                        "license_url": "",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read label_cube",
+                            "Move longitude",
+                            "Subset temporally",
+                            "Pick center spatial value",
+                            "Rename from to / layer event_labels",
+                            "Rename from to / time event_time",
+                            "Rechunk by to / event_time 2192"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 10000,
+                    "keywords": ["Events", "Labels"]
+                }
+            },
+            {
+                "name": "events",
+                "long_name": "Events",
+                "units": "",
+                "dtype": "float32",
+                "fill_value": 0,
+                "sources": [
+                    {
+                        "home_url": "",
+                        "data_url": "",
+                        "license_url": "",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read event_cube",
+                            "Move longitude",
+                            "Subset temporally",
+                            "Pick center spatial value",
+                            "Rename from to / layer events",
+                            "Rename from to / time event_time",
+                            "Rechunk by to / event_time 2192"
+                        ],
+                        "remarks": "values coding for *types of Discrete Extreme Occurrences*. First bit is set to 1 where P(X~Tmax) > 0.99. Second to fourth bits are set to 1 where P(X~PEI) < 0.01, for PEI~30, PEI~90 and PEI~180 respectively. Fifth bit is for non extremes, i.e. where all four indicators lie in the middle of their distribution (P(X) > 0.1 AND P(X) < 0.9)."
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 10000,
+                    "keywords": ["Events"]
+                }
+            }
+        ],
+        "sources": [
+            {
+                "name": "Event Cubes",
+                "datasets": {
+                    "label_cube": {
+                        "path": "https://s3.bgc-jena.mpg.de:9000/xaida/v2/labelcube_ranked_pot0.01_ne0.1_cmp_2016_2021.zarr"
+                    },
+                    "event_cube": {
+                        "path": "https://s3.bgc-jena.mpg.de:9000/xaida/v2/EventCube_ranked_pot0.01_ne0.1.zarr"
+                    }
+                },
+                "storage_options": {
+                    "anon": "True",
+                    "client_kwargs": {
+                        "endpoint_url": "https://s3.bgc-jena.mpg.de:9000/"
+                    }
+                },
+                "filesystem": "s3"
+            }
+        ]
+    }
+}
