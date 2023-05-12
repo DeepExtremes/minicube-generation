@@ -1,0 +1,80 @@
+{
+    "properties": {
+        "metadata": {
+            "configuration_versions": {
+                "cloudmask": {
+                    "s2cloudless": 1.0
+                }
+            }
+        },
+        "variables": [
+            {
+                "name": "CLM",
+                "long_name": "S2 Cloud Mask",
+                "units": "n.a.",
+                "dtype": "uint8",
+                "dims": ["time", "lat", "lon"],
+                "fill_value": 255,
+                "sources": [
+                    {
+                        "home_url": "https://www.sentinel-hub.com/",
+                        "data_url": "https://www.sentinel-hub.com/explore/data/",
+                        "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read S2L2A",
+                            "Rechunk by to / time 165"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0,
+                    "color_value_max": 255,
+                    "keywords": ["Sentinel-2", "Clouds"]
+                }
+            },
+            {
+                "name": "CLP",
+                "long_name": "S2 Cloud probability, based on s2cloudless",
+                "units": "percent",
+                "dtype": "uint8",
+                "dims": ["time", "lat", "lon"],
+                "sources": [
+                    {
+                        "home_url": "https://www.sentinel-hub.com/",
+                        "data_url": "https://www.sentinel-hub.com/explore/data/",
+                        "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read S2L2A",
+                            "Rechunk by to / time 165"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0,
+                    "color_value_max": 255,
+                    "keywords": ["Sentinel-2", "Clouds"]
+                }
+            }
+        ],
+        "sources": [
+            {
+                "name": "Sentinel Hub",
+                "datasets": {
+                    "S2L2A": {
+                        "variable_names": ["CLM", "CLP"]
+                    }
+                },
+                "store_id": "sentinelhub",
+                "open_params": {
+                    "mosaicking_order": "leastCC"
+                }
+            }
+        ]
+    }
+}

@@ -1,0 +1,137 @@
+{
+    "properties": {
+        "metadata": {
+            "configuration_versions": {
+                "cloudmask": {
+                    "unetmobv": 1.0
+                }
+            }
+        },
+        "variables": [
+            {
+                "name": "cloud_clear_prob",
+                "long_name": "Cloud clear probability",
+                "units": "",
+                "dtype": "int16",
+                "valid_min": 0,
+                "valid_max": 10000,
+                "sources": [
+                    {
+                        "home_url": "https://www.sentinel-hub.com/",
+                        "data_url": "https://www.sentinel-hub.com/explore/data/",
+                        "license_url": "S2 Data: https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/, maskay: https://www.apache.org/licenses/LICENSE-2.0",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read S2L1C",
+                            "Compute Cloud Mask (maskay)"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 10000,
+                    "keywords": ["Sentinel-2", "L1C", "Cloud Mask"]
+                }
+            },
+            {
+                "name": "cloud_thick_prob",
+                "long_name": "Thick Cloud Probability",
+                "units": "",
+                "dtype": "int16",
+                "valid_min": 0,
+                "valid_max": 10000,
+                "sources": [
+                    {
+                        "home_url": "https://www.sentinel-hub.com/",
+                        "data_url": "https://www.sentinel-hub.com/explore/data/",
+                        "license_url": "S2 Data: https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/, maskay: https://www.apache.org/licenses/LICENSE-2.0",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read S2L1C",
+                            "Compute Cloud Mask (maskay)"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 10000,
+                    "keywords": ["Sentinel-2", "L1C", "Cloud Mask"]
+                }
+            },
+            {
+                "name": "cloud_thin_prob",
+                "long_name": "Thin Cloud Probability",
+                "units": "",
+                "dtype": "int16",
+                "valid_min": 0,
+                "valid_max": 10000,
+                "sources": [
+                    {
+                        "home_url": "https://www.sentinel-hub.com/",
+                        "data_url": "https://www.sentinel-hub.com/explore/data/",
+                        "license_url": "S2 Data: https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/, maskay: https://www.apache.org/licenses/LICENSE-2.0",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read S2L1C",
+                            "Compute Cloud Mask (maskay)"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 10000,
+                    "keywords": ["Sentinel-2", "L1C", "Cloud Mask"]
+                }
+            },
+            {
+                "name": "cloud_shadow_prob",
+                "long_name": "Cloud Shadow Probability",
+                "units": "",
+                "dtype": "int16",
+                "valid_min": 0,
+                "valid_max": 10000,
+                "sources": [
+                    {
+                        "home_url": "https://www.sentinel-hub.com/",
+                        "data_url": "https://www.sentinel-hub.com/explore/data/",
+                        "license_url": "S2 Data: https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/, maskay: https://www.apache.org/licenses/LICENSE-2.0",
+                        "attributions": [],
+                        "processing_steps": [
+                            "Read S2L1C",
+                            "Compute Cloud Mask (maskay)"
+                        ],
+                        "remarks": ""
+                    }
+                ],
+                "metadata": {
+                    "color_bar_name": "gray",
+                    "color_value_min": 0.0,
+                    "color_value_max": 10000,
+                    "keywords": ["Sentinel-2", "L1C", "Cloud Mask"]
+                }
+            }
+        ],
+        "sources": [
+            {
+                "name": "Sentinel Hub",
+                "datasets": {
+                    "S2L1C": {
+                        "variable_names": [
+                            "B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", "B09", "B10", "B11", "B12"
+                        ]
+                    }
+                },
+                "store_id": "sentinelhub",
+                "open_params": {
+                    "mosaicking_order": "leastCC"
+                }
+            }
+        ]
+    }
+}

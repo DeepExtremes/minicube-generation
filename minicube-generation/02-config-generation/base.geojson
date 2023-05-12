@@ -1,0 +1,46 @@
+{
+    "type": "Feature",
+    "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+            [
+            ]
+        ]
+    },
+    "properties": {
+        "title": "",
+        "data_id": "",
+        "description": "",
+        "version": "",
+        "recipe": "https://github.com/bcdev/deepextremes/minicube-generation",
+        "changes": "https://github.com/bcdev/deepextremes/minicube-generation/CHANGES.md",
+        "license": "Terms and conditions of the DeepESDL data distribution",
+        "time_range": ["2016-01-01", "2022-10-10"],
+        "time_period": "5D",
+        "spatial_ref": "",
+        "spatial_bbox": [],
+        "spatial_size": [128, 128],
+        "metadata": {
+            "date_modified": "",
+            "geospatial_lon_min": "",
+            "geospatial_lon_max": "",
+            "geospatial_lat_min": "",
+            "geospatial_lat_max": "",
+            "temporal_coverage_start": "2016-01-01 00:00:00",
+            "temporal_coverage_end": "2022-10-10 23:59:59",
+            "keywords": ["minicube", "events", "extremes"],
+            "Conventions": "CF-1.9",
+            "acknowledgment": "DeepExtremes project",
+            "contributor_name": "Brockmann Consult GmbH",
+            "contributor_url": "www.brockmann-consult.de",
+            "creator_email": "info@brockmann-consult.de",
+            "creator_name": "Brockmann Consult GmbH",
+            "creator_url": "www.brockmann-consult.de",
+            "institution": "Brockmann Consult GmbH",
+            "project": "DeepExtremes",
+            "publisher_email": "info@brockmann-consult.de",
+            "publisher_name": "Brockmann Consult GmbH",
+            "class": ""
+        }
+    }
+}
