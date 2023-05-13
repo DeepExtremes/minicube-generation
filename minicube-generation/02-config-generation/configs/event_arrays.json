@@ -2,7 +2,7 @@
     "properties": {
         "metadata": {
             "configuration_versions": {
-                "events": 1.0
+                "event_arrays": 1.0
             }
         },
         "variables": [
