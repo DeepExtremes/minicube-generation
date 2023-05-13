@@ -157,7 +157,7 @@ def fill_config_with_missing_values(
 
 
 def get_readable(value: float):
-    return "{:.3f}".format(value)
+    return "{:.2f}".format(value)
 
 
 def get_data_id(center_lon_readable: str,
@@ -234,10 +234,15 @@ def create_update_config(mc: xr.Dataset, mc_path: str,
     version ='unknown'
     with open('../version.py', 'r') as v:
         version = v.read().split('=')[1]
+    center_lon_readable = get_readable(center_lon)
+    center_lat_readable = get_readable(center_lat)
     data_id = get_data_id(
-        get_readable(center_lon), get_readable(center_lat), version
+        center_lon_readable, center_lat_readable, version
     )
     update_config["properties"]["data_id"] = data_id
+    if not update_config.get('properties').get('location_id'):
+        update_config["properties"]["location_id"] = \
+            f'{center_lon_readable}_{center_lat_readable}'
     base_fs = get_fs()
     with base_fs.open(
             f'deepextremes-minicubes/configs/update/{data_id}.geojson', 'wb') \

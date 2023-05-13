@@ -66,6 +66,8 @@ def _create_base_config(minicube_location: pd.Series, tc: dict, version: str) ->
         format(lon=center_lon_readable, lat=center_lat_readable)
     data_id = get_data_id(center_lon_readable, center_lat_readable, version)
     tc['properties']['data_id'] = data_id
+    tc['properties']['location_id'] = \
+        f'{center_lon_readable}_{center_lat_readable}'
     tc['properties']['description'] = _DESCRIPTION_TEMPLATE. \
         format(lon=center_lon_readable, lat=center_lat_readable)
     tc['properties']['version'] = version

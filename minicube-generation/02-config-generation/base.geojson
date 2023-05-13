@@ -7,9 +7,11 @@
             ]
         ]
     },
+    "config_type": "base",
     "properties": {
         "title": "",
         "data_id": "",
+        "location_id": "",
         "description": "",
         "version": "",
         "recipe": "https://github.com/bcdev/deepextremes/minicube-generation",

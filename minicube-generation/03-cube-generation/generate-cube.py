@@ -8,6 +8,7 @@ import rioxarray
 from shapely.geometry import Polygon
 import shutil
 import sys
+import time
 import xarray as xr
 from typing import Dict
 
@@ -19,6 +20,7 @@ from xcube.core.update import update_dataset_chunk_encoding
 
 from maskaycloudmask import compute_cloud_mask
 
+_MC_REGISTRY = 'deepextremes-minicubes/mc_registry_2.csv'
 _MONTHS = dict(
     jan=1, feb=2, mar=3, apr=4, may=5, jun=6,
     jul=7, aug=8, sep=9, oct=10, nov=11, dec=12
@@ -193,13 +195,24 @@ def _execute_processing_step(processing_step: str,
 
 
 def _finalize_dataset(ds: xr.Dataset, mc_config: dict) -> xr.Dataset:
+    data_id = mc_config['properties']['data_id']
+    if not mc_config['properties'].get('location_id', None):
+        mc_config['properties']['location_id'] = \
+            '_'.join(data_id.split('_')[1:3])
     variable_properties = mc_config['properties'].pop('variables')
     mc_config['properties'].pop('sources')
     vc_dict = {vc['name']: vc for vc in variable_properties}
+    date_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    if mc_config.get('config_type', 'base') == 'base':
+        mc_config['properties']['metadata']['history'] = \
+            [f'Created at {date_now} as {data_id}']
+        mc_config['properties']['creation_date'] = date_now
+    else:
+        mc_config['properties']['metadata'].get('history', []).append(
+            f'Modified at {date_now} as {data_id}'
+        )
+        mc_config['properties']['modification_date'] = date_now
     ds = ds.assign_attrs(**mc_config['properties'])
-    ds = ds.assign_attrs({
-        'creation_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    })
     for variable_name, attrs in vc_dict.items():
         ds[variable_name] = ds[variable_name].assign_attrs(attrs)
     return ds
@@ -213,11 +226,10 @@ def _get_encoding_dict(mc_config: dict) -> dict:
     return encodings
 
 
-def _write_ds(ds: xr.Dataset, mc_config: dict):
-    print(f'Writing dataset {ds.data_id}')
+def _get_s3_store():
     s3_key = os.environ["S3_USER_STORAGE_KEY"]
     s3_secret = os.environ["S3_USER_STORAGE_SECRET"]
-    s3_store = new_data_store(
+    return new_data_store(
         "s3",
         root="deepextremes-minicubes",
         storage_options=dict(
@@ -226,6 +238,10 @@ def _write_ds(ds: xr.Dataset, mc_config: dict):
             secret=s3_secret
         )
     )
+
+def _write_ds(ds: xr.Dataset, mc_config: dict):
+    print(f'Writing dataset {ds.data_id}')
+    s3_store = _get_s3_store()
     version = mc_config['properties']['version']
     encodings = _get_encoding_dict(mc_config)
     s3_store.write_data(ds, f"{version}/{ds.data_id}.zarr", encoding=encodings)
@@ -236,9 +252,11 @@ def _write_ds(ds: xr.Dataset, mc_config: dict):
 
 def _get_gdf_from_mc(mc: xr.Dataset) -> gpd.GeoDataFrame:
     mc_id = mc.attrs.get('data_id')
+    location_id = mc.attrs.get('location_id')
     version = mc.attrs.get('version')
     path = f'deepextremes-minicubes/{version}/{mc_id}.zarr'
     creation_date = mc.attrs.get('creation_date')
+    modification_date = mc.attrs.get('modification_date', creation_date)
     events = str([(
         mc.attrs.get('metadata', {}).get('event_label'),
         mc.attrs.get('metadata', {}).get('event_start_time'),
@@ -250,16 +268,45 @@ def _get_gdf_from_mc(mc: xr.Dataset) -> gpd.GeoDataFrame:
     lat_min = mc.attrs.get('metadata', {}).get('geospatial_lat_min')
     lat_max = mc.attrs.get('metadata', {}).get('geospatial_lat_max')
 
-    geometry = Polygon([[lon_min, lat_min], [lon_max, lat_min], [lon_max, lat_max], [lon_min, lat_max]])
+    geometry = Polygon([[lon_min, lat_min], [lon_max, lat_min],
+                        [lon_max, lat_max], [lon_min, lat_max]])
     remarks = 'no climatology' if version.endswith('.n') else None
+
+    configuration_versions = \
+        mc.attrs.get('metadata', {}).get('configuration_versions', {})
+    s2_l2_bands_version = configuration_versions.get('s2_l2_bands', -1)
+    era5_version = configuration_versions.get('era5', -1)
+    cci_landcover_map_version = \
+        configuration_versions.get('cci_landcover_map', -1)
+    copernicus_dem_version = configuration_versions.get('copernicus_dem', -1)
+    de_africa_climatology_version = \
+        configuration_versions.get('de_africa_climatology', -1)
+    event_arrays_version = configuration_versions.get('event_arrays', -1)
+    s2cloudless_cloudmask_version = \
+        configuration_versions.get('s2cloudless_cloudmask', -1)
+    sen2cor_cloudmask_version = \
+        configuration_versions.get('sen2cor_cloudmask', -1)
+    unetmobv2_cloudmask_version = \
+        configuration_versions.get('unetmobv2_cloudmask', -1)
     reg_gdf = gpd.GeoDataFrame(
         {
             'mc_id': mc_id,
             'path': path,
+            'location_id': location_id,
             'version': version,
             'geometry': geometry,
             'creation_date': creation_date,
+            'modification_date': modification_date,
             'events': events,
+            's2_l2_bands': s2_l2_bands_version,
+            'era5': era5_version,
+            'cci_landcover_map': cci_landcover_map_version,
+            'copernicus_dem': copernicus_dem_version,
+            'de_africa_climatology': de_africa_climatology_version,
+            'event_arrays': event_arrays_version,
+            's2cloudless_cloudmask': s2cloudless_cloudmask_version,
+            'sen2cor_cloudmask': sen2cor_cloudmask_version,
+            'unetmobv2_cloudmask': unetmobv2_cloudmask_version,
             'remarks': remarks
         },
         index=[0]
@@ -280,10 +327,10 @@ def _get_minicubes_fs() -> fsspec.filesystem:
 
 def _already_registered(mc_config: dict) -> bool:
     fs = _get_minicubes_fs()
-    mc_id = mc_config["properties"]["data_id"]
-    with fs.open('deepextremes-minicubes/mc_registry.csv', 'r') as gjreg:
+    location_id = mc_config["properties"]["location_id"]
+    with fs.open(_MC_REGISTRY, 'r') as gjreg:
         gpdreg = gpd.GeoDataFrame(pd.read_csv(gjreg))
-        if len(gpdreg.loc[gpdreg['mc_id'] == mc_id]) > 0:
+        if len(gpdreg.loc[gpdreg['location_id'] == location_id]) > 0:
             return True
     return False
 
@@ -292,19 +339,60 @@ def _remove_cube_if_exists(mc_config: dict):
     # check whether minicube exists. If it does, we assume there is something
     # wrong with it as there is no registry entry, so we will delete it
     fs = _get_minicubes_fs()
-    mc_id = mc_config["properties"]["data_id"]
     version = mc_config['properties']['version']
-    path = f'deepextremes-minicubes/{version}/{mc_id}.zarr'
-    if fs.exists(path):
+    minicube_ids = fs.ls(f'deepextremes-minicubes/{version}/')
+    location_ids = ['_'.join(minicube_id.split('_')[1:3])
+                    for minicube_id in minicube_ids]
+    mc_location_id = mc_config["properties"].get("location_id")
+    if not mc_location_id:
+        mc_data_id = mc_config["properties"]["data_id"]
+        mc_location_id = '_'.join(mc_data_id.split('_')[1:3])
+    if mc_location_id in location_ids:
+        index = location_ids.index(mc_location_id)
+        mc_id = minicube_ids[index]
         print(f'Cube {mc_id} has no entry, will remove')
-        fs.delete(path, recursive=True)
+        fs.delete(f'deepextremes-minicubes/{version}/{mc_id}',
+                  recursive=True)
 
 
-def _write_entry(ds: xr.Dataset):
+def _write_entry(ds: xr.Dataset, mc_config: dict):
     fs = _get_minicubes_fs()
     gdf = _get_gdf_from_mc(ds)
-    with fs.open('deepextremes-minicubes/mc_registry.csv', 'a') as registry:
-        registry.write(gdf.to_csv(header=False, index=False))
+    not_written = True
+    while not_written:
+        try:
+            open('.lock', 'x')
+            if mc_config.get("config_type", "base") == 'base':
+                with fs.open(_MC_REGISTRY, 'a') as registry:
+                    registry.write(gdf.to_csv(header=False, index=False))
+            else:
+                with fs.open(_MC_REGISTRY, 'r') as registry:
+                    gpdreg = gpd.GeoDataFrame(pd.read_csv(registry))
+                mc_location_id = mc_config['properties']['location_id']
+                gpdreg = gpdreg.drop(
+                    gpdreg[gpdreg.location_id == mc_location_id].index
+                )
+                gpdreg = gpdreg.append(gdf)
+                with fs.open(_MC_REGISTRY, 'r') as registry:
+                    registry.write(gpdreg.to_csv(index=False))
+            os.remove('.lock')
+        except FileExistsError:
+            time.sleep(5)
+
+
+def _open_base_mc(mc_config: dict):
+    s3_store = _get_s3_store()
+    base_mc_id = mc_config["properties"].get("base_minicube")
+    adjusted_base_mc_id = base_mc_id[23:]
+    if not s3_store.has_data(base_mc_id):
+        raise ValueError(f'Could not find base minicube {base_mc_id}. '
+                         f'Update not possible.')
+    return s3_store.open_data(adjusted_base_mc_id)
+
+
+def _resample_version(base_mc: xr.Dataset) -> xr.Dataset:
+    to_drop = [dv for dv in base_mc.data_vars if not dv.startswith('B0')]
+    return base_mc.drop_vars(to_drop)
 
 
 def generate_cube(mc_config: dict,
@@ -313,6 +401,8 @@ def generate_cube(mc_config: dict,
                   ):
     print(f'Processing minicube configuration '
           f'{mc_config["properties"]["data_id"]}')
+    update = mc_config.get("config_type", "base") == 'update'
+    base_mc = _open_base_mc(mc_config) if update else None
     variable_configs = mc_config['properties']['variables']
     processing_steps_set = set()
     for vc in variable_configs:
@@ -331,6 +421,8 @@ def generate_cube(mc_config: dict,
         )
 
     output_datasets = []
+    if update:
+        output_datasets.append(base_mc)
     for i, processing_steps_s in enumerate(processing_steps_set):
         processing_steps = processing_steps_s.split(';')
         ps1_ds_name = processing_steps[0].split('Read ')[1]
@@ -344,8 +436,11 @@ def generate_cube(mc_config: dict,
             print(processing_step)
             additional_sources = {}
             if processing_step.startswith('Resample'):
-                resampling_target = datasets[
-                    processing_step.split('to ')[1].split(' /')[0]]
+                if update:
+                    resampling_target = _resample_version(base_mc)
+                else:
+                    resampling_target = datasets[
+                        processing_step.split('to ')[1].split(' /')[0]]
                 additional_sources['resampling_target'] = resampling_target
             ps_ds = _execute_processing_step(processing_step, ps_ds,
                                              additional_sources, mc_config)
@@ -358,6 +453,13 @@ def generate_cube(mc_config: dict,
     _write_ds(ds, mc_config)
 
     _write_entry(ds)
+
+    if mc_config.get("config_type", "base") == 'update':
+        base_mc_id = mc_config["properties"].get("base_minicube")
+        # remove leading bucket name
+        adjusted_base_mc_id = base_mc_id[23:]
+        _get_s3_store().delete_data(adjusted_base_mc_id)
+        print("Deleted previous entry of cube")
 
 # processing step implementations
 
@@ -506,21 +608,34 @@ if __name__ == "__main__":
     geojson_file = sys.argv[1]
     aws_access_key_id = sys.argv[2]
     aws_secret_access_key = sys.argv[3]
-    with open(geojson_file, 'r') as gjf:
+    fs = _get_minicubes_fs()
+    with fs.open(geojson_file, 'r') as gjf:
         mc_config = json.load(gjf)
-        already_registered = _already_registered(mc_config)
-        if already_registered:
-            mc_id = mc_config["properties"]["data_id"]
-            print(f'Minicube {mc_id} for given configuration already exists, '
-                  f'will not generate but move config to created folder')
-        else:
-            _remove_cube_if_exists(mc_config)
-            generate_cube(
-                mc_config,
-                aws_access_key_id,
-                aws_secret_access_key
-            )
+        if mc_config.get("config_type", "base") == 'base':
+            if _already_registered(mc_config):
+                location_id = mc_config["properties"].get("location_id", "")
+                print(f'Minicube at location {location_id} already exists, '
+                      f'will not generate but move config to created folder')
+            else:
+                _remove_cube_if_exists(mc_config)
+                generate_cube(
+                    mc_config,
+                    aws_access_key_id,
+                    aws_secret_access_key
+                )
+        else:   # config_type == 'update'
+            if not _already_registered(mc_config):
+                location_id = mc_config["properties"]["location_id"]
+                print(f'No minicube at location {location_id} found in entry, '
+                      f'will not update but move config to created folder')
+                _remove_cube_if_exists(mc_config)
+            else:
+                generate_cube(
+                    mc_config,
+                    aws_access_key_id,
+                    aws_secret_access_key
+                )
     split_geojson_file = geojson_file.split('/')
     split_geojson_file.insert(-1, 'created')
     new_file = '/'.join(split_geojson_file)
-    shutil.move(geojson_file, new_file)
+    fs.move(geojson_file, new_file)
