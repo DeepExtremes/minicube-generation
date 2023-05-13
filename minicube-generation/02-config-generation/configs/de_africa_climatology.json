@@ -2,7 +2,7 @@
     "properties": {
         "metadata": {
             "configuration_versions": {
-                "digitalearth": 1.0
+                "de_africa_climatology": 1.0
             }
         },
         "variables": [

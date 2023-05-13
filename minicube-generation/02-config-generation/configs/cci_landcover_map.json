@@ -2,7 +2,7 @@
     "properties": {
         "metadata": {
             "configuration_versions": {
-                "lccs": 1.0
+                "cci_landcover_map": 1.0
             }
         },
         "variables": [

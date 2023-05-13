@@ -2,7 +2,7 @@
     "properties": {
         "metadata": {
             "configuration_versions": {
-                "unetmobv": 1.0
+                "unetmobv2_cloudmask": 1.0
             }
         },
         "variables": [
