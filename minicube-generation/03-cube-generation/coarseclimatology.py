@@ -1,4 +1,5 @@
 from typing import List
+import numpy as np
 import xarray as xr
 
 SURF_REC_MIN = 0 # (7272.72 * 0.0000275) - 0.2
@@ -43,7 +44,8 @@ def mask_data(ds: xr.Dataset, cloud_bits: List[int], quality_band_name: str):
 
 def _ndvi(ds: xr.Dataset) -> xr.Dataset:
     ndvi_array = (ds[NIR] - ds[RED]) / (ds[NIR] + ds[RED])
-    return ndvi_array.to_dataset('ndvi')
+    ndvi_array = xr.where(ds.mask, ndvi_array, np.nan)
+    return ndvi_array.to_dataset(name='ndvi')
 
 
 def _harmonize_with_l8(ds: xr.Dataset) -> xr.Dataset:
@@ -51,20 +53,22 @@ def _harmonize_with_l8(ds: xr.Dataset) -> xr.Dataset:
     return ndvi.to_dataset()
 
 
+def _clear(ds: xr. Dataset) -> xr.DataArray:
+    ndvi_cleared = ds.ndvi.where(ds.ndvi >= 0)
+    return ndvi_cleared.where(ndvi_cleared <= 1)
+
+
 def create_climatology(l5ds: xr.Dataset, l7ds: xr.Dataset, l8ds: xr.Dataset):
     masked_l5ds = mask_data(l5ds, L57_CLOUD_BITS, 'SR_CLOUD_QA')
-    # masked_l7ds = mask_data(l7ds, L57_CLOUD_BITS, 'SR_CLOUD_QA')
-    # masked_l57ds = xr.concat([masked_l5ds, masked_l7ds], dim='time')
-    # masked_l8ds = mask_data(l8ds, L8_CLOUD_BITS, 'BQA')
-    # ndvi57 = _ndvi(masked_l57ds)
-    ndvi57 = _ndvi(masked_l5ds)
-    # ndvi8 = _ndvi(masked_l8ds)
+    masked_l7ds = mask_data(l7ds, L57_CLOUD_BITS, 'SR_CLOUD_QA')
+    masked_l57ds = xr.concat([masked_l5ds, masked_l7ds], dim='time')
+    masked_l8ds = mask_data(l8ds, L8_CLOUD_BITS, 'BQA')
+    ndvi57 = _ndvi(masked_l57ds)
+    ndvi8 = _ndvi(masked_l8ds)
     harm_ndvi_57 = _harmonize_with_l8(ndvi57)
-    # ndvi = xr.concat([harm_ndvi_57, ndvi8], dim='time')
-    ndvi_cleared = ndvi.ndvi.where(ndvi.ndvi >= 0)
-    ndvi_cleared = ndvi_cleared.where(ndvi_cleared <= 1)
+    ndvi = xr.concat([harm_ndvi_57, ndvi8], dim='time')
+    ndvi_cleared = _clear(ndvi)
     ndvi_grouped = ndvi_cleared.groupby('time.month')
-    mean = ndvi_grouped.mean()
-    std = ndvi_grouped.std()
-    return mean, std
-
+    mean = ndvi_grouped.mean().rename('ndvi_mean')
+    std = ndvi_grouped.std().rename('ndvi_std')
+    return xr.merge([mean, std])
