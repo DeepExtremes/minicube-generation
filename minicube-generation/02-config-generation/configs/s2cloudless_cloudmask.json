@@ -2,7 +2,7 @@
     "properties": {
         "metadata": {
             "configuration_versions": {
-                "s2cloudless_cloudmask": 1.0
+                "s2cloudless_cloudmask": 1.1
             }
         },
         "variables": [
