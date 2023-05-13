@@ -160,7 +160,9 @@ def get_readable(value: float):
     return "{:.3f}".format(value)
 
 
-def get_data_id(center_lon_readable: str, center_lat_readable: str, version: str):
+def get_data_id(center_lon_readable: str,
+                center_lat_readable: str,
+                version: str):
     return _ID_TEMPLATE.format(
         lon=center_lon_readable,
         lat=center_lat_readable,
@@ -176,7 +178,8 @@ def _get_center_from_spatial_bbox(utm_proj: Proj, spatial_bbox: List[float]):
     return utm_proj(x, y, inverse=True)
 
 
-def _get_geospatial_bbox_from_spatial_bbox(utm_proj: Proj, spatial_bbox: List[float]):
+def _get_geospatial_bbox_from_spatial_bbox(utm_proj: Proj,
+                                           spatial_bbox: List[float]):
     xmin, ymin, xmax, ymax = spatial_bbox
     lons, lats = utm_proj(
         (xmin, xmin, xmax, xmax, xmin),
@@ -186,7 +189,8 @@ def _get_geospatial_bbox_from_spatial_bbox(utm_proj: Proj, spatial_bbox: List[fl
     return np.swapaxes(np.asarray((lons, lats)), 0, 1).tolist()
 
 
-def create_update_config(mc: xr.Dataset, mc_path: str, components_to_update: List[str]):
+def create_update_config(mc: xr.Dataset, mc_path: str,
+                         components_to_update: List[str]):
     update_config = open_config('update.geojson')
     mc_configuration_versions = \
         mc.attrs.get('metadata', {}).get('configuration_versions', {})
@@ -273,7 +277,8 @@ def merge_configs(config_1: dict, config_2: dict) -> dict:
         if key in merged_config:
             current_value = merged_config[key]
             if isinstance(current_value, list) and isinstance(value, list):
-                if len(current_value) > 0 and isinstance(current_value[0], dict) \
+                if len(current_value) > 0 and \
+                        isinstance(current_value[0], dict) \
                         and len(value) > 0 and isinstance(value[0], dict):
                     out_list = []
                     for sub_config_1 in current_value:
