@@ -170,21 +170,20 @@ def get_data_id(center_lon_readable: str, center_lat_readable: str, version: str
 
 
 def _get_center_from_spatial_bbox(utm_proj: Proj, spatial_bbox: List[float]):
-    xmin, xmax, ymin, ymax = spatial_bbox
+    xmin, ymin, xmax, ymax = spatial_bbox
     x = xmin + _HALF_IMAGE_SIZE
     y = ymin + _HALF_IMAGE_SIZE
     return utm_proj(x, y, inverse=True)
 
 
 def _get_geospatial_bbox_from_spatial_bbox(utm_proj: Proj, spatial_bbox: List[float]):
-    xmin, xmax, ymin, ymax = spatial_bbox
+    xmin, ymin, xmax, ymax = spatial_bbox
     lons, lats = utm_proj(
         (xmin, xmin, xmax, xmax, xmin),
         (ymin, ymax, ymax, ymin, ymin),
         inverse=True
     )
     return np.swapaxes(np.asarray((lons, lats)), 0, 1).tolist()
-
 
 
 def create_update_config(mc: xr.Dataset, mc_path: str, components_to_update: List[str]):
@@ -197,38 +196,49 @@ def create_update_config(mc: xr.Dataset, mc_path: str, components_to_update: Lis
         mc_component_version = mc_configuration_versions.get(component, '-1')
         component_config = open_config(f'configs/{component}.json')
         current_component_version = \
-            component_config.get('properties', {}).get('metadata', {}).get(component)
+            component_config.get('properties', {}).get('metadata', {}).\
+                get('configuration_versions', {}).get(component)
         if mc_component_version == current_component_version:
             continue
         update_config = merge_configs(update_config, component_config)
         any_changes = True
     if not any_changes:
         return
-    # get center lon center lat from metadata if provided OR recompute from spatial bbox
-    # _, center_lon, center_lat, _ = update_config['properties']['data_id'].split('_')
     crs = update_config['properties']['spatial_ref']
     utm_proj = Proj(crs)
     spatial_bbox = [
         float(coord) for coord in update_config['properties']['spatial_bbox']
     ]
-    center_lon, center_lat = _get_center_from_spatial_bbox(utm_proj, spatial_bbox)
+    center_lon = update_config.get('properties').get('metadata').\
+        get('geospatial_center_lon')
+    center_lat = update_config.get('properties').get('metadata').\
+        get('geospatial_center_lat')
+    if center_lon is None or center_lat is None:
+        center_lon, center_lat = _get_center_from_spatial_bbox(utm_proj,
+                                                               spatial_bbox)
+        update_config['properties']['metadata']['geospatial_center_lon'] = \
+            center_lon
+        update_config['properties']['metadata']['geospatial_center_lat'] = \
+            center_lat
     update_config = fill_config_with_missing_values(
         update_config, center_lon, center_lat
     )
-    geospatial_bbox = _get_geospatial_bbox_from_spatial_bbox(utm_proj, spatial_bbox)
+    geospatial_bbox = _get_geospatial_bbox_from_spatial_bbox(utm_proj,
+                                                             spatial_bbox)
     update_config['geometry']['coordinates'][0] = geospatial_bbox
     update_config["properties"]["base_minicube"] = mc_path
     version ='unknown'
     with open('../version.py', 'r') as v:
         version = v.read().split('=')[1]
-    data_id = get_data_id(get_readable(center_lon), get_readable(center_lat), version)
+    data_id = get_data_id(
+        get_readable(center_lon), get_readable(center_lat), version
+    )
     update_config["properties"]["data_id"] = data_id
     base_fs = get_fs()
-    with base_fs.open(f'configs/update/{data_id}.geojson',
-                      'w+') as mc_json:
-        json.dump(update_config, mc_json, indent=4)
-
-
+    with base_fs.open(
+            f'deepextremes-minicubes/configs/update/{data_id}.geojson', 'wb') \
+            as mc_json:
+        mc_json.write(json.dumps(update_config).encode('utf-8'))
 
 
 def get_store(bucket: str):

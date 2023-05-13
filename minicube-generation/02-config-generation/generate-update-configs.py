@@ -1,9 +1,9 @@
 import sys
 from typing import List
 
-from config-gen-creation import get_available_components
-from config-gen-creation import get_store
-from config-gen-creation import create_update_config
+from configgencreation import get_available_components
+from configgencreation import get_store
+from configgencreation import create_update_config
 
 
 def _update_components(mc_bucket: str, components_to_update: List[str]):
@@ -16,7 +16,8 @@ def _update_components(mc_bucket: str, components_to_update: List[str]):
                              f'{available_components}')
     for minicube_id in minicube_ids:
         mc = mc_store.open_data(minicube_id)
-        create_update_config(mc, components_to_update)
+        mc_path = f'{mc_bucket}/{minicube_id}'
+        create_update_config(mc, mc_path, components_to_update)
 
 
 if __name__ == "__main__":

@@ -9,12 +9,12 @@ from pyproj import CRS
 from pyproj import Proj
 import sys
 
-from config-gen-creation import fill_config_with_missing_values
-from config-gen-creation import get_data_id
-from config-gen-creation import get_fs
-from config-gen-creation import get_readable
-from config-gen-creation import merge_configs
-from config-gen-creation import open_config
+from configgencreation import fill_config_with_missing_values
+from configgencreation import get_data_id
+from configgencreation import get_fs
+from configgencreation import get_readable
+from configgencreation import merge_configs
+from configgencreation import open_config
 
 
 _BASE_COMPONENTS = [
@@ -91,8 +91,6 @@ def _create_base_config(minicube_location: pd.Series, tc: dict, version: str) ->
     return tc
 
 
-
-
 def _generate_base_configs(location_file: str):
     minicube_locations = pd.read_csv(location_file, delimiter="\t")
     version ='unknown'
@@ -104,9 +102,10 @@ def _generate_base_configs(location_file: str):
         tc = copy.deepcopy(config_template)
         base_config = _create_base_config(minicube_location, tc, version)
         data_id = base_config.get('properties').get('data_id')
-        with base_fs.open(f'configs/base/{data_id}.geojson',
-                  'w+') as mc_json:
-            json.dump(tc, mc_json, indent=4)
+        with base_fs.open(
+                f'deepextremes-minicubes/configs/base/{data_id}.geojson', 'wb')\
+                as mc_json:
+            mc_json.write(json.dumps(tc).encode('utf-8'))
 
 
 if __name__ == "__main__":
