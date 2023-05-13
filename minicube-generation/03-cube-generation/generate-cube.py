@@ -6,7 +6,6 @@ import os
 import pandas as pd
 import rioxarray
 from shapely.geometry import Polygon
-import shutil
 import sys
 import time
 import xarray as xr
@@ -20,7 +19,7 @@ from xcube.core.update import update_dataset_chunk_encoding
 
 from maskaycloudmask import compute_cloud_mask
 
-_MC_REGISTRY = 'deepextremes-minicubes/mc_registry_2.csv'
+_MC_REGISTRY = 'deepextremes-minicubes/mc_registry_v2.csv'
 _MONTHS = dict(
     jan=1, feb=2, mar=3, apr=4, may=5, jun=6,
     jul=7, aug=8, sep=9, oct=10, nov=11, dec=12
@@ -148,8 +147,9 @@ def _execute_processing_step(processing_step: str,
     if processing_step.startswith('Pick time value'):
         return _pick_time_value(ps_ds, index=int(params_string))
     if processing_step.startswith('Subset spatially around center'):
-        _, center_lon, center_lat, _ = \
-            mc_config['properties']['data_id'].split('_')
+        split_data_id = mc_config['properties']['data_id'].split('_')
+        center_lon = split_data_id[1]
+        center_lat = split_data_id[2]
         return _subset_spatially_around_center(
             ds=ps_ds,
             center_lat=float(center_lat),
@@ -159,8 +159,9 @@ def _execute_processing_step(processing_step: str,
     if processing_step.startswith('Pick /'):
         return _pick(ps_ds, ending=params_string)
     if processing_step == 'Pick center spatial value':
-        _, center_lon, center_lat, _ = \
-            mc_config['properties']['data_id'].split('_')
+        split_data_id = mc_config['properties']['data_id'].split('_')
+        center_lon = split_data_id[1]
+        center_lat = split_data_id[2]
         return _pick_center_spatial_value(
             ds_source=ps_ds,
             center_lat=float(center_lat),
@@ -218,20 +219,22 @@ def _finalize_dataset(ds: xr.Dataset, mc_config: dict) -> xr.Dataset:
     return ds
 
 
-def _get_encoding_dict(mc_config: dict) -> dict:
+def _get_encoding_dict(ds: xr.Dataset) -> dict:
     encodings = {}
-    for variable_config in mc_config['properties']['variables']:
-        if 'encoding' in variable_config:
-            encodings[variable_config['name']] = variable_config['encoding']
+    for data_var in ds.data_vars:
+        if 'encoding' in ds[data_var].attrs:
+            encodings[data_var] = ds[data_var].attrs.get('encoding')
     return encodings
 
 
-def _get_s3_store():
+def _get_s3_store(version: str):
     s3_key = os.environ["S3_USER_STORAGE_KEY"]
     s3_secret = os.environ["S3_USER_STORAGE_SECRET"]
+    root = f'deepextremes-minicubes/{version}' \
+        if version else "deepextremes-minicubes"
     return new_data_store(
         "s3",
-        root="deepextremes-minicubes",
+        root=root,
         storage_options=dict(
             anon=False,
             key=s3_key,
@@ -239,12 +242,14 @@ def _get_s3_store():
         )
     )
 
+
 def _write_ds(ds: xr.Dataset, mc_config: dict):
     print(f'Writing dataset {ds.data_id}')
-    s3_store = _get_s3_store()
-    version = mc_config['properties']['version']
-    encodings = _get_encoding_dict(mc_config)
-    s3_store.write_data(ds, f"{version}/{ds.data_id}.zarr", encoding=encodings)
+    s3_store = _get_s3_store(mc_config['properties']['version'])
+    encodings = _get_encoding_dict(ds)
+    s3_store.write_data(
+        ds, f"{ds.data_id}.zarr", encoding=encodings
+    )
     # enable to write local
     # ds.to_zarr(f"{version}/{ds.data_id}.zarr")
     print(f'Finished writing dataset {ds.data_id}')
@@ -270,7 +275,7 @@ def _get_gdf_from_mc(mc: xr.Dataset) -> gpd.GeoDataFrame:
 
     geometry = Polygon([[lon_min, lat_min], [lon_max, lat_min],
                         [lon_max, lat_max], [lon_min, lat_max]])
-    remarks = 'no climatology' if version.endswith('.n') else None
+    remarks = 'no climatology' if version.endswith('.n') else ''
 
     configuration_versions = \
         mc.attrs.get('metadata', {}).get('configuration_versions', {})
@@ -351,8 +356,7 @@ def _remove_cube_if_exists(mc_config: dict):
         index = location_ids.index(mc_location_id)
         mc_id = minicube_ids[index]
         print(f'Cube {mc_id} has no entry, will remove')
-        fs.delete(f'deepextremes-minicubes/{version}/{mc_id}',
-                  recursive=True)
+        fs.delete(mc_id, recursive=True)
 
 
 def _write_entry(ds: xr.Dataset, mc_config: dict):
@@ -373,18 +377,19 @@ def _write_entry(ds: xr.Dataset, mc_config: dict):
                     gpdreg[gpdreg.location_id == mc_location_id].index
                 )
                 gpdreg = gpdreg.append(gdf)
-                with fs.open(_MC_REGISTRY, 'r') as registry:
+                with fs.open(_MC_REGISTRY, 'w') as registry:
                     registry.write(gpdreg.to_csv(index=False))
+            not_written = False
             os.remove('.lock')
         except FileExistsError:
             time.sleep(5)
 
 
 def _open_base_mc(mc_config: dict):
-    s3_store = _get_s3_store()
+    s3_store = _get_s3_store(mc_config.get("properties").get("version"))
     base_mc_id = mc_config["properties"].get("base_minicube")
-    adjusted_base_mc_id = base_mc_id[23:]
-    if not s3_store.has_data(base_mc_id):
+    adjusted_base_mc_id = base_mc_id.split('/')[-1]
+    if not s3_store.has_data(adjusted_base_mc_id):
         raise ValueError(f'Could not find base minicube {base_mc_id}. '
                          f'Update not possible.')
     return s3_store.open_data(adjusted_base_mc_id)
@@ -392,6 +397,7 @@ def _open_base_mc(mc_config: dict):
 
 def _resample_version(base_mc: xr.Dataset) -> xr.Dataset:
     to_drop = [dv for dv in base_mc.data_vars if not dv.startswith('B0')]
+    to_drop.remove('crs')
     return base_mc.drop_vars(to_drop)
 
 
@@ -403,6 +409,7 @@ def generate_cube(mc_config: dict,
           f'{mc_config["properties"]["data_id"]}')
     update = mc_config.get("config_type", "base") == 'update'
     base_mc = _open_base_mc(mc_config) if update else None
+    mc_to_be_merged = base_mc if update else None
     variable_configs = mc_config['properties']['variables']
     processing_steps_set = set()
     for vc in variable_configs:
@@ -421,8 +428,6 @@ def generate_cube(mc_config: dict,
         )
 
     output_datasets = []
-    if update:
-        output_datasets.append(base_mc)
     for i, processing_steps_s in enumerate(processing_steps_set):
         processing_steps = processing_steps_s.split(';')
         ps1_ds_name = processing_steps[0].split('Read ')[1]
@@ -444,7 +449,14 @@ def generate_cube(mc_config: dict,
                 additional_sources['resampling_target'] = resampling_target
             ps_ds = _execute_processing_step(processing_step, ps_ds,
                                              additional_sources, mc_config)
+        if update:
+            for data_var in ps_ds.data_vars:
+                if data_var in mc_to_be_merged:
+                    mc_to_be_merged = mc_to_be_merged.drop_vars([data_var])
         output_datasets.append(ps_ds)
+
+    if update:
+        output_datasets.append(mc_to_be_merged)
 
     ds = xr.merge(output_datasets)
 
@@ -452,13 +464,14 @@ def generate_cube(mc_config: dict,
 
     _write_ds(ds, mc_config)
 
-    _write_entry(ds)
+    _write_entry(ds, mc_config)
 
     if mc_config.get("config_type", "base") == 'update':
         base_mc_id = mc_config["properties"].get("base_minicube")
         # remove leading bucket name
-        adjusted_base_mc_id = base_mc_id[23:]
-        _get_s3_store().delete_data(adjusted_base_mc_id)
+        adjusted_base_mc_id = base_mc_id.split('/')[-1]
+        _get_s3_store(mc_config['properties']['version']).\
+            delete_data(adjusted_base_mc_id)
         print("Deleted previous entry of cube")
 
 # processing step implementations

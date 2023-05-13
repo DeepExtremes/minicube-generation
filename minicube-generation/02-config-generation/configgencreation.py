@@ -16,7 +16,7 @@ from xcube.core.store import new_data_store
 
 _SPATIAL_RES = 20
 _HALF_IMAGE_SIZE = 64 * _SPATIAL_RES
-_ID_TEMPLATE = "mc_{lon}_{lat}_{version}_{date}"
+_ID_TEMPLATE = "mc_{lon}_{lat}_{version}_{date}_{count}"
 _ERA5_VARIABLE_NAMES = [
     "e_max", "e_min", "e_mean", "pev_max", "pev_min", "pev_mean", "slhf_max",
     "slhf_min", "slhf_mean", "sp_max", "sp_min", "sp_mean", "sshf_max",
@@ -162,12 +162,14 @@ def get_readable(value: float):
 
 def get_data_id(center_lon_readable: str,
                 center_lat_readable: str,
-                version: str):
+                version: str,
+                count: int = 0):
     return _ID_TEMPLATE.format(
         lon=center_lon_readable,
         lat=center_lat_readable,
         version=version,
-        date=datetime.now().strftime('%Y%m%d')
+        date=datetime.now().strftime('%Y%m%d'),
+        count=count
     )
 
 
@@ -204,7 +206,7 @@ def create_update_config(mc: xr.Dataset, mc_path: str,
                 get('configuration_versions', {}).get(component)
         if mc_component_version == current_component_version:
             continue
-        update_config = merge_configs(update_config, component_config)
+        update_config = merge_configs(component_config, update_config)
         any_changes = True
     if not any_changes:
         return
@@ -236,9 +238,15 @@ def create_update_config(mc: xr.Dataset, mc_path: str,
         version = v.read().split('=')[1]
     center_lon_readable = get_readable(center_lon)
     center_lat_readable = get_readable(center_lat)
+    count = 0
     data_id = get_data_id(
-        center_lon_readable, center_lat_readable, version
+        center_lon_readable, center_lat_readable, version, count
     )
+    while data_id in mc_path:
+        count += 1
+        data_id = get_data_id(
+            center_lon_readable, center_lat_readable, version, count
+        )
     update_config["properties"]["data_id"] = data_id
     if not update_config.get('properties').get('location_id'):
         update_config["properties"]["location_id"] = \

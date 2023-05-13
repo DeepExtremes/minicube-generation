@@ -25,6 +25,9 @@ if __name__ == "__main__":
     else:
         fs = get_fs()
         geojson_files = fs.ls(geojson_location)
+        for geojson_file in geojson_files:
+            if not geojson_file.endswith('.geojson'):
+                geojson_files.remove(geojson_file)
     aws_access_key_id = sys.argv[2]
     aws_secret_access_key = sys.argv[3]
     for geojson_file in geojson_files:
