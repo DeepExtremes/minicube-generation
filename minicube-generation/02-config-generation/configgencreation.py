@@ -253,8 +253,8 @@ def create_update_config(mc: xr.Dataset, mc_path: str,
             f'{center_lon_readable}_{center_lat_readable}'
     base_fs = get_fs()
     with base_fs.open(
-            f'deepextremes-minicubes/configs/update/{data_id}.geojson', 'wb') \
-            as mc_json:
+            f'deepextremes-minicubes/configs/update/'
+            f'{version}/{data_id}.geojson', 'wb') as mc_json:
         mc_json.write(json.dumps(update_config).encode('utf-8'))
 
 

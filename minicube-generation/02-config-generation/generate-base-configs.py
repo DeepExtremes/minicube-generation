@@ -106,8 +106,8 @@ def _generate_base_configs(location_file: str):
         base_config = _create_base_config(minicube_location, tc, version)
         data_id = base_config.get('properties').get('data_id')
         with base_fs.open(
-                f'deepextremes-minicubes/configs/base/{data_id}.geojson', 'wb')\
-                as mc_json:
+                f'deepextremes-minicubes/configs/base/{version}/'
+                f'{data_id}.geojson', 'wb') as mc_json:
             mc_json.write(json.dumps(tc).encode('utf-8'))
 
 
