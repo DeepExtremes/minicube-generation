@@ -1,4 +1,14 @@
-## Changes in 0.4 (in development)
+## Changes in 1.0
+* Introduced updating mechanism and completely overhauled config generation.
+  There are now two types of configuration files: base and update.
+  Base config files serve to create new minicubes, update files to update 
+  existing minicubes. Configs are written to the `deepextremes-minicubes` 
+  bucket. 
+  There is no longer a single central `.geojson`, but depending on what 
+  components are required, minicube configurations are created by merging 
+  component `.jsons` (given in the `configs`-subfolder) into either a base or
+  an update geojson. Update geojsons will hold the path to the minicube which
+  they are supposed to update.
 * Write data with encoding if provided
 
 ## Changes in 0.3.5
