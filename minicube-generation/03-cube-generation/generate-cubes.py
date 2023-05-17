@@ -30,12 +30,23 @@ if __name__ == "__main__":
                 geojson_files.remove(geojson_file)
     aws_access_key_id = sys.argv[2]
     aws_secret_access_key = sys.argv[3]
+    running_processes = dict()
     for geojson_file in geojson_files:
         command = ['python', 'generate-cube.py', f'{geojson_file}',
-                 f'{aws_access_key_id}', f'{aws_secret_access_key}']
+                   f'{aws_access_key_id}', f'{aws_secret_access_key}']
         if len(sys.argv) == 5:
-            seconds_to_sleep = int(sys.argv[4]) * 60
-            subprocess.Popen(command)
-            time.sleep(seconds_to_sleep)
+            processes_to_remove = []
+            for process_name, process in running_processes.items():
+                if process.poll() is not None:
+                    processes_to_remove.append(process_name)
+            for process in processes_to_remove:
+                running_processes.pop(process)
+            num_running_processes = len(running_processes.items())
+            if num_running_processes < int(sys.argv[4]):
+                print(f'Only {num_running_processes} running, will start one more')
+                running_processes[geojson_file] = subprocess.Popen(command)
+            else:
+                print(f'Already {num_running_processes} running, will not start more right now')
+            time.sleep(60)
         else:
             subprocess.run(command)
