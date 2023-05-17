@@ -24,6 +24,106 @@ _MONTHS = dict(
     jan=1, feb=2, mar=3, apr=4, may=5, jun=6,
     jul=7, aug=8, sep=9, oct=10, nov=11, dec=12
 )
+_S2_L2_SCHEMA = \
+    {'type': 'object',
+     'properties':
+         {'variable_names':
+              {'type': ['array', 'null'],
+               'items': {'type': 'string'}
+               },
+          'variable_fill_values':
+              {'type': 'array',
+               'items':
+                   {'type': ['number', 'null']
+                    }
+               },
+          'variable_sample_types':
+              {'type': 'array',
+               'items': {'type': 'string'}
+               },
+          'variable_units':
+              {'type': 'array',
+               'items':
+                   {'type': 'string'}
+               },
+          'tile_size':
+              {'type': 'array',
+               'default': (1000, 1000),
+               'items':
+                   [
+                       {'type': 'number',
+                        'default': 1000,
+                        'minimum': 1,
+                        'maximum': 2500},
+                       {'type': 'number',
+                        'default': 1000,
+                        'minimum': 1,
+                        'maximum': 2500}
+                   ]
+               },
+          'crs':
+              {'type': 'string',
+               'default': 'WGS84',
+               'enum': ['CRS84', 'WGS84', 'EPSG:4326', 'EPSG:3857', 'EPSG:2154', 'EPSG:2180', 'EPSG:2193', 'EPSG:3003',
+                        'EPSG:3004', 'EPSG:3031', 'EPSG:3035', 'EPSG:3346', 'EPSG:3416', 'EPSG:3765', 'EPSG:3794',
+                        'EPSG:3844', 'EPSG:3912', 'EPSG:3995', 'EPSG:4026', 'EPSG:5514', 'EPSG:28992', 'EPSG:32601',
+                        'EPSG:32602', 'EPSG:32603', 'EPSG:32604', 'EPSG:32605', 'EPSG:32606', 'EPSG:32607',
+                        'EPSG:32608', 'EPSG:32609', 'EPSG:32610', 'EPSG:32611', 'EPSG:32612', 'EPSG:32613',
+                        'EPSG:32614', 'EPSG:32615', 'EPSG:32616', 'EPSG:32617', 'EPSG:32618', 'EPSG:32619',
+                        'EPSG:32620', 'EPSG:32621', 'EPSG:32622', 'EPSG:32623', 'EPSG:32624', 'EPSG:32625',
+                        'EPSG:32626', 'EPSG:32627', 'EPSG:32628', 'EPSG:32629', 'EPSG:32630', 'EPSG:32631',
+                        'EPSG:32632', 'EPSG:32633', 'EPSG:32634', 'EPSG:32635', 'EPSG:32636', 'EPSG:32637',
+                        'EPSG:32638', 'EPSG:32639', 'EPSG:32640', 'EPSG:32641', 'EPSG:32642', 'EPSG:32643',
+                        'EPSG:32644', 'EPSG:32645', 'EPSG:32646', 'EPSG:32647', 'EPSG:32648', 'EPSG:32649',
+                        'EPSG:32650', 'EPSG:32651', 'EPSG:32652', 'EPSG:32653', 'EPSG:32654', 'EPSG:32655',
+                        'EPSG:32656', 'EPSG:32657', 'EPSG:32658', 'EPSG:32659', 'EPSG:32660', 'EPSG:32701',
+                        'EPSG:32702', 'EPSG:32703', 'EPSG:32704', 'EPSG:32705', 'EPSG:32706', 'EPSG:32707',
+                        'EPSG:32708', 'EPSG:32709', 'EPSG:32710', 'EPSG:32711', 'EPSG:32712', 'EPSG:32713',
+                        'EPSG:32714', 'EPSG:32715', 'EPSG:32716', 'EPSG:32717', 'EPSG:32718', 'EPSG:32719',
+                        'EPSG:32720', 'EPSG:32721', 'EPSG:32722', 'EPSG:32723', 'EPSG:32724', 'EPSG:32725',
+                        'EPSG:32726', 'EPSG:32727', 'EPSG:32728', 'EPSG:32729', 'EPSG:32730', 'EPSG:32731',
+                        'EPSG:32732', 'EPSG:32733', 'EPSG:32734', 'EPSG:32735', 'EPSG:32736', 'EPSG:32737',
+                        'EPSG:32738', 'EPSG:32739', 'EPSG:32740', 'EPSG:32741', 'EPSG:32742', 'EPSG:32743',
+                        'EPSG:32744', 'EPSG:32745', 'EPSG:32746', 'EPSG:32747', 'EPSG:32748', 'EPSG:32749',
+                        'EPSG:32750', 'EPSG:32751', 'EPSG:32752', 'EPSG:32753', 'EPSG:32754', 'EPSG:32755',
+                        'EPSG:32756', 'EPSG:32757', 'EPSG:32758', 'EPSG:32759', 'EPSG:32760']
+               },
+          'bbox':
+              {'type': 'array',
+               'items': [
+                   {'type': 'number'},
+                   {'type': 'number'},
+                   {'type': 'number'},
+                   {'type': 'number'}
+               ]},
+          'spatial_res':
+              {'type': 'number', 'exclusiveMinimum': 0.0},
+          'upsampling': {'type': 'string', 'default': 'NEAREST', 'enum': ['NEAREST', 'BILINEAR', 'BICUBIC']},
+          'downsampling': {'type': 'string', 'default': 'NEAREST', 'enum': ['NEAREST', 'BILINEAR', 'BICUBIC']},
+          'mosaicking_order': {'type': 'string', 'default': 'mostRecent',
+                               'enum': ['mostRecent', 'leastRecent', 'leastCC']},
+          'time_range': {
+              'type': ['array', 'null'],
+              'items': [{'type': ['string', 'null'],
+                         'format': 'date', 'minDate': '2016-11-01'},
+                        {'type': ['string', 'null'],
+                         'format': 'date', 'minDate': '2016-11-01'}
+                        ]
+          },
+          'time_period':
+              {'type': ['string', 'null'],
+               'default': '1D',
+               'enum':
+                   [None, '1D', '2D', '3D', '4D', '5D', '6D', '7D', '8D', '9D', '10D', '11D', '12D', '13D', '1W', '2W']
+               },
+          'time_tolerance':
+              {'type': 'string', 'default': '10m', 'format': '^([1-9]*[0-9]*)[NULSTH]$'},
+          'collection_id': {'type': 'string'},
+          'four_d': {'type': 'boolean', 'default': False},
+          'max_cache_size': {'type': 'integer', 'minimum': 0}
+          },
+     'required': ['bbox', 'spatial_res', 'time_range']
+     }
 
 
 def _get_source_datasets(source_config: dict,
@@ -49,10 +149,13 @@ def _get_source_datasets(source_config: dict,
             **source_config.get('store_params', {})
         )
         for dataset_name, variable_names in source_config['datasets'].items():
-            open_schema = \
-                source_store.get_open_data_params_schema(dataset_name)
-            open_properties = \
-                list(open_schema.to_dict().get('properties').keys())
+            if dataset_name == 'S2L2A':
+                open_properties = _S2_L2_SCHEMA.get('properties')
+            else:
+                open_schema = \
+                    source_store.get_open_data_params_schema(dataset_name)
+                open_properties = \
+                    list(open_schema.to_dict().get('properties').keys())
             props = source_config.get('open_params', {})
             if 'variable_names' in open_properties:
                 props['variable_names'] = variable_names['variable_names']
@@ -66,8 +169,6 @@ def _get_source_datasets(source_config: dict,
                 props['crs'] = mc_config['properties']['spatial_ref']
             if 'spatial_res' in open_properties:
                 props['spatial_res'] = mc_config['properties']['spatial_res']
-            if 'mosaicking_period' in open_properties:
-                props['mosaicking_period'] = mc_config['properties']['mosaicking_period']
             source_ds = source_store.open_data(
                 dataset_name,
                 **props
