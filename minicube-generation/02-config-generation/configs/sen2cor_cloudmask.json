@@ -2,7 +2,7 @@
     "properties": {
         "metadata": {
             "configuration_versions": {
-                "sen2cor_cloudmask": 1.0
+                "sen2cor_cloudmask": 1.1
             }
         },
         "variables": [
@@ -20,6 +20,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
+                            "Unfold dataarray to dataset / band",
                             "Rechunk by to / time 165"
                         ],
                         "remarks": ""
@@ -43,7 +44,8 @@
                 },
                 "store_id": "sentinelhub",
                 "open_params": {
-                    "mosaicking_order": "leastCC"
+                    "mosaicking_order": "leastCC",
+                    "four_d": "True"
                 }
             }
         ]

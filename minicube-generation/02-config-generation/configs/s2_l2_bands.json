@@ -2,7 +2,7 @@
     "properties": {
         "metadata": {
             "configuration_versions":{
-                "s2_l2_bands": 1.2
+                "s2_l2_bands": 1.3
             }
         },
         "variables": [
@@ -12,6 +12,8 @@
                 "units": "n.a.",
                 "dtype": "float32",
                 "dims": ["time", "lat", "lon"],
+                "wavelength": 492.25,
+                "bandwidth": 66.0,
                 "encoding": {
                     "dtype": "int16",
                     "scale_factor": 0.0001,
@@ -25,6 +27,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
+                            "Unfold dataarray to dataset / band",
                             "Rechunk by to / time 165"
                         ],
                         "remarks": ""
@@ -43,6 +46,8 @@
                 "units": "n.a.",
                 "dtype": "float32",
                 "dims": ["time", "lat", "lon"],
+                "wavelength": 559.4,
+                "bandwidth": 36.0,
                 "encoding": {
                     "dtype": "int16",
                     "scale_factor": 0.0001,
@@ -56,6 +61,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
+                            "Unfold dataarray to dataset / band",
                             "Rechunk by to / time 165"
                         ],
                         "remarks": ""
@@ -74,6 +80,8 @@
                 "units": "n.a.",
                 "dtype": "float32",
                 "dims": ["time", "lat", "lon"],
+                "wavelength": 664.75,
+                "bandwidth": 31.0,
                 "encoding": {
                     "dtype": "int16",
                     "scale_factor": 0.0001,
@@ -87,6 +95,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
+                            "Unfold dataarray to dataset / band",
                             "Rechunk by to / time 165"
                         ],
                         "remarks": ""
@@ -105,6 +114,8 @@
                 "units": "n.a.",
                 "dtype": "float32",
                 "dims": ["time", "lat", "lon"],
+                "wavelength": 703.95,
+                "bandwidth": 15.5,
                 "encoding": {
                     "dtype": "int16",
                     "scale_factor": 0.0001,
@@ -118,6 +129,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
+                            "Unfold dataarray to dataset / band",
                             "Rechunk by to / time 165"
                         ],
                         "remarks": ""
@@ -136,6 +148,8 @@
                 "units": "n.a.",
                 "dtype": "float32",
                 "dims": ["time", "lat", "lon"],
+                "wavelength": 739.8,
+                "bandwidth": 15.0,
                 "encoding": {
                     "dtype": "int16",
                     "scale_factor": 0.0001,
@@ -149,6 +163,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
+                            "Unfold dataarray to dataset / band",
                             "Rechunk by to / time 165"
                         ],
                         "remarks": ""
@@ -167,6 +182,8 @@
                 "units": "n.a.",
                 "dtype": "float32",
                 "dims": ["time", "lat", "lon"],
+                "wavelength": 781.25,
+                "bandwidth": 20.0,
                 "encoding": {
                     "dtype": "int16",
                     "scale_factor": 0.0001,
@@ -180,6 +197,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
+                            "Unfold dataarray to dataset / band",
                             "Rechunk by to / time 165"
                         ],
                         "remarks": ""
@@ -198,6 +216,8 @@
                 "units": "n.a.",
                 "dtype": "float32",
                 "dims": ["time", "lat", "lon"],
+                "wavelength": 864.35,
+                "bandwidth": 21.5,
                 "encoding": {
                     "dtype": "int16",
                     "scale_factor": 0.0001,
@@ -211,6 +231,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
+                            "Unfold dataarray to dataset / band",
                             "Rechunk by to / time 165"
                         ],
                         "remarks": ""
@@ -243,6 +264,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
+                            "Unfold dataarray to dataset / band",
                             "Rechunk by to / time 165"
                         ],
                         "remarks": ""
@@ -263,7 +285,8 @@
                 },
                 "store_id": "sentinelhub",
                 "open_params": {
-                    "mosaicking_order": "leastCC"
+                    "mosaicking_order": "leastCC",
+                    "four_d": "True"
                 }
             }
         ]

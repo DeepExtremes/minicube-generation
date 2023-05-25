@@ -10,6 +10,9 @@
 ### 1.2
 * Reverted setting as it was redundant (versions 1.0 to 1.2 all offer least 
   cloud coverage)
+### 1.3
+* Read all bands for a time step in one request (functional change that results
+  in slightly different metadata)  
   
 ## era5
 ### 1.0
@@ -18,7 +21,7 @@
   "sp_mean", "sshf_max", "sshf_min", "sshf_mean", "ssr_max", "ssr_min", 
   "ssr_mean", "t2m_max", "t2m_min", "t2m_mean", "tp_max", "tp_min", "tp_mean"
 
-## cci_landcoever_map
+## cci_landcover_map
 ### 1.0
 * Initial version with band "lccs_class"
 
@@ -42,11 +45,19 @@
 
 ## s2cloudless_cloudmask
 ### 1.0 
-* Initial version with bands "CLM" and "CLP"
+* Initial version with band "CLM"
+### 1.1
+* Also include band "CLP"
+### 1.2
+* Read all bands for a time step in one request (functional change that results
+  in slightly different metadata)  
 
 ## sen2cor_cloudmask
 ### 1.0 
 * Initial version with band "CLD"
+### 1.1
+* Read all bands for a time step in one request (functional change that results
+  in slightly different metadata)  
 
 ## unetmobv2_cloudmask
 ### 1.0 

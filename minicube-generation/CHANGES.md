@@ -1,3 +1,8 @@
+## Changes in 1.0.1
+* Changed cube generation process to start processes until maximum is reached
+* Use `four_d` parameter for sentinelhub store to decrease number of requests
+* Introduced `COMPONONENTVERSIONS.md` 
+
 ## Changes in 1.0
 * Introduced updating mechanism and completely overhauled config generation.
   There are now two types of configuration files: base and update.

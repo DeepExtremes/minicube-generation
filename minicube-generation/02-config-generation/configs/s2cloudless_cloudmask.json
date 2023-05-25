@@ -2,7 +2,7 @@
     "properties": {
         "metadata": {
             "configuration_versions": {
-                "s2cloudless_cloudmask": 1.1
+                "s2cloudless_cloudmask": 1.2
             }
         },
         "variables": [
@@ -21,6 +21,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
+                            "Unfold dataarray to dataset / band",
                             "Rechunk by to / time 165"
                         ],
                         "remarks": ""
@@ -47,6 +48,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
+                            "Unfold dataarray to dataset / band",
                             "Rechunk by to / time 165"
                         ],
                         "remarks": ""
@@ -70,7 +72,8 @@
                 },
                 "store_id": "sentinelhub",
                 "open_params": {
-                    "mosaicking_order": "leastCC"
+                    "mosaicking_order": "leastCC",
+                    "four_d": "True"
                 }
             }
         ]
