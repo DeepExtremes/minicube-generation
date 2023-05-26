@@ -284,6 +284,9 @@
                     }
                 },
                 "store_id": "sentinelhub",
+                "store_params": {
+                    "num_retries": 400
+                },
                 "open_params": {
                     "mosaicking_order": "leastCC",
                     "four_d": "True"
