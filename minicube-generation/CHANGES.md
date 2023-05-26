@@ -1,7 +1,10 @@
 ## Changes in 1.0.1
 * Changed cube generation process to start processes until maximum is reached
 * Use `four_d` parameter for sentinelhub store to decrease number of requests
-* Introduced `COMPONONENTVERSIONS.md` 
+* Introduced `COMPONONENTVERSIONS.md`
+* Version 2.0 of event cubes: Correctly adjust the longitude so that correct
+  values are read.
+  Also, changed datatype from floating point to integer values 
 
 ## Changes in 1.0
 * Introduced updating mechanism and completely overhauled config generation.

@@ -209,6 +209,13 @@ def _execute_processing_step(processing_step: str,
             ds_source=ps_ds,
             data_array_to_unfold=params_string
         )
+    if processing_step.startswith('Change data type'):
+        var_name, data_type = params_string.split(' ')
+        return _change_data_type(
+            ds_source=ps_ds,
+            var_name=var_name,
+            data_type=data_type
+        )
     raise ValueError(f'Processing step "{processing_step}" not found')
 
 
@@ -262,7 +269,8 @@ def _get_s3_store(version: str):
 
 def _write_ds(ds: xr.Dataset, mc_config: dict):
     print(f'Writing dataset {ds.data_id}')
-    s3_store = _get_s3_store(mc_config['properties']['version'])
+    version = mc_config['properties']['version']
+    s3_store = _get_s3_store(version)
     encodings = _get_encoding_dict(ds)
     s3_store.write_data(
         ds, f"{ds.data_id}.zarr", encoding=encodings
@@ -517,6 +525,12 @@ def _aggregate_monthly(ds_source: xr.Dataset, aggregated_var_name: str) \
     return ds.assign_coords(spatial_ref=ds_source.spatial_ref)
 
 
+def _change_data_type(ds_source: xr.Dataset,
+                      var_name: str,
+                      data_type:str) -> xr.Dataset:
+    return ds_source.assign(var_name=ds_source[var_name].astype(data_type))
+
+
 def _rechunk(ds_source: xr.Dataset, dim_name: str, chunk_size:int) -> xr.Dataset:
     ds = ds_source
     for data_var in ds.data_vars:
@@ -529,7 +543,9 @@ def _rechunk(ds_source: xr.Dataset, dim_name: str, chunk_size:int) -> xr.Dataset
 
 
 def _move_longitude(ds_source: xr.Dataset) -> xr.Dataset:
-    return ds_source.assign(longitude=ds_source.longitude - 180.0)
+    lon_size_05 = ds_source['longitude'].shape[0] // 2
+    ds = ds_source.roll(longitude=lon_size_05, roll_coords=True)
+    return ds.assign_coords(longitude=(((ds.longitude + 180) % 360) - 180))
 
 
 def _pick(ds: xr.Dataset, ending: str) -> xr.Dataset:

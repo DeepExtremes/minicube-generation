@@ -42,6 +42,9 @@
 ## event_arrays
 ### 1.0 
 * Initial version with bands "events" and "event_labels"
+### 2.0
+* Read events correctly
+* Save as integers rather than floating point numbers
 
 ## s2cloudless_cloudmask
 ### 1.0 
