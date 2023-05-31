@@ -2,7 +2,7 @@
     "properties": {
         "metadata": {
             "configuration_versions": {
-                "copernicus_dem": 1.0
+                "copernicus_dem": 2.0
             }
         },
         "variables": [
@@ -19,6 +19,7 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Copernicus DEM",
+                            "Merge with ",
                             "Resample spatially to S2L2A",
                             "Rename from to /params/ band_1 cop_dem"
                         ],

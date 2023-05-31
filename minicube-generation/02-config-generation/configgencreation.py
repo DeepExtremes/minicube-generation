@@ -53,7 +53,7 @@ def open_config(path: str) -> dict:
     return json.load(config_file)
 
 
-def _get_dem_file_path(lon: int, lat: int) -> str:
+def _get_dem_file_path(lon: float, lat: float) -> str:
     if lon < 0:
         lon_str = f'W{int(abs(lon - 1)):03}'
     else:
@@ -93,23 +93,55 @@ def _get_deafrica_ndvi_file_path(lon: float, lat: float, var_name: str) \
            f'1984--P37Y_{var_name}.tif'
 
 
+def _get_dem_file_paths(tc:dict) -> List[str]:
+    lower_left_dem_file_path = _get_dem_file_path(
+        tc['properties']['metadata']['geospatial_lon_min'],
+        tc['properties']['metadata']['geospatial_lat_min']
+    )
+    lower_right_dem_file_path = _get_dem_file_path(
+        tc['properties']['metadata']['geospatial_lon_max'],
+        tc['properties']['metadata']['geospatial_lat_min']
+    )
+    upper_left_dem_file_path = _get_dem_file_path(
+        tc['properties']['metadata']['geospatial_lon_min'],
+        tc['properties']['metadata']['geospatial_lat_max']
+    )
+    upper_right_dem_file_path = _get_dem_file_path(
+        tc['properties']['metadata']['geospatial_lon_max'],
+        tc['properties']['metadata']['geospatial_lat_max']
+    )
+    dem_files = [lower_left_dem_file_path]
+    if lower_left_dem_file_path != lower_right_dem_file_path:
+        dem_files.append(lower_right_dem_file_path)
+    if lower_left_dem_file_path != upper_left_dem_file_path:
+        dem_files.append(upper_left_dem_file_path)
+    if upper_left_dem_file_path != upper_right_dem_file_path and \
+            lower_right_dem_file_path != upper_right_dem_file_path:
+        dem_files.append(upper_right_dem_file_path)
+    return dem_files
+
+
 def fill_config_with_missing_values(
         tc: dict, center_lon: float, center_lat: float
 ) -> dict:
-    dem_file_path = _get_dem_file_path(center_lon, center_lat)
+    dem_file_paths = _get_dem_file_paths(tc)
     for variable in tc['properties']['variables']:
         if variable['name'] == 'cop_dem':
             variable['sources'][0]['processing_steps'][0] = \
-                f'Read {dem_file_path}'
+                f'Read {dem_file_paths[0]}'
+            if len(dem_file_paths) > 1:
+                variable['sources'][0]['processing_steps'][1] = \
+                    f'Merge with {" ".join(dem_file_paths[1:])}'
             break
     no_ndvi_climatology = False
     for source in tc['properties']['sources']:
         if source['name'] == 'Copernicus DEM 30m':
             current_key = list(source['datasets'].keys())[0]
             dem_datasets_dict_save = source['datasets'][current_key]
-            source['datasets'] = {
-                dem_file_path: dem_datasets_dict_save
-            }
+            dem_datasets = {}
+            for dem_file_path in dem_file_paths:
+                dem_datasets[dem_file_path] = dem_datasets_dict_save
+            source['datasets'] = dem_datasets
         elif source['name'] == 'NDVI Climatology':
             for ds_value_dict in source['datasets'].values():
                 for da_key, da_dict in \

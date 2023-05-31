@@ -10,6 +10,7 @@ import sys
 import time
 import xarray as xr
 from typing import Dict
+from typing import List
 
 from xcube.core.gridmapping import GridMapping
 from xcube.core.store import new_data_store
@@ -216,6 +217,9 @@ def _execute_processing_step(processing_step: str,
             var_name=var_name,
             data_type=data_type
         )
+    if processing_step.startswith('Merge'):
+        return _merge(ds_source=ps_ds,
+                      other_ds=list(additional_sources.values()))
     raise ValueError(f'Processing step "{processing_step}" not found')
 
 
@@ -472,6 +476,11 @@ def generate_cube(mc_config: dict,
                     resampling_target = datasets[
                         processing_step.split('to ')[1].split(' /params/')[0]]
                 additional_sources['resampling_target'] = resampling_target
+            elif processing_step.startswith('Merge with '):
+                to_merge = processing_step.split('with ')[1].split(' ')
+                if to_merge[0] != '':
+                    for i, ds in enumerate(to_merge):
+                        additional_sources[f'merge_{i}'] = datasets[ds]
             ps_ds = _execute_processing_step(processing_step, ps_ds,
                                              additional_sources, mc_config)
         if update:
@@ -540,6 +549,11 @@ def _rechunk(ds_source: xr.Dataset, dim_name: str, chunk_size:int) -> xr.Dataset
                                                chunk_sizes={dim_name: chunk_size},
                                                format_name='zarr')
     return ds
+
+
+def _merge(ds_source: xr.Dataset, other_ds: List[xr.Dataset]):
+    other_ds.append(ds_source)
+    return xr.merge(other_ds)
 
 
 def _move_longitude(ds_source: xr.Dataset) -> xr.Dataset:
