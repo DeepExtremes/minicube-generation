@@ -167,7 +167,7 @@ def _execute_processing_step(processing_step: str,
             ds=ps_ds,
             center_lat=float(center_lat),
             center_lon=float(center_lon),
-            num_degrees=int(params_string) if params_string else None
+            num_degrees=float(params_string) if params_string else None
         )
     if processing_step.startswith('Pick /'):
         return _pick(ps_ds, ending=params_string)
@@ -595,19 +595,16 @@ def _resample_spatially(ds_source: xr.Dataset, ds_target: xr.Dataset,
                         target_crs: str, spatial_resolution: int = None) \
         -> xr.Dataset:
     target_gm = GridMapping.from_dataset(ds_target)
-    adjusted_target_gm = None
-    if spatial_resolution:
-        target_res = target_gm.x_res
-        scale = target_res / spatial_resolution
-        adjusted_target_gm = target_gm.scale(scale)
     try:
         ds = ds_source.rio.reproject(target_crs)
     except rioxarray.exceptions.MissingCRS:
         source_gm = GridMapping.from_dataset(ds_source)
         ds = ds_source.rio.write_crs(source_gm.crs)
         ds = ds.rio.reproject(target_gm.crs)
-    ds = resample_in_space(ds, target_gm=target_gm)
-    if adjusted_target_gm:
+    if spatial_resolution:
+        target_res = target_gm.x_res
+        scale = target_res / spatial_resolution
+        adjusted_target_gm = target_gm.scale(scale)
         ds = resample_in_space(ds, target_gm=adjusted_target_gm)
         new_gm = GridMapping.from_dataset(ds)
         ds = ds.rename_dims({dim_name: f'{dim_name}_{spatial_resolution}'
@@ -617,6 +614,7 @@ def _resample_spatially(ds_source: xr.Dataset, ds_target: xr.Dataset,
         if 'crs' in ds:
             ds = ds.rename_vars({'crs': f'crs_{spatial_resolution}'})
     else:
+        ds = resample_in_space(ds, target_gm=target_gm)
         if 'x' in ds_target.dims and 'y' in ds_target.dims:
             ds = ds.assign(x=ds_target.x)
             ds = ds.assign(y=ds_target.y)
@@ -646,7 +644,7 @@ def _resample_temporally(ds_source: xr.Dataset, ds_target: xr.Dataset,
 def _subset_spatially_around_center(ds: xr.Dataset,
                                     center_lat: float,
                                     center_lon: float,
-                                    num_degrees: int = 1) -> xr.Dataset:
+                                    num_degrees: float = 1.0) -> xr.Dataset:
     min_lat = center_lat - num_degrees
     max_lat = center_lat + num_degrees
     min_lon = center_lon - num_degrees

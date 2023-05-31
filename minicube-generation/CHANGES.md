@@ -6,7 +6,8 @@
   values are read.
   Also, changed datatype from floating point to integer values
 * Version 2.0 of Copernicus DEM: Cases where minicube areas span over multiple
-  DEM tiles are considered. 
+  DEM tiles are considered.
+* Version 2.0 of Landcover Map: Top line of data is not empty anymore  
 
 ## Changes in 1.0
 * Introduced updating mechanism and completely overhauled config generation.

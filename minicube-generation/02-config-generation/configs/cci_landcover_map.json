@@ -2,7 +2,7 @@
     "properties": {
         "metadata": {
             "configuration_versions": {
-                "cci_landcover_map": 1.0
+                "cci_landcover_map": 2.0
             }
         },
         "variables": [
@@ -21,7 +21,7 @@
                             "Read LC-1x2160x2160-1.0.0.zarr",
                             "Adjust bound coordinates",
                             "Pick time value /params/ 6",
-                            "Subset spatially around center /params/ 1",
+                            "Subset spatially around center /params/ 0.1",
                             "Resample spatially to S2L2A /params/ 300"
                         ],
                         "remarks": ""

@@ -24,6 +24,8 @@
 ## cci_landcover_map
 ### 1.0
 * Initial version with band "lccs_class"
+### 2.0 
+* Top line of data is not empty anymore  
 
 ## copernicus_dem
 ### 1.0
