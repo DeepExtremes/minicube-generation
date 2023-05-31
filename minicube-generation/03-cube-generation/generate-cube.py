@@ -18,6 +18,7 @@ from xcube.core.mldataset import MultiLevelDataset
 from xcube.core.resampling import resample_in_space
 from xcube.core.update import update_dataset_chunk_encoding
 
+from earthnetcloudmask import compute_earthnet_cloudmask
 from maskaycloudmask import compute_cloud_mask
 
 _MC_REGISTRY = 'deepextremes-minicubes/mc_registry_v2.csv'
@@ -205,6 +206,8 @@ def _execute_processing_step(processing_step: str,
         )
     if processing_step.startswith('Compute Cloud Mask (maskay)'):
         return compute_cloud_mask(ds_source=ps_ds)
+    if processing_step.startswith('Compute Cloud Mask (earthnet)'):
+        return compute_earthnet_cloudmask(ds_source=ps_ds)
     if processing_step.startswith('Unfold dataarray to dataset'):
         return _unfold_dataarray_to_dataset(
             ds_source=ps_ds,
@@ -455,6 +458,7 @@ def generate_cube(mc_config: dict,
                 aws_secret_access_key, mc_config
             )
         )
+    datasets['base'] = base_mc
 
     output_datasets = []
     for i, processing_steps_s in enumerate(processing_steps_set):
