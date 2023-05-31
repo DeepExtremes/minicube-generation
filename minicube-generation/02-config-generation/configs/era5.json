@@ -19,10 +19,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Total Evaporation",
-                            "Pick / max",
+                            "Pick /params/ max",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / max",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ max",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -47,10 +47,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Total Evaporation",
-                            "Pick / min",
+                            "Pick /params/ min",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / min",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ min",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -75,10 +75,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Total Evaporation",
-                            "Pick / mean",
+                            "Pick /params/ mean",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / mean",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ mean",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -103,10 +103,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Potential Evaporation",
-                            "Pick / max",
+                            "Pick /params/ max",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / max",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ max",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -131,10 +131,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Potential Evaporation",
-                            "Pick / min",
+                            "Pick /params/ min",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / min",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ min",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -159,10 +159,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Potential Evaporation",
-                            "Pick / mean",
+                            "Pick /params/ mean",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / mean",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ mean",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -187,10 +187,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Surface Latent Heat Flux",
-                            "Pick / max",
+                            "Pick /params/ max",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / max",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ max",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -215,10 +215,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Surface Latent Heat Flux",
-                            "Pick / min",
+                            "Pick /params/ min",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / min",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ min",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -243,10 +243,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Surface Latent Heat Flux",
-                            "Pick / mean",
+                            "Pick /params/ mean",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / mean",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ mean",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -271,10 +271,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Surface Pressure",
-                            "Pick / max",
+                            "Pick /params/ max",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / max",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ max",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -299,10 +299,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Surface Pressure",
-                            "Pick / min",
+                            "Pick /params/ min",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / min",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ min",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -327,10 +327,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Surface Pressure",
-                            "Pick / mean",
+                            "Pick /params/ mean",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / mean",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ mean",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -355,10 +355,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Surface Sensible Heat Flux",
-                            "Pick / max",
+                            "Pick /params/ max",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / max",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ max",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -383,10 +383,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Surface Sensible Heat Flux",
-                            "Pick / min",
+                            "Pick /params/ min",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / min",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ min",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -411,10 +411,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Surface Sensible Heat Flux",
-                            "Pick / mean",
+                            "Pick /params/ mean",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / mean",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ mean",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -439,10 +439,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Surface Net Solar Radiation",
-                            "Pick / max",
+                            "Pick /params/ max",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / max",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ max",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -467,10 +467,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Surface Net Solar Radiation",
-                            "Pick / min",
+                            "Pick /params/ min",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / min",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ min",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -495,10 +495,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Surface Net Solar Radiation",
-                            "Pick / mean",
+                            "Pick /params/ mean",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / mean",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ mean",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -523,10 +523,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land 2m Temperature",
-                            "Pick / max",
+                            "Pick /params/ max",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / max",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ max",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -551,10 +551,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land 2m Temperature",
-                            "Pick / min",
+                            "Pick /params/ min",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / min",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ min",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -579,10 +579,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land 2m Temperature",
-                            "Pick / mean",
+                            "Pick /params/ mean",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / mean",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ mean",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -607,10 +607,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Total Precipitation",
-                            "Pick / max",
+                            "Pick /params/ max",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / max",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ max",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -635,10 +635,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Total Precipitation",
-                            "Pick / min",
+                            "Pick /params/ min",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / min",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ min",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }
@@ -663,10 +663,10 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read Era-5 Land Total Precipitation",
-                            "Pick / mean",
+                            "Pick /params/ mean",
                             "Pick center spatial value",
-                            "Resample temporally to S2L2A / mean",
-                            "Rechunk by to / time 495"
+                            "Resample temporally to S2L2A /params/ mean",
+                            "Rechunk by to /params/ time 495"
                         ],
                         "remarks": ""
                     }

@@ -20,7 +20,7 @@
                         "processing_steps": [
                             "Read Copernicus DEM",
                             "Resample spatially to S2L2A",
-                            "Rename from to / band_1 cop_dem"
+                            "Rename from to /params/ band_1 cop_dem"
                         ],
                         "remarks": ""
                     }

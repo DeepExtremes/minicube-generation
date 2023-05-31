@@ -20,9 +20,9 @@
                         "processing_steps": [
                             "Read LC-1x2160x2160-1.0.0.zarr",
                             "Adjust bound coordinates",
-                            "Pick time value / 6",
-                            "Subset spatially around center / 1",
-                            "Resample spatially to S2L2A / 300"
+                            "Pick time value /params/ 6",
+                            "Subset spatially around center /params/ 1",
+                            "Resample spatially to S2L2A /params/ 300"
                         ],
                         "remarks": ""
                     }

@@ -27,8 +27,8 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Unfold dataarray to dataset / band",
-                            "Rechunk by to / time 165"
+                            "Unfold dataarray to dataset /params/ band",
+                            "Rechunk by to /params/ time 165"
                         ],
                         "remarks": ""
                     }
@@ -61,8 +61,8 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Unfold dataarray to dataset / band",
-                            "Rechunk by to / time 165"
+                            "Unfold dataarray to dataset /params/ band",
+                            "Rechunk by to /params/ time 165"
                         ],
                         "remarks": ""
                     }
@@ -95,8 +95,8 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Unfold dataarray to dataset / band",
-                            "Rechunk by to / time 165"
+                            "Unfold dataarray to dataset /params/ band",
+                            "Rechunk by to /params/ time 165"
                         ],
                         "remarks": ""
                     }
@@ -129,8 +129,8 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Unfold dataarray to dataset / band",
-                            "Rechunk by to / time 165"
+                            "Unfold dataarray to dataset /params/ band",
+                            "Rechunk by to /params/ time 165"
                         ],
                         "remarks": ""
                     }
@@ -163,8 +163,8 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Unfold dataarray to dataset / band",
-                            "Rechunk by to / time 165"
+                            "Unfold dataarray to dataset /params/ band",
+                            "Rechunk by to /params/ time 165"
                         ],
                         "remarks": ""
                     }
@@ -197,8 +197,8 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Unfold dataarray to dataset / band",
-                            "Rechunk by to / time 165"
+                            "Unfold dataarray to dataset /params/ band",
+                            "Rechunk by to /params/ time 165"
                         ],
                         "remarks": ""
                     }
@@ -231,8 +231,8 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Unfold dataarray to dataset / band",
-                            "Rechunk by to / time 165"
+                            "Unfold dataarray to dataset /params/ band",
+                            "Rechunk by to /params/ time 165"
                         ],
                         "remarks": ""
                     }
@@ -264,8 +264,8 @@
                         "attributions": [],
                         "processing_steps": [
                             "Read S2L2A",
-                            "Unfold dataarray to dataset / band",
-                            "Rechunk by to / time 165"
+                            "Unfold dataarray to dataset /params/ band",
+                            "Rechunk by to /params/ time 165"
                         ],
                         "remarks": ""
                     }

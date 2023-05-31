@@ -129,8 +129,8 @@ def _execute_processing_step(processing_step: str,
                              mc_config: dict
                             ) -> xr.Dataset:
     # Add processing step implementations as necessary
-    params_string = processing_step.split('/ ')[1] \
-        if '/' in processing_step \
+    params_string = processing_step.split('/params/ ')[1] \
+        if '/params/' in processing_step \
         else None
     if processing_step.startswith('Resample spatially to '):
         return _resample_spatially(
@@ -470,7 +470,7 @@ def generate_cube(mc_config: dict,
                     resampling_target = _resample_version(base_mc)
                 else:
                     resampling_target = datasets[
-                        processing_step.split('to ')[1].split(' /')[0]]
+                        processing_step.split('to ')[1].split(' /params/')[0]]
                 additional_sources['resampling_target'] = resampling_target
             ps_ds = _execute_processing_step(processing_step, ps_ds,
                                              additional_sources, mc_config)
