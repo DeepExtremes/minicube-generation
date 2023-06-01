@@ -19,7 +19,7 @@ from configgencreation import open_config
 
 _BASE_COMPONENTS = [
     's2_l2_bands', 'copernicus_dem', 'de_africa_climatology', 'era5',
-    'event_arrays', 'cci_landcover_map'
+    'event_arrays', 'cci_landcover_map', 'earthnet_cloudmask'
 ]
 _ID_TEMPLATE = "mc_{lon}_{lat}_{version}_{date}"
 _TITLE_TEMPLATE = "Minicube at {lon} {lat}"
@@ -108,7 +108,7 @@ def _generate_base_configs(location_file: str):
         with base_fs.open(
                 f'deepextremes-minicubes/configs/base/{version}/'
                 f'{data_id}.geojson', 'wb') as mc_json:
-            mc_json.write(json.dumps(tc).encode('utf-8'))
+            mc_json.write(json.dumps(tc, indent=2).encode('utf-8'))
 
 
 if __name__ == "__main__":
