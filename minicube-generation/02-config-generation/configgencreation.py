@@ -137,7 +137,7 @@ def fill_config_with_missing_values(
             if len(dem_file_paths) > 1:
                 variable['sources'][0]['processing_steps'][1] = \
                     f'Merge with {" ".join(dem_file_paths[1:])}'
-        break
+            break
     no_ndvi_climatology = False
     for source in tc['properties']['sources']:
         if source['name'] == 'Copernicus DEM 30m':
@@ -292,7 +292,7 @@ def create_update_config(mc: xr.Dataset, mc_path: str,
     with base_fs.open(
             f'deepextremes-minicubes/configs/update/'
             f'{version}/{data_id}.geojson', 'wb') as mc_json:
-        mc_json.write(json.dumps(update_config).encode('utf-8'))
+        mc_json.write(json.dumps(update_config, indent=2).encode('utf-8'))
 
 
 def get_store(bucket: str):
@@ -344,7 +344,11 @@ def merge_configs(config_1: dict, config_2: dict) -> dict:
                     out_list += value
                     merged_config[key] = out_list
                 else:
-                    merged_config[key] = current_value + value
+                    if key == 'variable_names':
+                        merged_config[key] = list(set(current_value + value))
+                        merged_config[key].sort()
+                    else:
+                        merged_config[key] = current_value + value
             elif isinstance(current_value, dict) and isinstance(value, dict):
                 merged_config[key] = merge_configs(current_value, value)
         else:
