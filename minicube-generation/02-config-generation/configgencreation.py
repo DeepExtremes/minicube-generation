@@ -230,14 +230,14 @@ def _get_geospatial_bbox_from_spatial_bbox(utm_proj: Proj,
 
 def create_update_config(mc: xr.Dataset, mc_path: str,
                          components_to_update: List[str]):
-    update_config = open_config('update.geojson')
+    update_config = open_config('update.geojson', update=True)
     mc_configuration_versions = \
         mc.attrs.get('metadata', {}).get('configuration_versions', {})
     update_config['properties'] = mc.attrs
     any_changes = False
     for component in components_to_update:
         mc_component_version = mc_configuration_versions.get(component, '-1')
-        component_config = open_config(f'configs/{component}.json')
+        component_config = open_config(f'configs/{component}.json', update=True)
         current_component_version = \
             component_config.get('properties', {}).get('metadata', {}).\
                 get('configuration_versions', {}).get(component)

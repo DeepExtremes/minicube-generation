@@ -29,9 +29,9 @@ _HALF_IMAGE_SIZE = 64 * _SPATIAL_RES
 
 
 def _create_base_config_template():
-    base_config = open_config('base.geojson')
+    base_config = open_config('base.geojson', update=False)
     for component in _BASE_COMPONENTS:
-        component_config = open_config(f'configs/{component}.json')
+        component_config = open_config(f'configs/{component}.json', update=False)
         base_config = merge_configs(base_config, component_config)
     return base_config
 
