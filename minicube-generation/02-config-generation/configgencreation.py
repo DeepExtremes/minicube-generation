@@ -48,9 +48,14 @@ def get_available_components():
     return available_components
 
 
-def open_config(path: str) -> dict:
+def open_config(path: str, update: bool) -> dict:
     config_file = open(path)
-    return json.load(config_file)
+    config = json.load(config_file)
+    if 'update' in config:
+        if update:
+            return config['update']
+        return config['base']
+    return config
 
 
 def _get_dem_file_path(lon: float, lat: float) -> str:
@@ -132,6 +137,7 @@ def fill_config_with_missing_values(
             if len(dem_file_paths) > 1:
                 variable['sources'][0]['processing_steps'][1] = \
                     f'Merge with {" ".join(dem_file_paths[1:])}'
+        break
     no_ndvi_climatology = False
     for source in tc['properties']['sources']:
         if source['name'] == 'Copernicus DEM 30m':
@@ -222,10 +228,6 @@ def _get_geospatial_bbox_from_spatial_bbox(utm_proj: Proj,
     return np.swapaxes(np.asarray((lons, lats)), 0, 1).tolist()
 
 
-def _update_config(tc: dict) -> dict:
-
-
-
 def create_update_config(mc: xr.Dataset, mc_path: str,
                          components_to_update: List[str]):
     update_config = open_config('update.geojson')
@@ -264,7 +266,6 @@ def create_update_config(mc: xr.Dataset, mc_path: str,
     update_config = fill_config_with_missing_values(
         update_config, center_lon, center_lat
     )
-    update_config = _update_config(update_config)
     geospatial_bbox = _get_geospatial_bbox_from_spatial_bbox(utm_proj,
                                                              spatial_bbox)
     update_config['geometry']['coordinates'][0] = geospatial_bbox

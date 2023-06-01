@@ -1,52 +1,125 @@
 {
-    "properties": {
-        "metadata": {
-            "configuration_versions":{
-                "earthnet_cloudmask": 1.0
-            }
-        },
-        "variables": [
-            {
-                "name": "cloudmask_en",
-                "long_name": "Deep Learning Cloud Mask, trained by Vitus Benson on cloudSEN12, leveraging code from César Aybar",
-                "units": "n.a.",
-                "dtype": "uint8",
-                "dims": ["time", "x", "y"],
-                "flag_values": [0, 1, 2, 3, 4],
-                "flag_meanings": ["free_sky", "cloud", "cloud_shadows", "snow", "masked_other_reasons"],
-                "sources": [
-                    {
-                        "home_url": "https://www.sentinel-hub.com/",
-                        "data_url": "https://www.sentinel-hub.com/explore/data/",
-                        "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
-                        "attributions": [],
-                        "processing_steps": [
-                            "Read S2L2A",
-                            "Unfold dataarray to dataset /params/ band",
-                            "Compute Cloud Mask (earthnet)"
-                        ],
-                        "remarks": ""
-                    }
-                ]
-            }
-        ],
-        "sources": [
-            {
-                "name": "Sentinel Hub",
-                "datasets": {
-                    "S2L2A": {
-                        "variable_names": ["B02", "B03", "B04", "B8A"]
-                    }
-                },
-                "store_id": "sentinelhub",
-                "store_params": {
-                    "num_retries": 400
-                },
-                "open_params": {
-                    "mosaicking_order": "leastCC",
-                    "four_d": "True"
+    "base": {
+        "properties": {
+            "metadata": {
+                "configuration_versions": {
+                    "earthnet_cloudmask": 1.0
                 }
-            }
-        ]
+            },
+            "variables": [
+                {
+                    "name": "cloudmask_en",
+                    "long_name": "Deep Learning Cloud Mask, trained by Vitus Benson on cloudSEN12, leveraging code from César Aybar",
+                    "units": "n.a.",
+                    "dtype": "uint8",
+                    "dims": [
+                        "time",
+                        "x",
+                        "y"
+                    ],
+                    "flag_values": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4
+                    ],
+                    "flag_meanings": [
+                        "free_sky",
+                        "cloud",
+                        "cloud_shadows",
+                        "snow",
+                        "masked_other_reasons"
+                    ],
+                    "sources": [
+                        {
+                            "home_url": "https://www.sentinel-hub.com/",
+                            "data_url": "https://www.sentinel-hub.com/explore/data/",
+                            "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
+                            "attributions": [],
+                            "processing_steps": [
+                                "Read S2L2A",
+                                "Unfold dataarray to dataset /params/ band",
+                                "Compute Cloud Mask (earthnet)"
+                            ],
+                            "remarks": ""
+                        }
+                    ]
+                }
+            ],
+            "sources": [
+                {
+                    "name": "Sentinel Hub",
+                    "datasets": {
+                        "S2L2A": {
+                            "variable_names": [
+                                "B02",
+                                "B03",
+                                "B04",
+                                "B8A"
+                            ]
+                        }
+                    },
+                    "store_id": "sentinelhub",
+                    "store_params": {
+                        "num_retries": 400
+                    },
+                    "open_params": {
+                        "mosaicking_order": "leastCC",
+                        "four_d": "True"
+                    }
+                }
+            ]
+        }
+    },
+    "update": {
+        "properties": {
+            "metadata": {
+                "configuration_versions": {
+                    "earthnet_cloudmask": 1.0
+                }
+            },
+            "variables": [
+                {
+                    "name": "cloudmask_en",
+                    "long_name": "Deep Learning Cloud Mask, trained by Vitus Benson on cloudSEN12, leveraging code from César Aybar",
+                    "units": "n.a.",
+                    "dtype": "uint8",
+                    "dims": [
+                        "time",
+                        "x",
+                        "y"
+                    ],
+                    "flag_values": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4
+                    ],
+                    "flag_meanings": [
+                        "free_sky",
+                        "cloud",
+                        "cloud_shadows",
+                        "snow",
+                        "masked_other_reasons"
+                    ],
+                    "sources": [
+                        {
+                            "home_url": "https://www.sentinel-hub.com/",
+                            "data_url": "https://www.sentinel-hub.com/explore/data/",
+                            "license_url": "https://open.esa.int/copernicus-sentinel-satellite-imagery-under-open-licence/",
+                            "attributions": [],
+                            "processing_steps": [
+                                "Read base",
+                                "Compute Cloud Mask (earthnet)"
+                            ],
+                            "remarks": ""
+                        }
+                    ]
+                }
+            ],
+            "sources": []
+        }
     }
 }
