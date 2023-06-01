@@ -5,7 +5,7 @@ import xarray as xr
 
 _CHECKPOINT_URL = "https://nextcloud.bgc-jena.mpg.de/s/Ti4aYdHe2m3jBHy/" \
                   "download/mobilenetv2_l2a_rgbnir.pth"
-_CHECKPOINT_BANDS = ['B02', 'B03', "B04", "B8A"]
+_CHECKPOINT_BANDS = ['B02', 'B03', 'B04', 'B8A']
 _CHECKPOINT_COORDS = ['time', 'band', 'y', 'x']
 _SCALE_FACTOR = 2
 
@@ -33,7 +33,7 @@ def compute_earthnet_cloudmask(ds_source: xr.Dataset) -> xr.Dataset:
     model.load_state_dict(checkpoint)
     model.eval()
     ds = _prepare_source(ds_source)
-    da = ds.to_array(dim='band').fillna(1.0).transpose(_CHECKPOINT_COORDS)
+    da = ds.to_array(dim='band').fillna(1.0).transpose('time', 'band', 'y', 'x')
     x = torch.from_numpy(da.values.astype("float32"))
     b, c, h, w = x.shape
 
@@ -58,5 +58,5 @@ def compute_earthnet_cloudmask(ds_source: xr.Dataset) -> xr.Dataset:
     y_hat = y_hat[:, h_pad_left:-h_pad_right, w_pad_left:-w_pad_right]
 
     res = xr.Dataset()
-    res['mask'] = (("time", "y", "x"), y_hat.cpu().numpy().astype('uint8'))
+    res['cloudmask_en'] = (("time", "y", "x"), y_hat.cpu().numpy().astype('uint8'))
     return res
