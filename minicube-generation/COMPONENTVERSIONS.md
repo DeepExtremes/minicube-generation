@@ -68,3 +68,12 @@
 ### 1.0 
 * Initial version with bands "cloud_clear_prob", "cloud_thick_prob", 
   "cloud_thin_prob", "cloud_shadow_prob"
+
+## earthnet_cloudmask
+### 1.0
+* Initial version with band "cloudmask_en" and flag coding:
+    0 - free_sky
+    1 - cloud
+    2 - cloud_shadows
+    3 - snow
+    4 - masked_other_reasons

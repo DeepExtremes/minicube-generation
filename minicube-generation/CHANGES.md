@@ -7,7 +7,14 @@
   Also, changed datatype from floating point to integer values
 * Version 2.0 of Copernicus DEM: Cases where minicube areas span over multiple
   DEM tiles are considered.
-* Version 2.0 of Landcover Map: Top line of data is not empty anymore  
+* Version 2.0 of Landcover Map: Top line of data is not empty anymore
+* Version 1.0 of Earthnet Cloud Mask with band cloudmask_en and flag coding:
+    0 - free_sky
+    1 - cloud
+    2 - cloud_shadows
+    3 - snow
+    4 - masked_other_reasons
+* Allow specifying base and update configurations  
 
 ## Changes in 1.0
 * Introduced updating mechanism and completely overhauled config generation.
