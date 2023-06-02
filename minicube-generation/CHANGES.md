@@ -15,6 +15,8 @@
     3 - snow
     4 - masked_other_reasons
 * Allow specifying base and update configurations  
+* Added script `create-location-files.py` to create location files from 
+  event tables on s3
 
 ## Changes in 1.0
 * Introduced updating mechanism and completely overhauled config generation.
