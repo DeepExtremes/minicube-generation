@@ -5,6 +5,7 @@ import glob
 import json
 import math
 import numpy as np
+import pandas as pd
 from pyproj import Proj
 from shapely.geometry import Point
 from typing import List
@@ -36,6 +37,7 @@ _ERA5_VARIABLE_MAP = {
 _REGIONS = gpd.read_file(
     'https://explorer.digitalearth.africa/api/regions/ndvi_climatology_ls'
 )
+_REGISTRY = 'mc_registry_v3_test.csv'
 _SHORT_MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
                  'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 
@@ -228,11 +230,46 @@ def _get_geospatial_bbox_from_spatial_bbox(utm_proj: Proj,
     return np.swapaxes(np.asarray((lons, lats)), 0, 1).tolist()
 
 
+def _get_configuration_versions_from_registry(mc_id: str) -> dict:
+    component_versions = {}
+    storage_options = dict(
+        anon=False,
+        key=os.environ["S3_USER_STORAGE_KEY"],
+        secret=os.environ["S3_USER_STORAGE_SECRET"]
+    )
+    fs = fsspec.filesystem('s3', **storage_options)
+    with fs.open(f'deepextremes-minicubes/{_REGISTRY}', 'r') as gjreg:
+        gpdreg = gpd.GeoDataFrame(pd.read_csv(gjreg))
+        entry = gpdreg.loc[gpdreg.mc_id == mc_id]
+        component_versions['s2_l2_bands'] = entry.s2_l2_bands.values[0]
+        component_versions['era5'] = entry.era5.values[0]
+        component_versions['cci_landcover_map'] = \
+            entry.cci_landcover_map.values[0]
+        component_versions['copernicus_dem'] = \
+            entry.copernicus_dem.values[0]
+        component_versions['de_africa_climatology'] = \
+            entry.de_africa_climatology.values[0]
+        component_versions['event_arrays'] = \
+            entry.event_arrays.values[0]
+        component_versions['s2cloudless_cloudmask'] = \
+            entry.s2cloudless_cloudmask.values[0]
+        component_versions['sen2cor_cloudmask'] = \
+            entry.sen2cor_cloudmask.values[0]
+        component_versions['unetmobv2_cloudmask'] = \
+            entry.unetmobv2_cloudmask.values[0]
+        component_versions['earthnet_cloudmask'] = \
+            entry.earthnet_cloudmask.values[0]
+    return component_versions
+
+
 def create_update_config(mc: xr.Dataset, mc_path: str,
                          components_to_update: List[str]):
     update_config = open_config('update.geojson', update=True)
     mc_configuration_versions = \
         mc.attrs.get('metadata', {}).get('configuration_versions', {})
+    if len(mc_configuration_versions) == 0:
+        mc_configuration_versions = \
+            _get_configuration_versions_from_registry(mc.attrs.get('data_id'))
     update_config['properties'] = mc.attrs
     any_changes = False
     for component in components_to_update:
@@ -247,6 +284,10 @@ def create_update_config(mc: xr.Dataset, mc_path: str,
         any_changes = True
     if not any_changes:
         return
+    for component, component_version in mc_configuration_versions.items():
+        if component not in update_config.get('properties').get('metadata').\
+                get('configuration_versions'):
+            update_config['properties']['metadata']['configuration_versions'][component] = component_version
     crs = update_config['properties']['spatial_ref']
     utm_proj = Proj(crs)
     spatial_bbox = [
@@ -285,6 +326,9 @@ def create_update_config(mc: xr.Dataset, mc_path: str,
             center_lon_readable, center_lat_readable, version, count
         )
     update_config["properties"]["data_id"] = data_id
+    update_config["properties"]["base_version"] = \
+        update_config["properties"]["version"]
+    update_config["properties"]["version"] = version
     if not update_config.get('properties').get('location_id'):
         update_config["properties"]["location_id"] = \
             f'{center_lon_readable}_{center_lat_readable}'
