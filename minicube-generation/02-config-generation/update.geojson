@@ -9,6 +9,7 @@
     },
     "config_type": "update",
     "properties": {
-        "base_minicube": ""
+        "base_minicube": "",
+        "base_version": ""
     }
 }
