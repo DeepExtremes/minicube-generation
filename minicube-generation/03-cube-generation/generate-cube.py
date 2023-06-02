@@ -325,6 +325,8 @@ def _get_gdf_from_mc(mc: xr.Dataset) -> gpd.GeoDataFrame:
         configuration_versions.get('sen2cor_cloudmask', -1)
     unetmobv2_cloudmask_version = \
         configuration_versions.get('unetmobv2_cloudmask', -1)
+    earthnet_cloudmask_version = \
+        configuration_versions.get('earthnet_cloudmask', -1)
     reg_gdf = gpd.GeoDataFrame(
         {
             'mc_id': mc_id,
@@ -344,6 +346,7 @@ def _get_gdf_from_mc(mc: xr.Dataset) -> gpd.GeoDataFrame:
             's2cloudless_cloudmask': s2cloudless_cloudmask_version,
             'sen2cor_cloudmask': sen2cor_cloudmask_version,
             'unetmobv2_cloudmask': unetmobv2_cloudmask_version,
+            'earthnet_cloudmask': earthnet_cloudmask_version,
             'remarks': remarks
         },
         index=[0]
@@ -418,7 +421,7 @@ def _write_entry(ds: xr.Dataset, mc_config: dict):
 
 
 def _open_base_mc(mc_config: dict):
-    s3_store = _get_s3_store(mc_config.get("properties").get("version"))
+    s3_store = _get_s3_store(mc_config.get("properties").get("base_version"))
     base_mc_id = mc_config["properties"].get("base_minicube")
     adjusted_base_mc_id = base_mc_id.split('/')[-1]
     if not s3_store.has_data(adjusted_base_mc_id):
@@ -508,7 +511,7 @@ def generate_cube(mc_config: dict,
         base_mc_id = mc_config["properties"].get("base_minicube")
         # remove leading bucket name
         adjusted_base_mc_id = base_mc_id.split('/')[-1]
-        _get_s3_store(mc_config['properties']['version']).\
+        _get_s3_store(mc_config['properties']['base_version']).\
             delete_data(adjusted_base_mc_id)
         print("Deleted previous entry of cube")
 
