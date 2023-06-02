@@ -34,7 +34,9 @@ if __name__ == "__main__":
     aws_access_key_id = sys.argv[2]
     aws_secret_access_key = sys.argv[3]
     running_processes = dict()
-    for geojson_file in geojson_files:
+    not_start_count = 0
+    start_more_count = 0
+    for i, geojson_file in enumerate(geojson_files):
         command = ['python', 'generate-cube.py', f'{geojson_file}',
                    f'{aws_access_key_id}', f'{aws_secret_access_key}']
         if len(sys.argv) == 5:
@@ -46,10 +48,16 @@ if __name__ == "__main__":
                 running_processes.pop(process)
             num_running_processes = len(running_processes.items())
             if num_running_processes < int(sys.argv[4]):
-                print(f'Only {num_running_processes} running, will start one more')
+                print(f'Only {num_running_processes} running, '
+                      f'will start one more ({start_more_count})')
                 running_processes[geojson_file] = subprocess.Popen(command)
+                start_more_count += 1
+                not_start_count = 0
             else:
-                print(f'Already {num_running_processes} running, will not start more right now')
+                print(f'Already {num_running_processes} running, '
+                      f'will not start more right now ({not_start_count})')
+                not_start_count += 1
+                start_more_count = 0
             time.sleep(60)
         else:
             subprocess.run(command)
