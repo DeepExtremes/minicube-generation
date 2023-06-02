@@ -2,13 +2,16 @@
 
 Contains the instructions on how to create minicubes for the DeepExtremes 
 project.
+Note that most of these scripts require you to have environment variables 
+`S3_USER_STORAGE_KEY` and `S3_USER_STORAGE_SECRET` set.
 
 ## Location Extraction 
 
-This part is by not in use anymore, as locations are not extracted by this 
-software anymore but provided by project partners as csv tables.
+Move to `01-location-extraction` and execute `create-locations.py`. 
+This will create files `inside_events.csv` and `outside_events.csv` that may
+serve as input for the configuration generation.
 
-The following is just for documentation purposes:
+The following is deprecated:
 
 Move to `01-location-extraction` and execute `extract-event-locations.py`.
 This file expects four additional coordinates: minimum longitude, 
@@ -38,7 +41,7 @@ The configs will be written to the `deepextremes-minicubes` bucket under
 `deepextremes-minicubes/configs/base/<version>/`.
 A base configuration will consist of the following components: `s2_l2_bands`, 
 `copernicus_dem`, `de_africa_climatology`, `era5`, `event_arrays`, 
-`cci_landcover_map`.
+`cci_landcover_map`, and `earthnet_cloudmask`.
 
 To create an update config, you can either run `generate-update-config` 
 or `generate-update-configs`, depending on whether you want to update one single
@@ -49,8 +52,8 @@ updated.
 These components might be: `s2_l2_bands`, 
 `copernicus_dem`, `de_africa_climatology`, `era5`, `event_arrays`, 
 `cci_landcover_map`, `s2cloudless_cloud_mask`, `sen2cor_cloudmask`, 
-`unetmobv2_cloudmask`.
-In case the config generation datects that the minicube already has the latest
+`unetmobv2_cloudmask`, or `earthnet_cloudmask`.
+In case the config generation detects that the minicube already has the latest
 version of the component, that component will not be updated.
 If there are no components to be updated, no config will be written.
 The configs will be written to the `deepextremes-minicubes` bucket under
@@ -68,7 +71,7 @@ There is a fourth optional parameter that expects an integer value. If you
 use this, generation processes will be started every minutes as indicated by
 this parameter. If omitted, processes are run consecutively.
 The minicubes are written to the `deepextremes-minicubes` bucket on AWS,
-registry entries are written to `deepextremes-minicubes/mc_registry_v2.csv`.
+registry entries are written to `deepextremes-minicubes/mc_registry_v3.csv`.
 In case the configs are update configs, the previous minicubes are deleted and 
 their entries removed from the registry.
 
