@@ -22,18 +22,9 @@ def _prepare_source(ds: xr.Dataset) -> xr.Dataset:
     return ds_sub
 
 
-def compute_earthnet_cloudmask(ds_source: xr.Dataset) -> xr.Dataset:
-    checkpoint = load_url(_CHECKPOINT_URL)
-    model = smp.Unet(
-        encoder_name="mobilenet_v2",
-        encoder_weights=None,
-        classes=4,
-        in_channels=len(_CHECKPOINT_BANDS)
-    )
-    model.load_state_dict(checkpoint)
-    model.eval()
-    ds = _prepare_source(ds_source)
-    da = ds.to_array(dim='band').fillna(1.0).transpose('time', 'band', 'y', 'x')
+def _compute_earthnet_cloudmask_sub_temp(ds: xr.Dataset, model):
+    da = ds.to_array(dim='band').fillna(1.0).transpose('time', 'band',
+                                                                'y', 'x')
     x = torch.from_numpy(da.values.astype("float32"))
     b, c, h, w = x.shape
 
@@ -46,7 +37,7 @@ def compute_earthnet_cloudmask(ds_source: xr.Dataset) -> xr.Dataset:
     w_pad_right = ((w_big - w) + 1) // 2
 
     x = torch.nn.functional.pad(x, (
-    w_pad_left, w_pad_right, h_pad_left, h_pad_right), mode="reflect")
+        w_pad_left, w_pad_right, h_pad_left, h_pad_right), mode="reflect")
     x = torch.nn.functional.interpolate(
         x, scale_factor=_SCALE_FACTOR, mode='bilinear'
     )
@@ -58,5 +49,30 @@ def compute_earthnet_cloudmask(ds_source: xr.Dataset) -> xr.Dataset:
     y_hat = y_hat[:, h_pad_left:-h_pad_right, w_pad_left:-w_pad_right]
 
     res = xr.Dataset()
-    res['cloudmask_en'] = (("time", "y", "x"), y_hat.cpu().numpy().astype('uint8'))
-    return res
+    res['cloudmask_en'] = (
+    ("time", "y", "x"), y_hat.cpu().numpy().astype('uint8'))
+    return res.assign(time=ds.time)
+
+
+def compute_earthnet_cloudmask(ds_source: xr.Dataset) -> xr.Dataset:
+    checkpoint = load_url(_CHECKPOINT_URL)
+    model = smp.Unet(
+        encoder_name="mobilenet_v2",
+        encoder_weights=None,
+        classes=4,
+        in_channels=len(_CHECKPOINT_BANDS)
+    )
+    model.load_state_dict(checkpoint)
+    model.eval()
+    ds = _prepare_source(ds_source)
+    time_step_size = int(len(ds.time) / 45)
+    datasets_to_merge = []
+    for time_step in range(0, len(ds.time), time_step_size):
+        print(f'Processing earthnet cloud mask for time step '
+              f'{int(time_step / time_step_size) + 1} of '
+              f'{int(len(ds.time) / time_step_size)}')
+        ds_sub_temp = ds.isel(time=slice(time_step, time_step + time_step_size))
+        res = _compute_earthnet_cloudmask_sub_temp(ds_sub_temp, model)
+        datasets_to_merge.append(res)
+    ds_res = xr.merge(datasets_to_merge)
+    return ds_res
