@@ -22,6 +22,9 @@ from earthnetcloudmask import compute_earthnet_cloudmask
 from maskaycloudmask import compute_cloud_mask
 
 _MC_REGISTRY = 'deepextremes-minicubes/mc_registry_v3.csv'
+now_hour = datetime.now().strftime('%Y-%m-%d:%H')
+_MC_SAVE_REGISTRY = \
+    f'deepextremes-minicubes/registry_saves/mc_registry_v3_save_{now_hour}.csv'
 _MONTHS = dict(
     jan=1, feb=2, mar=3, apr=4, may=5, jun=6,
     jul=7, aug=8, sep=9, oct=10, nov=11, dec=12
@@ -414,6 +417,8 @@ def _write_entry(ds: xr.Dataset, mc_config: dict):
                 gpdreg = gpdreg.append(gdf)
                 with fs.open(_MC_REGISTRY, 'w') as registry:
                     registry.write(gpdreg.to_csv(index=False))
+                with fs.open(_MC_SAVE_REGISTRY, 'w') as save_registry:
+                    save_registry.write(gpdreg.to_csv(index=False))
             not_written = False
             os.remove('.lock')
         except FileExistsError:
