@@ -541,7 +541,7 @@ def _aggregate_monthly(ds_source: xr.Dataset, aggregated_var_name: str) \
 def _change_data_type(ds_source: xr.Dataset,
                       var_name: str,
                       data_type:str) -> xr.Dataset:
-    return ds_source.assign(var_name=ds_source[var_name].astype(data_type))
+    return ds_source.assign({var_name: ds_source[var_name].astype(data_type)})
 
 
 def _rechunk(ds_source: xr.Dataset, dim_name: str, chunk_size:int) -> xr.Dataset:
