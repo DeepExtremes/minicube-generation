@@ -17,6 +17,7 @@
 * Allow specifying base and update configurations  
 * Added script `create-location-files.py` to create location files from 
   event tables on s3
+* Use new table `mc_registry_v3.csv` with new column `earthnet_cloudmask`  
 
 ## Changes in 1.0
 * Introduced updating mechanism and completely overhauled config generation.

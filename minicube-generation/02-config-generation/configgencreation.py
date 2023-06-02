@@ -37,7 +37,7 @@ _ERA5_VARIABLE_MAP = {
 _REGIONS = gpd.read_file(
     'https://explorer.digitalearth.africa/api/regions/ndvi_climatology_ls'
 )
-_REGISTRY = 'mc_registry_v3_test.csv'
+_REGISTRY = 'mc_registry_v3.csv'
 _SHORT_MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
                  'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 

@@ -21,7 +21,7 @@ from xcube.core.update import update_dataset_chunk_encoding
 from earthnetcloudmask import compute_earthnet_cloudmask
 from maskaycloudmask import compute_cloud_mask
 
-_MC_REGISTRY = 'deepextremes-minicubes/mc_registry_v2.csv'
+_MC_REGISTRY = 'deepextremes-minicubes/mc_registry_v3.csv'
 _MONTHS = dict(
     jan=1, feb=2, mar=3, apr=4, may=5, jun=6,
     jul=7, aug=8, sep=9, oct=10, nov=11, dec=12

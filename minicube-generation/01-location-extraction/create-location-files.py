@@ -3,7 +3,7 @@ import geopandas as gpd
 import os
 import pandas as pd
 
-_MC_REGISTRY = 'mc_registry_v2.csv'
+_MC_REGISTRY = 'mc_registry_v3.csv'
 location_files = [('inside_events', 'MinicubeLocation_test2.csv'),
                   ('outside_events', 'MinicubeLocation_nonEvent_v1.csv')]
 
