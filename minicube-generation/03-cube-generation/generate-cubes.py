@@ -17,7 +17,7 @@ def get_fs():
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 5:
+    if len(sys.argv) > 3:
         raise ValueError('Too many arguments')
     geojson_location = sys.argv[1]
     if geojson_location.endswith('.geojson'):
@@ -31,15 +31,12 @@ if __name__ == "__main__":
                 remove_items.append(geojson_file)
         for remove_item in remove_items:
             geojson_files.remove(remove_item)
-    aws_access_key_id = sys.argv[2]
-    aws_secret_access_key = sys.argv[3]
     running_processes = dict()
     not_start_count = 0
     start_more_count = 0
     for i, geojson_file in enumerate(geojson_files):
-        command = ['python', 'generate-cube.py', f'{geojson_file}',
-                   f'{aws_access_key_id}', f'{aws_secret_access_key}']
-        if len(sys.argv) == 5:
+        command = ['python', 'generate-cube.py', f'{geojson_file}']
+        if len(sys.argv) == 3:
             processes_to_remove = []
             for process_name, process in running_processes.items():
                 if process.poll() is not None:
@@ -47,7 +44,7 @@ if __name__ == "__main__":
             for process in processes_to_remove:
                 running_processes.pop(process)
             num_running_processes = len(running_processes.items())
-            if num_running_processes < int(sys.argv[4]):
+            if num_running_processes < int(sys.argv[2]):
                 print(f'Only {num_running_processes} running, '
                       f'will start one more ({start_more_count})')
                 running_processes[geojson_file] = subprocess.Popen(command)

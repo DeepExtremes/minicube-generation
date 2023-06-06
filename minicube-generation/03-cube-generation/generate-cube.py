@@ -38,8 +38,6 @@ _S2_L2_SCHEMA_PROPERTIES = [
 
 
 def _get_source_datasets(source_config: dict,
-                         aws_access_key_id: str,
-                         aws_secret_access_key: str,
                          mc_config: dict) -> Dict[str, xr.Dataset]:
     datasets = {}
     if 'store_id' in source_config:
@@ -51,10 +49,10 @@ def _get_source_datasets(source_config: dict,
             source_config['store_params']['storage_options']['anon'] = False
         if source_config.get('store_params', {}).get('storage_options', {}).\
                 get('client_kwargs', {}).get('aws_access_key_id') == "":
-            source_config['store_params']['storage_options']['client_kwargs']['aws_access_key_id'] = aws_access_key_id
+            source_config['store_params']['storage_options']['client_kwargs']['aws_access_key_id'] = os.environ["S3_USER_STORAGE_KEY"]
         if source_config.get('store_params', {}).get('storage_options', {}).\
                 get('client_kwargs', {}).get('aws_secret_access_key') == "":
-            source_config['store_params']['storage_options']['client_kwargs']['aws_secret_access_key'] = aws_secret_access_key
+            source_config['store_params']['storage_options']['client_kwargs']['aws_secret_access_key'] = os.environ["S3_USER_STORAGE_SECRET"]
         if source_config.get('open_params', {}).get("four_d", False) == "True":
             source_config['open_params']['four_d'] = True
         elif source_config.get('open_params', {}).get("four_d", False) \
@@ -447,10 +445,7 @@ def _resample_version(base_mc: xr.Dataset) -> xr.Dataset:
     return base_mc.drop_vars(to_drop)
 
 
-def generate_cube(mc_config: dict,
-                  aws_access_key_id: str,
-                  aws_secret_access_key:str
-                  ):
+def generate_cube(mc_config: dict):
     print(f'Processing minicube configuration '
           f'{mc_config["properties"]["data_id"]}')
     update = mc_config.get("config_type", "base") == 'update'
@@ -467,10 +462,7 @@ def generate_cube(mc_config: dict,
     for source in sources:
         print(f'Read {source["name"]}')
         datasets.update(
-            _get_source_datasets(
-                source, aws_access_key_id,
-                aws_secret_access_key, mc_config
-            )
+            _get_source_datasets(source, mc_config)
         )
     datasets['base'] = base_mc
 
@@ -686,11 +678,9 @@ def _unfold_dataarray_to_dataset(ds_source: xr.Dataset,
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 4:
+    if len(sys.argv) > 2:
         raise ValueError('Too many arguments')
     geojson_file = sys.argv[1]
-    aws_access_key_id = sys.argv[2]
-    aws_secret_access_key = sys.argv[3]
     fs = _get_minicubes_fs()
     with fs.open(geojson_file, 'r') as gjf:
         mc_config = json.load(gjf)
@@ -701,11 +691,7 @@ if __name__ == "__main__":
                       f'will not generate but move config to created folder')
             else:
                 _remove_cube_if_exists(mc_config)
-                generate_cube(
-                    mc_config,
-                    aws_access_key_id,
-                    aws_secret_access_key
-                )
+                generate_cube(mc_config)
         else:   # config_type == 'update'
             if not _already_registered(mc_config):
                 location_id = mc_config["properties"]["location_id"]
@@ -713,11 +699,7 @@ if __name__ == "__main__":
                       f'will not update but move config to created folder')
                 _remove_cube_if_exists(mc_config)
             else:
-                generate_cube(
-                    mc_config,
-                    aws_access_key_id,
-                    aws_secret_access_key
-                )
+                generate_cube(mc_config)
     split_geojson_file = geojson_file.split('/')
     split_geojson_file.insert(-1, 'created')
     new_file = '/'.join(split_geojson_file)
