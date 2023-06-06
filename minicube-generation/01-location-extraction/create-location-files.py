@@ -1,11 +1,34 @@
 import fsspec
 import geopandas as gpd
+import json
 import os
 import pandas as pd
 
+from typing import List
+
 _MC_REGISTRY = 'mc_registry_v3.csv'
-location_files = [('inside_events', 'MinicubeLocation_test2.csv'),
-                  ('outside_events', 'MinicubeLocation_nonEvent_v1.csv')]
+location_files = [
+    ('csv', 'csv_events', 'MinicubeLocation_test2.csv'),
+    ('csv', 'csv_non_events', 'MinicubeLocation_nonEvent_v1.csv'),
+    ('json', 'json_non_events', 'sampling_purelc_nonevent_location.json')
+]
+
+
+def _replace_class_dict(dfs: List[dict]) -> List[dict]:
+    for df in dfs:
+        if df['Class'] == 1.0:
+            df['Class'] = 'broadtree'
+        elif df['Class'] == 2.0:
+            df['Class'] = 'grassland'
+        elif df['Class'] == 3.0:
+            df['Class'] = 'mixedtree'
+        elif df['Class'] == 4.0:
+            df['Class'] = 'needletree'
+        elif df['Class'] == 5.0:
+            df['Class'] = 'soil'
+        elif df['Class'] == 6.0:
+            df['Class'] = 'urban'
+    return dfs
 
 
 def _replace_class(df: pd.DataFrame) -> pd.DataFrame:
@@ -23,11 +46,72 @@ def _drop_days(df: pd.DataFrame) -> pd.DataFrame:
     return df.drop('EventDays', axis=1)
 
 
-def _add_location_ids(df: pd.DataFrame) -> pd.DataFrame:
+def _add_location_ids_dict(dfs: List[dict]) -> List[dict]:
+    for df in dfs:
+        df['LocationId'] = '{:,.2f}'.format(df['Longitude']) + '_' + \
+                           '{:,.2f}'.format(df['Latitude'])
+    return dfs
+
+
+def _prepare_csv(df: pd.DataFrame) -> pd.DataFrame:
     location_ids = df.Longitude.map('{:,.2f}'.format) + \
                    '_' + df.Latitude.map('{:,.2f}'.format)
     df.insert(2, 'location_ids', location_ids)
+    df['EventStart'] = 'not'
+    df['EventEnd'] = 'not'
+    df['EventLabel'] = 'not'
     return df
+
+
+def _prepare_dict(dfs: List[dict]) -> List[dict]:
+    for df in dfs:
+        df.pop('EventDays')
+        df.pop('LocationId')
+        df['EventStart'] = 'not'
+        df['EventEnd'] = 'not'
+        df['EventLabel'] = 'not'
+    return dfs
+
+
+def _get_output_df_from_csv(location_file: str, mc_reg: gpd.GeoDataFrame, fs) \
+        -> pd.DataFrame:
+    with fs.open(f'deepextremes-minicubes/input_events/{location_file}',
+                 'r') as gjlocs:
+        event_locations = gpd.GeoDataFrame(pd.read_csv(gjlocs))
+    event_locations = _drop_days(event_locations)
+    event_locations = _replace_class(event_locations)
+    event_locations = _prepare_csv(event_locations)
+    # remove locations which are already included in the minicube registry
+    remaining_event_locations = event_locations.loc[
+        ~event_locations['location_ids'].isin(mc_reg['location_id'].array)]
+    remaining_event_locations = remaining_event_locations.drop('location_ids',
+                                                               axis=1)
+    return remaining_event_locations.reindex(
+        columns=['Longitude', 'Latitude', 'Class', 'EventStart', 'EventEnd',
+                 'EventLabel', 'OutsideEvent']
+    )
+
+
+def _get_output_df_from_json(location_file: str, mc_reg: gpd.GeoDataFrame, fs) \
+        -> pd.DataFrame:
+    with fs.open(f'deepextremes-minicubes/input_events/{location_file}',
+                 'r') as gjlocs:
+        event_locations = json.load(gjlocs)
+        event_locations = [value for key, value in event_locations.items()]
+    event_locations = _replace_class_dict(event_locations)
+    event_locations = _add_location_ids_dict(event_locations)
+    remaining_event_locations = []
+    for event_location in event_locations:
+        if event_location['LocationId'] not in mc_reg['location_id'].array:
+            remaining_event_locations.append(event_location)
+    remaining_event_locations = _prepare_dict(remaining_event_locations)
+    output_df = pd.DataFrame(columns=['Longitude', 'Latitude', 'Class',
+                                      'EventStart', 'EventEnd',
+                                      'EventLabel', 'OutsideEvent'])
+    for remaining_event_location in remaining_event_locations:
+        output_df = output_df.append(remaining_event_location,
+                                     ignore_index=True)
+    return output_df
 
 
 def _create_location_files():
@@ -42,19 +126,11 @@ def _create_location_files():
     with fs.open(f'deepextremes-minicubes/{_MC_REGISTRY}', 'r') as gjreg:
         mc_reg = gpd.GeoDataFrame(pd.read_csv(gjreg))
     for location_file in location_files:
-        with fs.open(f'deepextremes-minicubes/input_events/{location_file[1]}', 'r') as gjlocs:
-            event_locations = gpd.GeoDataFrame(pd.read_csv(gjlocs))
-        event_locations = _drop_days(event_locations)
-        event_locations = _replace_class(event_locations)
-        event_locations = _add_location_ids(event_locations)
-        # remove locations which are already included in the minicube registry
-        remaining_event_locations = event_locations.loc[~event_locations['location_ids'].isin(mc_reg['location_id'].array)]
-        remaining_event_locations = remaining_event_locations.drop('location_ids', axis=1)
-        remaining_event_locations = remaining_event_locations.reindex(
-            columns=['Longitude', 'Latitude', 'Class', 'EventStart', 'EventEnd',
-                     'EventLabel', 'OutsideEvent']
-        )
-        remaining_event_locations.to_csv(f'{location_file[0]}.csv', index=False, sep='\t')
+        if location_file[0] == 'json':
+            output_df = _get_output_df_from_json(location_file[2], mc_reg, fs)
+        elif location_file[0] == 'csv':
+            output_df = _get_output_df_from_csv(location_file[2], mc_reg, fs)
+        output_df.to_csv(f'{location_file[1]}.csv', index=False, sep='\t')
 
 
 if __name__ == "__main__":

@@ -297,11 +297,16 @@ def _get_gdf_from_mc(mc: xr.Dataset) -> gpd.GeoDataFrame:
     path = f'deepextremes-minicubes/{version}/{mc_id}.zarr'
     creation_date = mc.attrs.get('creation_date')
     modification_date = mc.attrs.get('modification_date', creation_date)
-    events = str([(
-        mc.attrs.get('metadata', {}).get('event_label'),
-        mc.attrs.get('metadata', {}).get('event_start_time'),
-        mc.attrs.get('metadata', {}).get('event_end_time')
-    )])
+    events = '[]'
+    metadata = mc.attrs.get('metadata', {})
+    if metadata.get('event_label') != 'not' and \
+            metadata.get('event_start_time') != 'not' and \
+            metadata.get('event_end_time') != 'not':
+        events = str([(
+            metadata.get('event_label'),
+            metadata.get('event_start_time'),
+            metadata.get('event_end_time')
+        )])
 
     lon_min = mc.attrs.get('metadata', {}).get('geospatial_lon_min')
     lon_max = mc.attrs.get('metadata', {}).get('geospatial_lon_max')

@@ -1,4 +1,6 @@
 ## Changes in 1.1.1
+* Update `create-location-files.py` to support json and csv
+* Improved support of outside events
 
 ## Changes in 1.1
 * Changed cube generation process to start processes until maximum is reached
