@@ -1,3 +1,5 @@
+## Changes in 1.1.1
+
 ## Changes in 1.1
 * Changed cube generation process to start processes until maximum is reached
 * Use `four_d` parameter for sentinelhub store to decrease number of requests
