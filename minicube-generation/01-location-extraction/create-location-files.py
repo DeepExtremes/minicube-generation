@@ -57,9 +57,12 @@ def _prepare_csv(df: pd.DataFrame) -> pd.DataFrame:
     location_ids = df.Longitude.map('{:,.2f}'.format) + \
                    '_' + df.Latitude.map('{:,.2f}'.format)
     df.insert(2, 'location_ids', location_ids)
-    df['EventStart'] = 'not'
-    df['EventEnd'] = 'not'
-    df['EventLabel'] = 'not'
+    if 'EventStart' not in df:
+        df['EventStart'] = 'not'
+    if 'EventEnd' not in df:
+        df['EventEnd'] = 'not'
+    if 'EventLabel' not in df:
+        df['EventLabel'] = 'not'
     return df
 
 
@@ -67,9 +70,12 @@ def _prepare_dict(dfs: List[dict]) -> List[dict]:
     for df in dfs:
         df.pop('EventDays')
         df.pop('LocationId')
-        df['EventStart'] = 'not'
-        df['EventEnd'] = 'not'
-        df['EventLabel'] = 'not'
+        if 'EventStart' not in df:
+            df['EventStart'] = 'not'
+        if 'EventEnd' not in df:
+            df['EventEnd'] = 'not'
+        if 'EventLabel' not in df:
+            df['EventLabel'] = 'not'
     return dfs
 
 
