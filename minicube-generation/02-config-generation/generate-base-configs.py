@@ -18,8 +18,7 @@ from configgencreation import open_config
 
 
 _BASE_COMPONENTS = [
-    's2_l2_bands', 'copernicus_dem', 'de_africa_climatology', 'era5',
-    'event_arrays', 'cci_landcover_map', 'earthnet_cloudmask'
+    's2_l2_bands'
 ]
 _ID_TEMPLATE = "mc_{lon}_{lat}_{version}_{date}"
 _TITLE_TEMPLATE = "Minicube at {lon} {lat}"
