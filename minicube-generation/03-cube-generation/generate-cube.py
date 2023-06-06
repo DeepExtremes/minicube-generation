@@ -442,7 +442,8 @@ def _open_base_mc(mc_config: dict):
 
 def _resample_version(base_mc: xr.Dataset) -> xr.Dataset:
     to_drop = [dv for dv in base_mc.data_vars if not dv.startswith('B0')]
-    to_drop.remove('crs')
+    if 'crs' in to_drop:
+        to_drop.remove('crs')
     return base_mc.drop_vars(to_drop)
 
 
