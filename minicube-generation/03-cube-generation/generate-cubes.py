@@ -34,7 +34,9 @@ if __name__ == "__main__":
     running_processes = dict()
     not_start_count = 0
     start_more_count = 0
-    for i, geojson_file in enumerate(geojson_files):
+    config_pointer = 0
+    while config_pointer < len(geojson_files):
+        geojson_file = geojson_files[config_pointer]
         command = ['python', 'generate-cube.py', f'{geojson_file}']
         if len(sys.argv) == 3:
             processes_to_remove = []
@@ -50,6 +52,7 @@ if __name__ == "__main__":
                 running_processes[geojson_file] = subprocess.Popen(command)
                 start_more_count += 1
                 not_start_count = 0
+                config_pointer += 1
             else:
                 print(f'Already {num_running_processes} running, '
                       f'will not start more right now ({not_start_count})')
@@ -58,3 +61,4 @@ if __name__ == "__main__":
             time.sleep(60)
         else:
             subprocess.run(command)
+            config_pointer += 1
