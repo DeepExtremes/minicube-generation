@@ -281,7 +281,7 @@ def _write_ds(ds: xr.Dataset, mc_config: dict):
     s3_store = _get_s3_store(version)
     encodings = _get_encoding_dict(ds)
     s3_store.write_data(
-        ds, f"{ds.data_id}.zarr", encoding=encodings
+        ds, f"{ds.data_id}.zarr", encoding=encodings, replace=True
     )
     # enable to write local
     # ds.to_zarr(f"{version}/{ds.data_id}.zarr")
