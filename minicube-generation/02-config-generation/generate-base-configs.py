@@ -113,21 +113,9 @@ def _generate_base_configs(location_file: str):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 2:
-        location_file = sys.argv[1]
-    elif len(sys.argv) == 1:
-        version = 'unknown'
-        with open('../01-location-extraction/locationversions.py', 'r') as v:
-            version = v.read().split('=')[1]
-        date = datetime.now().strftime('%Y-%m-%d')
-        filename = f'../minicube_locations_v{version}_{date}_*.csv'
-        print(f'Looking for files matching pattern {filename}')
-        location_files = glob.glob(filename)
-        if len(location_files) == 0:
-            raise ValueError('Could not determine location file, '
-                             'please state one')
-        location_file = location_files[0]
-        print(f'No location file given, will pick {location_file}')
-    else:
-        raise ValueError('Too many arguments given')
+    if len(sys.argv) != 2:
+        raise ValueError('Not exactly one argument given: this function requires a '
+                         'path to a file containing event locations as created in'
+                         'step 01-location-extraction.')
+    location_file = sys.argv[1]
     _generate_base_configs(location_file)
