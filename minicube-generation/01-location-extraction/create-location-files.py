@@ -10,7 +10,8 @@ _MC_REGISTRY = 'mc_registry_v3.csv'
 location_files = [
     ('csv', 'csv_events', 'MinicubeLocation_test2.csv'),
     ('csv', 'csv_non_events', 'MinicubeLocation_nonEvent_v1.csv'),
-    ('json', 'json_non_events', 'sampling_purelc_nonevent_location.json')
+    ('json', 'json_non_events', 'sampling_purelc_nonevent_location.json'),
+    ('json', 'json_events', '5_sampling_purelc_event_location.json')
 ]
 
 
