@@ -12,7 +12,10 @@
   cloud coverage)
 ### 1.3
 * Read all bands for a time step in one request (functional change that results
-  in slightly different metadata)  
+  in slightly different metadata)
+### 1.4 
+* Do not read time steps not provided by sentinelhub 
+* Set no data areas to nan (are 0.0 in version 1.3)
   
 ## era5
 ### 1.0
@@ -77,3 +80,5 @@
     2 - cloud_shadows
     3 - snow
     4 - masked_other_reasons
+### 1.1
+* Do not process time steps not provided by sentinelhub

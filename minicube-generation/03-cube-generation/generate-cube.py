@@ -2,6 +2,7 @@ from datetime import datetime
 import geopandas as gpd
 import json
 import fsspec
+import numpy as np
 import os
 import pandas as pd
 import rioxarray
@@ -64,24 +65,37 @@ def _get_source_datasets(source_config: dict,
         )
         for dataset_name, variable_names in source_config['datasets'].items():
             if dataset_name == 'S2L2A':
-                open_properties = _S2_L2_SCHEMA_PROPERTIES
+                with open('s2l2a_properties.json', 'r') as s2l2a_properties:
+                    open_properties = json.load(s2l2a_properties)
             else:
                 open_schema = \
                     source_store.get_open_data_params_schema(dataset_name)
-                open_properties = \
-                    list(open_schema.to_dict().get('properties').keys())
+                open_properties = open_schema.to_dict().get('properties')
+            open_property_keys = list(open_properties.keys())
             props = source_config.get('open_params', {})
-            if 'variable_names' in open_properties:
+            if 'variable_names' in open_property_keys:
                 props['variable_names'] = variable_names['variable_names']
-            if 'bbox' in open_properties:
+            if 'bbox' in open_property_keys:
                 props['bbox'] = mc_config['properties']['spatial_bbox']
-            if 'time_range' in open_properties:
-                props['time_range'] = mc_config['properties']['time_range']
-            if 'time_period' in open_properties:
+            if 'time_period' in open_property_keys:
                 props['time_period'] = mc_config['properties']['time_period']
-            if 'crs' in open_properties:
+            if 'time_range' in open_property_keys:
+                props['time_range'] = mc_config['properties']['time_range'].copy()
+                min_date = props['time_range'][0]
+                props_min_date = open_properties['time_range'].get(
+                    'items', [{}, {}])[0].get('minDate', None)
+                if props_min_date is not None:
+                    min_date = pd.Timestamp(min_date)
+                    props_min_date = pd.Timestamp(props_min_date)
+                    time_delta = props.get('time_period', '1D')
+                    td = pd.Timedelta(time_delta)
+                    while min_date <= props_min_date:
+                        min_date += td
+                    min_date -= td
+                props['time_range'][0] = min_date.strftime('%Y-%m-%d')
+            if 'crs' in open_property_keys:
                 props['crs'] = mc_config['properties']['spatial_ref']
-            if 'spatial_res' in open_properties:
+            if 'spatial_res' in open_property_keys:
                 props['spatial_res'] = mc_config['properties']['spatial_res']
             source_ds = source_store.open_data(
                 dataset_name,
@@ -89,7 +103,7 @@ def _get_source_datasets(source_config: dict,
             )
             if isinstance(source_ds, MultiLevelDataset):
                 source_ds = source_ds.base_dataset
-            if 'variable_names' not in open_properties:
+            if 'variable_names' not in open_property_keys:
                 non_requested_vars = []
                 for var in source_ds.data_vars:
                     if var not in variable_names['variable_names']:
@@ -159,6 +173,12 @@ def _execute_processing_step(processing_step: str,
             ds_source=ps_ds,
             time_range=mc_config['properties']['time_range']
         )
+    if processing_step == 'Pad time with fill values':
+        return _pad_time_with_fill_values(
+            ds_source=ps_ds,
+            time_range=mc_config['properties']['time_range'],
+            time_period=mc_config['properties']['time_period']
+        )
     if processing_step.startswith('Pick time value'):
         return _pick_time_value(ps_ds, index=int(params_string))
     if processing_step.startswith('Subset spatially around center'):
@@ -220,6 +240,14 @@ def _execute_processing_step(processing_step: str,
             ds_source=ps_ds,
             var_name=var_name,
             data_type=data_type
+        )
+    if processing_step.startswith('Set values below and equal to nan'):
+        threshold, var_names = params_string.split(' ')
+        var_names = var_names.split(',')
+        return _set_values_below_and_equal_to_nan(
+            ds_source=ps_ds,
+            threshold=float(threshold),
+            var_names=var_names
         )
     if processing_step.startswith('Merge'):
         return _merge(ds_source=ps_ds,
@@ -550,6 +578,18 @@ def _change_data_type(ds_source: xr.Dataset,
     return ds_source.assign({var_name: ds_source[var_name].astype(data_type)})
 
 
+def _set_values_below_and_equal_to_nan(ds_source: xr.Dataset,
+                             threshold: float,
+                             var_names: List[str]
+                             ):
+    if var_names is None:
+        var_names = ds_source.data_vars
+    assignments = {}
+    for var in var_names:
+        assignments[var] = ds_source[var].where(ds_source[var] > threshold)
+    return ds_source.assign(assignments)
+
+
 def _rechunk(ds_source: xr.Dataset, dim_name: str, chunk_size:int) -> xr.Dataset:
     ds = ds_source
     for data_var in ds.data_vars:
@@ -570,6 +610,25 @@ def _move_longitude(ds_source: xr.Dataset) -> xr.Dataset:
     lon_size_05 = ds_source['longitude'].shape[0] // 2
     ds = ds_source.roll(longitude=lon_size_05, roll_coords=True)
     return ds.assign_coords(longitude=(((ds.longitude + 180) % 360) - 180))
+
+
+def _pad_time_with_fill_values(ds_source: xr.Dataset,
+                               time_range,
+                               time_period: str) -> xr.Dataset:
+    min_date = pd.Timestamp(time_range[0]).to_datetime64()
+    ds_min_date = ds_source['time'][0].values
+    time_delta = pd.Timedelta(time_period).to_timedelta64()
+    half_time_delta = time_delta / 2
+    min_date = min_date + half_time_delta
+    prefix_time_values = []
+    while min_date < ds_min_date:
+        prefix_time_values.append(min_date)
+        min_date += time_delta
+    if len(prefix_time_values) > 0:
+        prefix_time_values = np.array(prefix_time_values)
+        new_time_values = np.concatenate((prefix_time_values, ds_source['time'].values))
+        return ds_source.reindex({'time': new_time_values})
+    return ds_source
 
 
 def _pick(ds: xr.Dataset, ending: str) -> xr.Dataset:
@@ -665,8 +724,7 @@ def _subset_spatially_around_center(ds: xr.Dataset,
         return ds.sel(lat=slice(min_lat, max_lat), lon=slice(min_lon, max_lon))
 
 
-def _subset_temporally(ds_source: xr.Dataset, time_range) \
-        -> xr.Dataset:
+def _subset_temporally(ds_source: xr.Dataset, time_range) -> xr.Dataset:
     return ds_source.sel(time=slice(time_range[0], time_range[1]))
 
 

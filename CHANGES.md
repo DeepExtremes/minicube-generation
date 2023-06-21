@@ -2,6 +2,8 @@
 * Update `create-location-files.py` to support json and csv
 * Improved support of outside events
 * Cleaned up repository
+* Do not read time steps not provided by sentinelhub
+* Set no data areas in s2 l2 data to nan
 
 ## Changes in 1.1
 * Changed cube generation process to start processes until maximum is reached

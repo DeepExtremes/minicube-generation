@@ -3,7 +3,7 @@
         "properties": {
             "metadata": {
                 "configuration_versions": {
-                    "earthnet_cloudmask": 1.0
+                    "earthnet_cloudmask": 1.1
                 }
             },
             "variables": [
@@ -40,7 +40,8 @@
                             "processing_steps": [
                                 "Read S2L2A",
                                 "Unfold dataarray to dataset /params/ band",
-                                "Compute Cloud Mask (earthnet)"
+                                "Compute Cloud Mask (earthnet)",
+                                "Pad time with fill values"
                             ],
                             "remarks": ""
                         }
@@ -76,7 +77,7 @@
         "properties": {
             "metadata": {
                 "configuration_versions": {
-                    "earthnet_cloudmask": 1.0
+                    "earthnet_cloudmask": 1.1
                 }
             },
             "variables": [
@@ -112,7 +113,8 @@
                             "attributions": [],
                             "processing_steps": [
                                 "Read base",
-                                "Compute Cloud Mask (earthnet)"
+                                "Compute Cloud Mask (earthnet)",
+                                "Pad time with fill values"
                             ],
                             "remarks": ""
                         }

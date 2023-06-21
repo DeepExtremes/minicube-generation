@@ -23,8 +23,7 @@ def _prepare_source(ds: xr.Dataset) -> xr.Dataset:
 
 
 def _compute_earthnet_cloudmask_sub_temp(ds: xr.Dataset, model):
-    da = ds.to_array(dim='band').fillna(1.0).transpose('time', 'band',
-                                                                'y', 'x')
+    da = ds.to_array(dim='band').fillna(1.0).transpose('time', 'band', 'y', 'x')
     x = torch.from_numpy(da.values.astype("float32"))
     b, c, h, w = x.shape
 
@@ -67,7 +66,9 @@ def compute_earthnet_cloudmask(ds_source: xr.Dataset) -> xr.Dataset:
     ds = _prepare_source(ds_source)
     time_step_size = int(len(ds.time) / 45)
     datasets_to_merge = []
-    for time_step in range(0, len(ds.time), time_step_size):
+    # We do not compute cloud masks for the first five time steps,
+    # as those are empty
+    for time_step in range(55, len(ds.time), time_step_size):
         print(f'Processing earthnet cloud mask for time step '
               f'{int(time_step / time_step_size) + 1} of '
               f'{int(len(ds.time) / time_step_size)}')
