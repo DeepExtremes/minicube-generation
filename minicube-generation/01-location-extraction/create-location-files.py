@@ -6,7 +6,7 @@ import pandas as pd
 
 from typing import List
 
-from ..constants import MC_REGISTRY
+from constants import MC_REGISTRY
 
 location_files = [
     ('csv', 'csv_events', 'MinicubeLocation_test2.csv'),

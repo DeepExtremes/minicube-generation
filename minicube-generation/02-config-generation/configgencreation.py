@@ -15,7 +15,7 @@ import xarray as xr
 
 from xcube.core.store import new_data_store
 
-from ..constants import MC_REGISTRY
+from constants import MC_REGISTRY
 
 _SPATIAL_RES = 20
 _HALF_IMAGE_SIZE = 64 * _SPATIAL_RES

@@ -21,8 +21,8 @@ from xcube.core.update import update_dataset_chunk_encoding
 
 from earthnetcloudmask import compute_earthnet_cloudmask
 from maskaycloudmask import compute_cloud_mask
-from ..constants import MC_REGISTRY
-from ..constants import SANDBOX_REGISTRY
+from constants import MC_REGISTRY
+from constants import SANDBOX_REGISTRY
 
 now_hour = datetime.now().strftime('%Y-%m-%d:%H')
 _MC_SAVE_REGISTRY = \
