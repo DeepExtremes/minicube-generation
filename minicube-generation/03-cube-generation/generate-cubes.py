@@ -35,6 +35,7 @@ if __name__ == "__main__":
     not_start_count = 0
     start_more_count = 0
     config_pointer = 0
+    failed_counter = 0
     while config_pointer < len(geojson_files):
         geojson_file = geojson_files[config_pointer]
         command = ['python', 'generate-cube.py', f'{geojson_file}']
@@ -43,9 +44,18 @@ if __name__ == "__main__":
             for process_name, process in running_processes.items():
                 if process.poll() is not None:
                     processes_to_remove.append(process_name)
+                    if process.returncode != 0:
+                        print(f'Process failed with code {process.returncode}')
+                        failed_counter += 1
+                    else:
+                        failed_counter = 0
             for process in processes_to_remove:
                 running_processes.pop(process)
             num_running_processes = len(running_processes.items())
+            if failed_counter == 8:
+                print(f'A total of eight failed processes in a row, '
+                      f'will terminate')
+                break
             if num_running_processes < int(sys.argv[2]):
                 print(f'Only {num_running_processes} running, '
                       f'will start one more ({start_more_count})')

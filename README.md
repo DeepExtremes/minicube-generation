@@ -52,17 +52,28 @@ The configs will be written to the `deepextremes-minicubes` bucket under
 
 ## Cube Generation
 
-This is the actual minicube generation. 
-You may execute it by running `generate_cubes.py` from `03-cube-gneration` 
-This script expects three arguments: The first is either a single minicube 
+This is the actual minicube generation, which is supposed to be started from . 
+The simplest way to run this is to run the script 
+`generate-base-and-update-configs.py`  from `03-cube-generation`. 
+It receives four arguments: 
+* a list of base config versions (e.g., 1.1.p,1.2.p)
+* the number of base processes that may be run simultaneously
+* a list of update config versions (e.g., 1.1,1.2)
+* the number of update processes that may be run simultaneously
+The script will then run the `generate_cubes.py` script defined below twice, 
+once for base and once for update configurations; in case one type of 
+configurations is not available anymore, the remaining processes will be shifted 
+to the other type. 
+
+Otherwise, you may execute it by running `generate_cubes.py`. 
+This script expects two arguments: The first is either a single minicube 
 configuration geojson file, or a bucket path containing several of these files. 
-The second parameter the aws access key id and the third one the aws secret 
-access key to access the `deepextremes` bucket holding auxiliary data.
-There is a fourth optional parameter that expects an integer value. If you
+The second, optional parameter expects an integer value. If you
 use this, generation processes will be started every minutes as indicated by
 this parameter. If omitted, processes are run consecutively.
 The minicubes are written to the `deepextremes-minicubes` bucket on AWS,
 registry entries are written to `deepextremes-minicubes/mc_registry_v3.csv`.
+
 In case the configs are update configs, the previous minicubes are deleted and 
 their entries removed from the registry.
 

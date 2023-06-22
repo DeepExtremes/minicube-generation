@@ -4,6 +4,8 @@
 * Cleaned up repository
 * Do not read time steps not provided by sentinelhub
 * Set no data areas in s2 l2 data to nan
+* Introduced script `generate-base-and-update-cubes` to use resources more 
+  efficiently
 
 ## Changes in 1.1
 * Changed cube generation process to start processes until maximum is reached
