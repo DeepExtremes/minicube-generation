@@ -21,8 +21,9 @@ from xcube.core.update import update_dataset_chunk_encoding
 
 from earthnetcloudmask import compute_earthnet_cloudmask
 from maskaycloudmask import compute_cloud_mask
+from ..constants import MC_REGISTRY
+from ..constants import SANDBOX_REGISTRY
 
-_MC_REGISTRY = 'deepextremes-minicubes/mc_registry_v3.csv'
 now_hour = datetime.now().strftime('%Y-%m-%d:%H')
 _MC_SAVE_REGISTRY = \
     f'deepextremes-minicubes/registry_saves/mc_registry_v3_save_{now_hour}.csv'
@@ -399,10 +400,16 @@ def _get_minicubes_fs() -> fsspec.filesystem:
     return fsspec.filesystem('s3', **storage_options)
 
 
-def _already_registered(mc_config: dict) -> bool:
+def _get_registry(sandbox: str) -> str:
+    if sandbox == 'sandbox':
+        return SANDBOX_REGISTRY
+    return MC_REGISTRY
+
+
+def _already_registered(mc_config: dict, sandbox: str) -> bool:
     fs = _get_minicubes_fs()
     location_id = mc_config["properties"]["location_id"]
-    with fs.open(_MC_REGISTRY, 'r') as gjreg:
+    with fs.open(_get_registry(sandbox), 'r') as gjreg:
         gpdreg = gpd.GeoDataFrame(pd.read_csv(gjreg))
         if len(gpdreg.loc[gpdreg['location_id'] == location_id]) > 0:
             return True
@@ -428,28 +435,30 @@ def _remove_cube_if_exists(mc_config: dict):
         fs.delete(mc_id, recursive=True)
 
 
-def _write_entry(ds: xr.Dataset, mc_config: dict):
+def _write_entry(ds: xr.Dataset, mc_config: dict, sandbox: str):
     fs = _get_minicubes_fs()
     gdf = _get_gdf_from_mc(ds)
     not_written = True
+    mc_registry = _get_registry(sandbox)
     while not_written:
         try:
             open('.lock', 'x')
             if mc_config.get("config_type", "base") == 'base':
-                with fs.open(_MC_REGISTRY, 'a') as registry:
+                with fs.open(mc_registry, 'a') as registry:
                     registry.write(gdf.to_csv(header=False, index=False))
             else:
-                with fs.open(_MC_REGISTRY, 'r') as registry:
+                with fs.open(mc_registry, 'r') as registry:
                     gpdreg = gpd.GeoDataFrame(pd.read_csv(registry))
                 mc_location_id = mc_config['properties']['location_id']
                 gpdreg = gpdreg.drop(
                     gpdreg[gpdreg.location_id == mc_location_id].index
                 )
                 gpdreg = gpdreg.append(gdf)
-                with fs.open(_MC_REGISTRY, 'w') as registry:
+                with fs.open(mc_registry, 'w') as registry:
                     registry.write(gpdreg.to_csv(index=False))
-                with fs.open(_MC_SAVE_REGISTRY, 'w') as save_registry:
-                    save_registry.write(gpdreg.to_csv(index=False))
+                if sandbox != 'sandbox':
+                    with fs.open(_MC_SAVE_REGISTRY, 'w') as save_registry:
+                        save_registry.write(gpdreg.to_csv(index=False))
             not_written = False
             os.remove('.lock')
         except FileExistsError:
@@ -473,7 +482,7 @@ def _resample_version(base_mc: xr.Dataset) -> xr.Dataset:
     return base_mc.drop_vars(to_drop)
 
 
-def generate_cube(mc_config: dict):
+def generate_cube(mc_config: dict, sandbox: str):
     print(f'Processing minicube configuration '
           f'{mc_config["properties"]["data_id"]}')
     update = mc_config.get("config_type", "base") == 'update'
@@ -536,7 +545,7 @@ def generate_cube(mc_config: dict):
 
     _write_ds(ds, mc_config)
 
-    _write_entry(ds, mc_config)
+    _write_entry(ds, mc_config, sandbox)
 
     if mc_config.get("config_type", "base") == 'update':
         base_mc_id = mc_config["properties"].get("base_minicube")
@@ -736,28 +745,29 @@ def _unfold_dataarray_to_dataset(ds_source: xr.Dataset,
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 3:
         raise ValueError('Too many arguments')
     geojson_file = sys.argv[1]
+    sandbox = 'sandbox' if len(sys.argv) == 4 and sys.argv[3] == 'sandbox' else ''
     fs = _get_minicubes_fs()
     with fs.open(geojson_file, 'r') as gjf:
         mc_config = json.load(gjf)
         if mc_config.get("config_type", "base") == 'base':
-            if _already_registered(mc_config):
+            if _already_registered(mc_config, sandbox):
                 location_id = mc_config["properties"].get("location_id", "")
                 print(f'Minicube at location {location_id} already exists, '
                       f'will not generate but move config to created folder')
             else:
                 _remove_cube_if_exists(mc_config)
-                generate_cube(mc_config)
+                generate_cube(mc_config, sandbox)
         else:   # config_type == 'update'
-            if not _already_registered(mc_config):
+            if not _already_registered(mc_config, sandbox):
                 location_id = mc_config["properties"]["location_id"]
                 print(f'No minicube at location {location_id} found in entry, '
                       f'will not update but move config to created folder')
                 _remove_cube_if_exists(mc_config)
             else:
-                generate_cube(mc_config)
+                generate_cube(mc_config, sandbox)
     split_geojson_file = geojson_file.split('/')
     split_geojson_file.insert(-1, 'created')
     new_file = '/'.join(split_geojson_file)

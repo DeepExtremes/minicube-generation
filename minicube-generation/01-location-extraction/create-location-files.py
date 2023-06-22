@@ -6,7 +6,8 @@ import pandas as pd
 
 from typing import List
 
-_MC_REGISTRY = 'mc_registry_v3.csv'
+from ..constants import MC_REGISTRY
+
 location_files = [
     ('csv', 'csv_events', 'MinicubeLocation_test2.csv'),
     ('csv', 'csv_non_events', 'MinicubeLocation_nonEvent_v1.csv'),
@@ -130,7 +131,7 @@ def _create_location_files():
         secret=s3_secret
     )
     fs = fsspec.filesystem('s3', **storage_options)
-    with fs.open(f'deepextremes-minicubes/{_MC_REGISTRY}', 'r') as gjreg:
+    with fs.open(MC_REGISTRY, 'r') as gjreg:
         mc_reg = gpd.GeoDataFrame(pd.read_csv(gjreg))
     for location_file in location_files:
         if location_file[0] == 'json':

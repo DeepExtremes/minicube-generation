@@ -15,6 +15,8 @@ import xarray as xr
 
 from xcube.core.store import new_data_store
 
+from ..constants import MC_REGISTRY
+
 _SPATIAL_RES = 20
 _HALF_IMAGE_SIZE = 64 * _SPATIAL_RES
 _ID_TEMPLATE = "mc_{lon}_{lat}_{version}_{date}_{count}"
@@ -37,7 +39,6 @@ _ERA5_VARIABLE_MAP = {
 _REGIONS = gpd.read_file(
     'https://explorer.digitalearth.africa/api/regions/ndvi_climatology_ls'
 )
-_REGISTRY = 'mc_registry_v3.csv'
 _SHORT_MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
                  'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 
@@ -238,7 +239,7 @@ def _get_configuration_versions_from_registry(mc_id: str) -> dict:
         secret=os.environ["S3_USER_STORAGE_SECRET"]
     )
     fs = fsspec.filesystem('s3', **storage_options)
-    with fs.open(f'deepextremes-minicubes/{_REGISTRY}', 'r') as gjreg:
+    with fs.open(MC_REGISTRY, 'r') as gjreg:
         gpdreg = gpd.GeoDataFrame(pd.read_csv(gjreg))
         entry = gpdreg.loc[gpdreg.mc_id == mc_id]
         component_versions['s2_l2_bands'] = entry.s2_l2_bands.values[0]

@@ -10,34 +10,37 @@ class _Type(enum.Enum):
 
 
 def _run_process(
-        type: _Type, num_processes: int, version: str, running_processes: dict
+        type: _Type, num_processes: int, version: str, running_processes: dict,
+        sandbox: str
 ) -> dict:
     running_processes[f'{type.value} {version}'] = \
         subprocess.Popen(['python',
                           'generate-cubes.py',
                           f'deepextremes-minicubes/configs/{type.value}/{version}',
-                          num_processes
+                          f'{num_processes}',
+                          f'{sandbox}',
                           ])
     return running_processes
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 5:
+    if len(sys.argv) > 6:
         raise ValueError('Too many arguments')
     base_config_dirs = sys.argv[1].split(',')
     num_base_processes = int(sys.argv[2])
     update_config_dirs = sys.argv[3].split(',')
     num_update_processes = int(sys.argv[4])
+    sandbox = 'sandbox' if len(sys.argv) == 6 and sys.argv[5] == 'sandbox' else ''
     base_process_to_start = 0
     update_process_to_start = 0
     running_processes = dict()
     running_processes = _run_process(
         _Type.BASE, num_base_processes, base_config_dirs[base_process_to_start],
-        running_processes
+        running_processes, sandbox
     )
     running_processes = _run_process(
         _Type.UPDATE, num_update_processes, update_config_dirs[update_process_to_start],
-        running_processes
+        running_processes, sandbox
     )
     base_process_to_start += 1
     update_process_to_start += 1
@@ -56,7 +59,7 @@ if __name__ == "__main__":
                 running_processes = _run_process(
                     _Type.BASE, num_base_processes,
                     base_config_dirs[base_process_to_start],
-                    running_processes
+                    running_processes, sandbox
                 )
                 base_process_to_start += 1
             elif process.startswith('update') and \
@@ -64,7 +67,7 @@ if __name__ == "__main__":
                 running_processes = _run_process(
                     _Type.UPDATE, num_update_processes,
                     update_config_dirs[update_process_to_start],
-                    running_processes
+                    running_processes, sandbox
                 )
                 update_process_to_start += 1
         num_running_processes = len(running_processes.items())
@@ -79,7 +82,7 @@ if __name__ == "__main__":
                 running_processes = _run_process(
                     _Type.BASE, num_base_processes,
                     base_config_dirs[base_process_to_start - 1],
-                    running_processes
+                    running_processes, sandbox
                 )
             elif key.startswith('update'):
                 running_processes[key].kill()
@@ -88,7 +91,7 @@ if __name__ == "__main__":
                 running_processes = _run_process(
                     _Type.UPDATE, num_update_processes,
                     update_config_dirs[update_process_to_start - 1],
-                    running_processes
+                    running_processes, sandbox
                 )
             processes_have_been_shifted = True
         if num_running_processes == 1:
