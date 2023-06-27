@@ -6,7 +6,8 @@
 * Set no data areas in s2 l2 data to nan
 * Introduced script `generate-base-and-update-cubes` to use resources more 
   efficiently
-* Added sandbox mechanism  
+* Added sandbox mechanism 
+* Ensure earthnet cloudmask and scl are written as integer data types
 
 ## Changes in 1.1
 * Changed cube generation process to start processes until maximum is reached
