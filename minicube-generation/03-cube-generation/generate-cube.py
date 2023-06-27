@@ -636,7 +636,13 @@ def _pad_time_with_fill_values(ds_source: xr.Dataset,
     if len(prefix_time_values) > 0:
         prefix_time_values = np.array(prefix_time_values)
         new_time_values = np.concatenate((prefix_time_values, ds_source['time'].values))
-        return ds_source.reindex({'time': new_time_values})
+        fill_value_dict = {}
+        for data_var in ds_source.data_vars:
+            dtype_name = ds_source[data_var].dtype.name
+            if 'float' not in dtype_name:
+                fill_value_dict[data_var] = 0
+        return ds_source.reindex({'time': new_time_values},
+                                 fill_value=fill_value_dict)
     return ds_source
 
 
