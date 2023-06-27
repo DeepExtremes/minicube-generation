@@ -51,6 +51,8 @@
 ### 2.0
 * Read events correctly
 * Save as integers rather than floating point numbers
+### 2.1
+* Small metadata adjustment (correct data type)
 
 ## s2cloudless_cloudmask
 ### 1.0 

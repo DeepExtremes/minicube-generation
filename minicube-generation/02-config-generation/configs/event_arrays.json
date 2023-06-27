@@ -2,7 +2,7 @@
     "properties": {
         "metadata": {
             "configuration_versions": {
-                "event_arrays": 2.0
+                "event_arrays": 2.1
             }
         },
         "variables": [
@@ -10,7 +10,7 @@
                 "name": "event_labels",
                 "long_name": "Event Labels",
                 "units": "",
-                "dtype": "float64",
+                "dtype": "uint16",
                 "fill_value": 0,
                 "sources": [
                     {
@@ -42,7 +42,7 @@
                 "name": "events",
                 "long_name": "Events",
                 "units": "",
-                "dtype": "float32",
+                "dtype": "uint8",
                 "fill_value": 0,
                 "sources": [
                     {
