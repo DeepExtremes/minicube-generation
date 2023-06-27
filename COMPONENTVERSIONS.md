@@ -16,6 +16,7 @@
 ### 1.4 
 * Do not read time steps not provided by sentinelhub 
 * Set no data areas to nan (are 0.0 in version 1.3)
+* Ensure SCL is written as integer data type
   
 ## era5
 ### 1.0

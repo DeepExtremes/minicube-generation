@@ -28,6 +28,7 @@
                         "processing_steps": [
                             "Read S2L2A",
                             "Unfold dataarray to dataset /params/ band",
+                            "Change data type /params/ SCL uint8",
                             "Set values below and equal to nan /params/ 0.0 B02,B03,B04,B05,B06,B07,B8A",
                             "Pad time with fill values",
                             "Rechunk by to /params/ time 165"
@@ -64,6 +65,7 @@
                         "processing_steps": [
                             "Read S2L2A",
                             "Unfold dataarray to dataset /params/ band",
+                            "Change data type /params/ SCL uint8",
                             "Set values below and equal to nan /params/ 0.0 B02,B03,B04,B05,B06,B07,B8A",
                             "Pad time with fill values",
                             "Rechunk by to /params/ time 165"
@@ -100,6 +102,7 @@
                         "processing_steps": [
                             "Read S2L2A",
                             "Unfold dataarray to dataset /params/ band",
+                            "Change data type /params/ SCL uint8",
                             "Set values below and equal to nan /params/ 0.0 B02,B03,B04,B05,B06,B07,B8A",
                             "Pad time with fill values",
                             "Rechunk by to /params/ time 165"
@@ -136,6 +139,7 @@
                         "processing_steps": [
                             "Read S2L2A",
                             "Unfold dataarray to dataset /params/ band",
+                            "Change data type /params/ SCL uint8",
                             "Set values below and equal to nan /params/ 0.0 B02,B03,B04,B05,B06,B07,B8A",
                             "Pad time with fill values",
                             "Rechunk by to /params/ time 165"
@@ -172,6 +176,7 @@
                         "processing_steps": [
                             "Read S2L2A",
                             "Unfold dataarray to dataset /params/ band",
+                            "Change data type /params/ SCL uint8",
                             "Set values below and equal to nan /params/ 0.0 B02,B03,B04,B05,B06,B07,B8A",
                             "Pad time with fill values",
                             "Rechunk by to /params/ time 165"
@@ -208,6 +213,7 @@
                         "processing_steps": [
                             "Read S2L2A",
                             "Unfold dataarray to dataset /params/ band",
+                            "Change data type /params/ SCL uint8",
                             "Set values below and equal to nan /params/ 0.0 B02,B03,B04,B05,B06,B07,B8A",
                             "Pad time with fill values",
                             "Rechunk by to /params/ time 165"
@@ -244,6 +250,7 @@
                         "processing_steps": [
                             "Read S2L2A",
                             "Unfold dataarray to dataset /params/ band",
+                            "Change data type /params/ SCL uint8",
                             "Set values below and equal to nan /params/ 0.0 B02,B03,B04,B05,B06,B07,B8A",
                             "Pad time with fill values",
                             "Rechunk by to /params/ time 165"
@@ -279,6 +286,7 @@
                         "processing_steps": [
                             "Read S2L2A",
                             "Unfold dataarray to dataset /params/ band",
+                            "Change data type /params/ SCL uint8",
                             "Set values below and equal to nan /params/ 0.0 B02,B03,B04,B05,B06,B07,B8A",
                             "Pad time with fill values",
                             "Rechunk by to /params/ time 165"
