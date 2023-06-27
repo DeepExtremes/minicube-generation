@@ -75,5 +75,5 @@ def compute_earthnet_cloudmask(ds_source: xr.Dataset) -> xr.Dataset:
         ds_sub_temp = ds.isel(time=slice(time_step, time_step + time_step_size))
         res = _compute_earthnet_cloudmask_sub_temp(ds_sub_temp, model)
         datasets_to_merge.append(res)
-    ds_res = xr.merge(datasets_to_merge)
+    ds_res = xr.concat(datasets_to_merge, dim='time')
     return ds_res

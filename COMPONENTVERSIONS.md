@@ -82,3 +82,4 @@
     4 - masked_other_reasons
 ### 1.1
 * Do not process time steps not provided by sentinelhub
+* Ensure band is written as integer data type
