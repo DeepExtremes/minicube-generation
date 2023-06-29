@@ -1,3 +1,6 @@
+## Changes in 1.2.1 (in development)
+
+
 ## Changes in 1.2
 * Update `create-location-files.py` to support json and csv
 * Improved support of outside events
