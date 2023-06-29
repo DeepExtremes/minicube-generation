@@ -30,6 +30,8 @@
 * Initial version with band "lccs_class"
 ### 2.0 
 * Top line of data is not empty anymore  
+### 2.1
+* Changed link to landcover map after renaming of auxiliary data set
 
 ## copernicus_dem
 ### 1.0

@@ -2,7 +2,7 @@
     "properties": {
         "metadata": {
             "configuration_versions": {
-                "cci_landcover_map": 2.0
+                "cci_landcover_map": 2.1
             }
         },
         "variables": [
@@ -39,7 +39,7 @@
             {
                 "name": "CCI Map",
                 "datasets": {
-                    "LC-1x2160x2160-1.0.0.zarr": {
+                    "LC-1x2160x2160-1.0.0./0.zarr": {
                         "variable_names": ["lccs_class"]
                     }
                 },

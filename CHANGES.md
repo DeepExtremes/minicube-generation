@@ -1,5 +1,5 @@
 ## Changes in 1.2.1 (in development)
-
+* Changed link to landcover map after renaming of auxiliary data set
 
 ## Changes in 1.2
 * Update `create-location-files.py` to support json and csv
