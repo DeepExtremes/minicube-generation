@@ -2,6 +2,7 @@ import sys
 from typing import List
 
 from configgencreation import get_available_components
+from configgencreation import get_list_of_csv_location_ids
 from configgencreation import get_store
 from configgencreation import create_update_config
 
@@ -14,10 +15,13 @@ def _update_components(mc_bucket: str, components_to_update: List[str]):
         if component not in available_components:
             raise ValueError(f'Component {component} was not found. Must be one of '
                              f'{available_components}')
+    csv_location_ids = get_list_of_csv_location_ids()
     for minicube_id in minicube_ids:
         mc = mc_store.open_data(minicube_id)
         mc_path = f'{mc_bucket}/{minicube_id}'
-        create_update_config(mc, mc_path, components_to_update)
+        create_update_config(
+            mc, mc_path, components_to_update, csv_location_ids
+        )
 
 
 if __name__ == "__main__":

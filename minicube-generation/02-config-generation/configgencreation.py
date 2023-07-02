@@ -41,6 +41,7 @@ _REGIONS = gpd.read_file(
 )
 _SHORT_MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
                  'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+_CSV_FILE = 'MinicubeLocation_test2.csv'
 
 
 def get_available_components():
@@ -233,12 +234,7 @@ def _get_geospatial_bbox_from_spatial_bbox(utm_proj: Proj,
 
 def _get_configuration_versions_from_registry(mc_id: str) -> dict:
     component_versions = {}
-    storage_options = dict(
-        anon=False,
-        key=os.environ["S3_USER_STORAGE_KEY"],
-        secret=os.environ["S3_USER_STORAGE_SECRET"]
-    )
-    fs = fsspec.filesystem('s3', **storage_options)
+    fs = get_fs()
     with fs.open(MC_REGISTRY, 'r') as gjreg:
         gpdreg = gpd.GeoDataFrame(pd.read_csv(gjreg))
         entry = gpdreg.loc[gpdreg.mc_id == mc_id]
@@ -263,8 +259,19 @@ def _get_configuration_versions_from_registry(mc_id: str) -> dict:
     return component_versions
 
 
+def get_list_of_csv_location_ids() -> List[str]:
+    fs = get_fs()
+    with fs.open(f'deepextremes-minicubes/input_events/{_CSV_FILE}',
+                 'r') as csv:
+        csv_content = gpd.GeoDataFrame(pd.read_csv(csv))
+    location_ids = csv_content.Longitude.map('{:,.2f}'.format) + \
+                   '_' + csv_content.Latitude.map('{:,.2f}'.format)
+    return location_ids.tolist()
+
+
 def create_update_config(mc: xr.Dataset, mc_path: str,
-                         components_to_update: List[str]):
+                         components_to_update: List[str],
+                         csv_location_ids: List[str]):
     update_config = open_config('update.geojson', update=True)
     mc_configuration_versions = \
         mc.attrs.get('metadata', {}).get('configuration_versions', {})
@@ -333,6 +340,11 @@ def create_update_config(mc: xr.Dataset, mc_path: str,
     if not update_config.get('properties').get('location_id'):
         update_config["properties"]["location_id"] = \
             f'{center_lon_readable}_{center_lat_readable}'
+    location_id = update_config["properties"]["location_id"]
+    if location_id in csv_location_ids:
+        print('Minicube from source considered not trustworthy (csv), '
+              'will not create update config')
+        return
     base_fs = get_fs()
     with base_fs.open(
             f'deepextremes-minicubes/configs/update/'
