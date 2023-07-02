@@ -1,1 +1,1 @@
-version=1.2.1.dev0
+version=1.2.1

@@ -1,4 +1,4 @@
-## Changes in 1.2.1 (in development)
+## Changes in 1.2.1
 * Changed link to landcover map after renaming of auxiliary data set
 * base config versions are suffixed with base
 
