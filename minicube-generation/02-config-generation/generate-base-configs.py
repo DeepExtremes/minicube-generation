@@ -100,6 +100,7 @@ def _generate_base_configs(location_file: str):
     version ='unknown'
     with open('../version.py', 'r') as v:
         version = v.read().split('=')[1]
+    version = f'{version}.base'
     config_template = _create_base_config_template()
     base_fs = get_fs()
     for minicube_location in minicube_locations.iterrows():
