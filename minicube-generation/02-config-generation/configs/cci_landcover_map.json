@@ -2,7 +2,7 @@
     "properties": {
         "metadata": {
             "configuration_versions": {
-                "cci_landcover_map": 2.1
+                "cci_landcover_map": 2.2
             }
         },
         "variables": [
@@ -18,7 +18,7 @@
                         "license_url": "http://licences.ceda.ac.uk/image/data_access_condition/esacci_landcover_terms_and_conditions.pdf",
                         "attributions": [],
                         "processing_steps": [
-                            "Read LC-1x2160x2160-1.0.0.zarr",
+                            "Read LC-1x2160x2160-1.0.0.levels/0.zarr",
                             "Adjust bound coordinates",
                             "Pick time value /params/ 6",
                             "Subset spatially around center /params/ 0.1",
@@ -39,7 +39,7 @@
             {
                 "name": "CCI Map",
                 "datasets": {
-                    "LC-1x2160x2160-1.0.0./0.zarr": {
+                    "LC-1x2160x2160-1.0.0.levels/0.zarr": {
                         "variable_names": ["lccs_class"]
                     }
                 },

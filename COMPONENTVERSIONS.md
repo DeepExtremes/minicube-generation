@@ -32,6 +32,8 @@
 * Top line of data is not empty anymore  
 ### 2.1
 * Changed link to landcover map after renaming of auxiliary data set
+### 2.2
+* Fixed typo that prevented the previous version from working
 
 ## copernicus_dem
 ### 1.0
