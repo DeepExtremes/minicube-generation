@@ -1,3 +1,7 @@
+## Changes in 1.2.2
+* Do not update minicubes created from csv files
+* Fixed typo in landcover map configuration
+
 ## Changes in 1.2.1
 * Changed link to landcover map after renaming of auxiliary data set
 * base config versions are suffixed with base
