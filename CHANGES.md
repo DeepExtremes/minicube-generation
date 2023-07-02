@@ -1,5 +1,6 @@
 ## Changes in 1.2.1 (in development)
 * Changed link to landcover map after renaming of auxiliary data set
+* base config versions are suffixed with base
 
 ## Changes in 1.2
 * Update `create-location-files.py` to support json and csv
