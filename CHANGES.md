@@ -1,3 +1,5 @@
+## Changes in 1.2.3 (in development)
+
 ## Changes in 1.2.2
 * Do not update minicubes created from csv files
 * Fixed typo in landcover map configuration

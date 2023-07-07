@@ -9,7 +9,7 @@ Note that most of these scripts require you to have environment variables
 
 Move to `minicube-generation/01-location-extraction` and execute 
 `create-locations.py`. 
-This will create files `inside_events.csv` and `outside_events.csv` that may
+This will create files `json_events.csv` and `json_non_events.csv` that may
 serve as input for the configuration generation.
 
 The following is deprecated:
