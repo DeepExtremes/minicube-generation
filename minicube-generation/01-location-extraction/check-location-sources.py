@@ -15,7 +15,8 @@ location_files = [
     ('json', 'json_non_events', 'sampling_purelc_nonevent_location.json'),
     ('json', 'json_events', '5_sampling_purelc_event_location.json')
 ]
-
+source_columns = ['mc_id', 'version', 'location_id', 'creation_date',
+                  'modification_date', 'events']
 
 def _prepare_csv(df: pd.DataFrame) -> pd.DataFrame:
     location_ids = df.Longitude.map('{:,.2f}'.format) + \
@@ -45,9 +46,8 @@ def _get_df_from_csv(location_file: str, mc_reg: gpd.GeoDataFrame, fs) \
     event_locations = _prepare_csv(event_locations)
     # remove locations which are already included in the minicube registry
     included_cubes = \
-        mc_reg.loc[mc_reg['location_id'].isin(event_locations['location_ids'].array)][
-            ['mc_id', 'location_id', 'creation_date', 'modification_date', 'events']
-        ]
+        mc_reg.loc[mc_reg['location_id'].isin(
+            event_locations['location_ids'].array)][source_columns]
     included_cubes['source'] = location_file
     return included_cubes
 
@@ -60,13 +60,13 @@ def _get_df_from_json(location_file: str, mc_reg: gpd.GeoDataFrame, fs) \
         event_locations = [value for key, value in event_locations.items()]
     event_locations = _add_location_ids_dict(event_locations)
     included_cubes = pd.DataFrame(columns=[
-        'mc_id', 'location_id', 'creation_date', 'modification_date', 'events'
+        'mc_id', 'version', 'location_id', 'creation_date',
+        'modification_date', 'events'
     ])
     for event_location in event_locations:
         included_cube = \
-            mc_reg.loc[mc_reg['location_id']==event_location['LocationId']][
-                ['mc_id', 'location_id', 'creation_date', 'modification_date', 'events']
-            ]
+            mc_reg.loc[mc_reg['location_id'] ==
+                       event_location['LocationId']][source_columns]
         if len(included_cube) > 0:
             included_cubes = pd.DataFrame.append(included_cubes, included_cube)
     included_cubes['source'] = location_file
@@ -85,9 +85,7 @@ def _check_location_sources():
     with fs.open(MC_REGISTRY, 'r') as gjreg:
         mc_reg = gpd.GeoDataFrame(pd.read_csv(gjreg))
     print(len(mc_reg))
-    cubes = pd.DataFrame(columns=[
-        'mc_id', 'location_id', 'creation_date', 'modification_date', 'events', 'source'
-    ])
+    cubes = pd.DataFrame(columns=[source_columns])
     for location_file in location_files:
         print(f'Examining {location_file}')
         if location_file[0] == 'json':
