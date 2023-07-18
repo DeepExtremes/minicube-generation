@@ -17,7 +17,7 @@ dependencies:
   - tensorflow
   - xcube
   - xcube-cds
-  - xcube-sh >= 0.10.1
+  - xcube-sh >= 0.10.3
   - pip:
       - maskay
       - segmentation-models-pytorch
