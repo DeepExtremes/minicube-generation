@@ -10,7 +10,7 @@ from constants import MC_REGISTRY
 
 location_files = [
     ('json', 'json_non_events', 'sampling_purelc_nonevent_location.json'),
-    ('json', 'json_events', '5_sampling_purelc_event_location.json')
+    ('json', 'json_events', 'sampling_purelc_event_location.json')
 ]
 
 

@@ -12,8 +12,10 @@ from constants import MC_REGISTRY
 location_files = [
     ('csv', 'csv_events', 'MinicubeLocation_test2.csv'),
     ('csv', 'csv_non_events', 'MinicubeLocation_nonEvent_v1.csv'),
-    ('json', 'json_non_events', 'sampling_purelc_nonevent_location.json'),
-    ('json', 'json_events', '5_sampling_purelc_event_location.json')
+    ('json', 'json_pure_non_events', 'sampling_purelc_nonevent_location.json'),
+    ('json', 'json_pure_events', 'sampling_purelc_event_location.json'),
+    # ('json', 'json_mixed_non_events', 'sampling_mixedlc_nonevent_location.json'),
+    # ('json', 'json_mixed_events', 'sampling_mixedlc_event_location.json'),
 ]
 source_columns = ['mc_id', 'version', 'location_id', 'creation_date',
                   'modification_date', 'events']
