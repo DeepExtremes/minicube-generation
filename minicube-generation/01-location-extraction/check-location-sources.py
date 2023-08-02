@@ -10,7 +10,7 @@ from constants import MC_REGISTRY
 
 
 location_files = [
-    ('csv', 'csv_events', 'MinicubeLocation_test2.csv'),
+    ('csv', 'csv_events', 'MinicubeLocation_event_v1.csv'),
     ('csv', 'csv_non_events', 'MinicubeLocation_nonEvent_v1.csv'),
     ('json', 'json_pure_non_events', 'sampling_purelc_nonevent_location.json'),
     ('json', 'json_pure_events', 'sampling_purelc_event_location.json'),
@@ -19,6 +19,7 @@ location_files = [
 ]
 source_columns = ['mc_id', 'version', 'location_id', 'creation_date',
                   'modification_date', 'events']
+
 
 def _prepare_csv(df: pd.DataFrame) -> pd.DataFrame:
     location_ids = df.Longitude.map('{:,.2f}'.format) + \
