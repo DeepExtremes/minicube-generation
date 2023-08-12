@@ -1,4 +1,7 @@
 ## Changes in 1.2.3 (in development)
+* Adapted location creation to consider events from mixed classes
+* Use new registry with new columns `class`, `dominant_class`, 
+  `2nd_dominant_class`, `type`, and `location_source`
 
 ## Changes in 1.2.2
 * Do not update minicubes created from csv files
