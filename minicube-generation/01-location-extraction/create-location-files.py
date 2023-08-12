@@ -9,25 +9,42 @@ from typing import List
 from constants import MC_REGISTRY
 
 location_files = [
-    ('json', 'json_non_events', 'sampling_purelc_nonevent_location.json'),
-    ('json', 'json_events', 'sampling_purelc_event_location.json')
+    ('json', 'json_pure_non_events', 'sampling_purelc_nonevent_location.json'),
+    ('json', 'json_pure_events', 'sampling_purelc_event_location.json'),
+    ('json', 'json_mixed_non_events', 'sampling_mixedlc_nonevent_location.json'),
+    ('json', 'json_mixed_events', 'sampling_mixedlc_event_location.json'),
 ]
 
 
 def _replace_class_dict(dfs: List[dict]) -> List[dict]:
     for df in dfs:
-        if df['Class'] == 1.0:
-            df['Class'] = 'broadtree'
-        elif df['Class'] == 2.0:
-            df['Class'] = 'grassland'
-        elif df['Class'] == 3.0:
-            df['Class'] = 'mixedtree'
-        elif df['Class'] == 4.0:
-            df['Class'] = 'needletree'
-        elif df['Class'] == 5.0:
-            df['Class'] = 'soil'
-        elif df['Class'] == 6.0:
-            df['Class'] = 'urban'
+        if 'Dominant_Class' in df:
+            df['Class'] = '0'
+            df['DominantClass'] = df.pop('Dominant_Class')
+            df['2ndDominantClass'] = df.pop('2nd_Dominant_Class')
+        elif '2nd_Class' in df:
+            df['DominantClass'] = df.pop('Class')
+            df['2ndDominantClass'] = df.pop('2nd_Class')
+            df['Class'] = '0'
+        else:
+            df['DominantClass'] = '0'
+            df['2ndDominantClass'] = '0'
+        for klass in ['Class', 'DominantClass', '2ndDominantClass']:
+            if klass in df:
+                if int(df[klass]) == 0:
+                    df[klass] = ''
+                elif int(df[klass]) == 1:
+                    df[klass] = 'broadtree'
+                elif int(df[klass]) == 2:
+                    df[klass] = 'grassland'
+                elif int(df[klass]) == 3:
+                    df[klass] = 'mixedtree'
+                elif int(df[klass]) == 4:
+                    df[klass] = 'needletree'
+                elif int(df[klass]) == 5:
+                    df[klass] = 'soil'
+                elif int(df[klass]) == 6:
+                    df[klass] = 'urban'
     return dfs
 
 
@@ -110,10 +127,13 @@ def _get_output_df_from_json(location_file: str, mc_reg: gpd.GeoDataFrame, fs) \
     for event_location in event_locations:
         if event_location['LocationId'] not in mc_reg['location_id'].array:
             remaining_event_locations.append(event_location)
+        event_location['LocationSource'] = location_file
     remaining_event_locations = _prepare_dict(remaining_event_locations)
     output_df = pd.DataFrame(columns=['Longitude', 'Latitude', 'Class',
+                                      'DominantClass', '2ndDominantClass',
                                       'EventStart', 'EventEnd',
-                                      'EventLabel', 'OutsideEvent'])
+                                      'EventLabel', 'OutsideEvent',
+                                      'LocationSource'])
     for remaining_event_location in remaining_event_locations:
         output_df = output_df.append(remaining_event_location,
                                      ignore_index=True)
