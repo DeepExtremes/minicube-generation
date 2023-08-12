@@ -26,7 +26,7 @@ from constants import SANDBOX_REGISTRY
 
 now_hour = datetime.now().strftime('%Y-%m-%d:%H')
 _MC_SAVE_REGISTRY = \
-    f'deepextremes-minicubes/registry_saves/mc_registry_v3_save_{now_hour}.csv'
+    f'deepextremes-minicubes/registry_saves/mc_registry_v4_save_{now_hour}.csv'
 _MONTHS = dict(
     jan=1, feb=2, mar=3, apr=4, may=5, jun=6,
     jul=7, aug=8, sep=9, oct=10, nov=11, dec=12
@@ -304,10 +304,13 @@ def _get_s3_store(version: str):
     )
 
 
-def _write_ds(ds: xr.Dataset, mc_config: dict):
+def _write_ds(ds: xr.Dataset, mc_config: dict, update: str):
     print(f'Writing dataset {ds.data_id}')
     version = mc_config['properties']['version']
-    s3_store = _get_s3_store(version)
+    if update:
+        s3_store = _get_s3_store(f'full/{version}')
+    else:
+        s3_store = _get_s3_store(f'base/{version}')
     encodings = _get_encoding_dict(ds)
     s3_store.write_data(
         ds, f"{ds.data_id}.zarr", encoding=encodings, replace=True
@@ -317,11 +320,15 @@ def _write_ds(ds: xr.Dataset, mc_config: dict):
     print(f'Finished writing dataset {ds.data_id}')
 
 
-def _get_gdf_from_mc(mc: xr.Dataset) -> gpd.GeoDataFrame:
+def _get_gdf_from_mc(mc: xr.Dataset, update: str) -> gpd.GeoDataFrame:
     mc_id = mc.attrs.get('data_id')
     location_id = mc.attrs.get('location_id')
+    location_source = mc.attrs.get('location_source')
     version = mc.attrs.get('version')
-    path = f'deepextremes-minicubes/{version}/{mc_id}.zarr'
+    type = 'base'
+    if update == 'update':
+        type = 'full'
+    path = f'deepextremes-minicubes/{type}/{version}/{mc_id}.zarr'
     creation_date = mc.attrs.get('creation_date')
     modification_date = mc.attrs.get('modification_date', creation_date)
     events = '[]'
@@ -334,6 +341,13 @@ def _get_gdf_from_mc(mc: xr.Dataset) -> gpd.GeoDataFrame:
             metadata.get('event_start_time'),
             metadata.get('event_end_time')
         )])
+
+    klass = metadata.get('class', 'not') \
+        if metadata.get('class', 'not') != 'not' else ''
+    dominant_class = metadata.get('dominant_class', 'not') \
+        if metadata.get('dominant_class', 'not') != 'not' else ''
+    second_dominant_class = metadata.get('second_dominant_class', 'not') \
+        if metadata.get('second_dominant_class', 'not') != 'not' else ''
 
     lon_min = mc.attrs.get('metadata', {}).get('geospatial_lon_min')
     lon_max = mc.attrs.get('metadata', {}).get('geospatial_lon_max')
@@ -366,12 +380,17 @@ def _get_gdf_from_mc(mc: xr.Dataset) -> gpd.GeoDataFrame:
         {
             'mc_id': mc_id,
             'path': path,
+            'location_source': location_source,
             'location_id': location_id,
             'version': version,
+            'type': type,
             'geometry': geometry,
             'creation_date': creation_date,
             'modification_date': modification_date,
             'events': events,
+            'class': klass,
+            'dominant_class': dominant_class,
+            '2nd_dominant_class': second_dominant_class,
             's2_l2_bands': s2_l2_bands_version,
             'era5': era5_version,
             'cci_landcover_map': cci_landcover_map_version,
@@ -421,23 +440,24 @@ def _remove_cube_if_exists(mc_config: dict):
     # wrong with it as there is no registry entry, so we will delete it
     fs = _get_minicubes_fs()
     version = mc_config['properties']['version']
-    minicube_ids = fs.ls(f'deepextremes-minicubes/{version}/')
-    location_ids = ['_'.join(minicube_id.split('_')[1:3])
-                    for minicube_id in minicube_ids]
     mc_location_id = mc_config["properties"].get("location_id")
     if not mc_location_id:
         mc_data_id = mc_config["properties"]["data_id"]
         mc_location_id = '_'.join(mc_data_id.split('_')[1:3])
-    if mc_location_id in location_ids:
-        index = location_ids.index(mc_location_id)
-        mc_id = minicube_ids[index]
-        print(f'Cube {mc_id} has no entry, will remove')
-        fs.delete(mc_id, recursive=True)
+    for type in ['backup', 'backup_base', 'full', 'base']:
+        minicube_ids = fs.ls(f'deepextremes-minicubes/{type}/{version}/')
+        location_ids = ['_'.join(minicube_id.split('_')[1:3])
+                        for minicube_id in minicube_ids]
+        if mc_location_id in location_ids:
+            index = location_ids.index(mc_location_id)
+            mc_id = minicube_ids[index]
+            print(f'Cube {mc_id} has no entry, will remove')
+            fs.delete(mc_id, recursive=True)
 
 
-def _write_entry(ds: xr.Dataset, mc_config: dict, sandbox: str):
+def _write_entry(ds: xr.Dataset, mc_config: dict, sandbox: str, update: str):
     fs = _get_minicubes_fs()
-    gdf = _get_gdf_from_mc(ds)
+    gdf = _get_gdf_from_mc(ds, update)
     not_written = True
     mc_registry = _get_registry(sandbox)
     while not_written:
@@ -466,7 +486,8 @@ def _write_entry(ds: xr.Dataset, mc_config: dict, sandbox: str):
 
 
 def _open_base_mc(mc_config: dict):
-    s3_store = _get_s3_store(mc_config.get("properties").get("base_version"))
+    base_version = mc_config.get("properties").get("base_version")
+    s3_store = _get_s3_store(f'base/{base_version}')
     base_mc_id = mc_config["properties"].get("base_minicube")
     adjusted_base_mc_id = base_mc_id.split('/')[-1]
     if not s3_store.has_data(adjusted_base_mc_id):
@@ -543,9 +564,9 @@ def generate_cube(mc_config: dict, sandbox: str):
 
     ds = _finalize_dataset(ds, mc_config)
 
-    _write_ds(ds, mc_config)
+    _write_ds(ds, mc_config, update)
 
-    _write_entry(ds, mc_config, sandbox)
+    _write_entry(ds, mc_config, sandbox, update)
 
     if mc_config.get("config_type", "base") == 'update':
         base_mc_id = mc_config["properties"].get("base_minicube")
@@ -765,7 +786,7 @@ if __name__ == "__main__":
                       f'will not generate but move config to created folder')
             else:
                 _remove_cube_if_exists(mc_config)
-                generate_cube(mc_config, sandbox)
+            generate_cube(mc_config, sandbox)
         else:   # config_type == 'update'
             if not _already_registered(mc_config, sandbox):
                 location_id = mc_config["properties"]["location_id"]

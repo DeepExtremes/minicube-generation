@@ -21,18 +21,18 @@ def _replace_class_dict(dfs: List[dict]) -> List[dict]:
         if 'Dominant_Class' in df:
             df['Class'] = '0'
             df['DominantClass'] = df.pop('Dominant_Class')
-            df['2ndDominantClass'] = df.pop('2nd_Dominant_Class')
+            df['SecondDominantClass'] = df.pop('2nd_Dominant_Class')
         elif '2nd_Class' in df:
             df['DominantClass'] = df.pop('Class')
-            df['2ndDominantClass'] = df.pop('2nd_Class')
+            df['SecondDominantClass'] = df.pop('2nd_Class')
             df['Class'] = '0'
         else:
             df['DominantClass'] = '0'
-            df['2ndDominantClass'] = '0'
-        for klass in ['Class', 'DominantClass', '2ndDominantClass']:
+            df['SecondDominantClass'] = '0'
+        for klass in ['Class', 'DominantClass', 'SecondDominantClass']:
             if klass in df:
                 if int(df[klass]) == 0:
-                    df[klass] = ''
+                    df[klass] = 'not'
                 elif int(df[klass]) == 1:
                     df[klass] = 'broadtree'
                 elif int(df[klass]) == 2:
@@ -130,7 +130,7 @@ def _get_output_df_from_json(location_file: str, mc_reg: gpd.GeoDataFrame, fs) \
         event_location['LocationSource'] = location_file
     remaining_event_locations = _prepare_dict(remaining_event_locations)
     output_df = pd.DataFrame(columns=['Longitude', 'Latitude', 'Class',
-                                      'DominantClass', '2ndDominantClass',
+                                      'DominantClass', 'SecondDominantClass',
                                       'EventStart', 'EventEnd',
                                       'EventLabel', 'OutsideEvent',
                                       'LocationSource'])

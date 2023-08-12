@@ -12,6 +12,7 @@
         "title": "",
         "data_id": "",
         "location_id": "",
+        "location_source": "",
         "description": "",
         "version": "",
         "recipe": "https://github.com/bcdev/deepextremes/minicube-generation",
@@ -45,6 +46,8 @@
             "publisher_email": "info@brockmann-consult.de",
             "publisher_name": "Brockmann Consult GmbH",
             "class": "",
+            "dominant_class": "",
+            "second_dominant_class": "",
             "history": []
         }
     }

@@ -70,6 +70,7 @@ def _create_base_config(minicube_location: pd.Series, tc: dict, version: str) ->
     tc['properties']['data_id'] = data_id
     tc['properties']['location_id'] = \
         f'{center_lon_readable}_{center_lat_readable}'
+    tc['properties']['location_source'] = minicube_location[1].LocationSource
     tc['properties']['description'] = _DESCRIPTION_TEMPLATE. \
         format(lon=center_lon_readable, lat=center_lat_readable)
     tc['properties']['version'] = version
@@ -91,6 +92,10 @@ def _create_base_config(minicube_location: pd.Series, tc: dict, version: str) ->
     tc['properties']['metadata']['geospatial_center_lon'] = center_lon
     tc['properties']['metadata']['geospatial_center_lat'] = center_lat
     tc['properties']['metadata']['class'] = minicube_location[1].Class
+    tc['properties']['metadata']['dominant_class'] = \
+        minicube_location[1].DominantClass
+    tc['properties']['metadata']['second_dominant_class'] = \
+        minicube_location[1].SecondDominantClass
     tc = fill_config_with_missing_values(tc, center_lon, center_lat)
     return tc
 
