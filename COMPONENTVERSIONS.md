@@ -38,6 +38,8 @@
 ## copernicus_dem
 ### 1.0
 * Initial version with band "cop_dem"
+### 2.0
+* Cases where minicube areas span over multiple DEM tiles are considered
 
 ## de_africa_climatology
 ### 1.0 
