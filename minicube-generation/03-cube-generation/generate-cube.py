@@ -331,23 +331,24 @@ def _get_gdf_from_mc(mc: xr.Dataset, update: str) -> gpd.GeoDataFrame:
     path = f'deepextremes-minicubes/{type}/{version}/{mc_id}.zarr'
     creation_date = mc.attrs.get('creation_date')
     modification_date = mc.attrs.get('modification_date', creation_date)
-    events = '[]'
+    events = []
     metadata = mc.attrs.get('metadata', {})
     if metadata.get('event_label') != 'not' and \
             metadata.get('event_start_time') != 'not' and \
             metadata.get('event_end_time') != 'not':
-        events = str([(
-            metadata.get('event_label'),
-            metadata.get('event_start_time'),
-            metadata.get('event_end_time')
-        )])
+        event_labels = metadata.get('event_label')
+        event_start_times = metadata.get('event_start_time')
+        event_end_times = metadata.get('event_end_time')
+        for i, label in enumerate(event_labels):
+            events.append((label, event_start_times[i], event_end_times[i]))
+    events = str(events)
 
     klass = metadata.get('class', 'not') \
-        if metadata.get('class', 'not') != 'not' else ''
+        if metadata.get('class', 'not') != 'not' else '-'
     dominant_class = metadata.get('dominant_class', 'not') \
-        if metadata.get('dominant_class', 'not') != 'not' else ''
+        if metadata.get('dominant_class', 'not') != 'not' else '-'
     second_dominant_class = metadata.get('second_dominant_class', 'not') \
-        if metadata.get('second_dominant_class', 'not') != 'not' else ''
+        if metadata.get('second_dominant_class', 'not') != 'not' else '-'
 
     lon_min = mc.attrs.get('metadata', {}).get('geospatial_lon_min')
     lon_max = mc.attrs.get('metadata', {}).get('geospatial_lon_max')
@@ -390,7 +391,7 @@ def _get_gdf_from_mc(mc: xr.Dataset, update: str) -> gpd.GeoDataFrame:
             'events': events,
             'class': klass,
             'dominant_class': dominant_class,
-            '2nd_dominant_class': second_dominant_class,
+            'second_dominant_class': second_dominant_class,
             's2_l2_bands': s2_l2_bands_version,
             'era5': era5_version,
             'cci_landcover_map': cci_landcover_map_version,
