@@ -86,6 +86,7 @@ def _prepare_csv(df: pd.DataFrame) -> pd.DataFrame:
 def _prepare_dict(dfs: List[dict]) -> List[dict]:
     for df in dfs:
         df.pop('EventDays')
+        df.pop('Event_Days')
         df.pop('LocationId')
         if 'EventStart' not in df:
             df['EventStart'] = 'not'
