@@ -1,6 +1,5 @@
 from datetime import datetime
 import copy
-import glob
 import json
 import math
 import numpy as np
@@ -101,7 +100,12 @@ def _create_base_config(minicube_location: pd.Series, tc: dict, version: str) ->
 
 
 def _generate_base_configs(location_file: str):
-    minicube_locations = pd.read_csv(location_file, delimiter="\t")
+    minicube_locations = pd.read_csv(
+        location_file, delimiter="\t", encoding='utf-8',
+        converters={
+            'EventLabel': pd.eval, 'EventStart': pd.eval, 'EventEnd': pd.eval
+        }
+    )
     version ='unknown'
     with open('../version.py', 'r') as v:
         version = v.read().split('=')[1]
