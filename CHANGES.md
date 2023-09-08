@@ -1,3 +1,5 @@
+## Changes in 1.3.1 (in development)
+
 ## Changes in 1.3
 * Adapted location creation to consider events from mixed classes
 * Use new registry with new columns `class`, `dominant_class`, 
