@@ -304,7 +304,7 @@ def _get_s3_store(version: str):
     )
 
 
-def _write_ds(ds: xr.Dataset, mc_config: dict, update: str):
+def _write_ds(ds: xr.Dataset, mc_config: dict, update: bool):
     print(f'Writing dataset {ds.data_id}')
     version = mc_config['properties']['version']
     if update:
@@ -320,13 +320,13 @@ def _write_ds(ds: xr.Dataset, mc_config: dict, update: str):
     print(f'Finished writing dataset {ds.data_id}')
 
 
-def _get_gdf_from_mc(mc: xr.Dataset, update: str) -> gpd.GeoDataFrame:
+def _get_gdf_from_mc(mc: xr.Dataset, update: bool) -> gpd.GeoDataFrame:
     mc_id = mc.attrs.get('data_id')
     location_id = mc.attrs.get('location_id')
     location_source = mc.attrs.get('location_source')
     version = mc.attrs.get('version')
     type = 'base'
-    if update == 'update':
+    if update:
         type = 'full'
     path = f'deepextremes-minicubes/{type}/{version}/{mc_id}.zarr'
     creation_date = mc.attrs.get('creation_date')
@@ -456,7 +456,7 @@ def _remove_cube_if_exists(mc_config: dict):
             fs.delete(mc_id, recursive=True)
 
 
-def _write_entry(ds: xr.Dataset, mc_config: dict, sandbox: str, update: str):
+def _write_entry(ds: xr.Dataset, mc_config: dict, sandbox: str, update: bool):
     fs = _get_minicubes_fs()
     gdf = _get_gdf_from_mc(ds, update)
     not_written = True
@@ -569,7 +569,7 @@ def generate_cube(mc_config: dict, sandbox: str):
 
     _write_entry(ds, mc_config, sandbox, update)
 
-    if mc_config.get("config_type", "base") == 'update':
+    if update:
         base_mc_id = mc_config["properties"].get("base_minicube")
         # remove leading bucket name
         adjusted_base_mc_id = base_mc_id.split('/')[-1]
