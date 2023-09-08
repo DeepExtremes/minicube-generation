@@ -787,7 +787,7 @@ if __name__ == "__main__":
                       f'will not generate but move config to created folder')
             else:
                 _remove_cube_if_exists(mc_config)
-            generate_cube(mc_config, sandbox)
+                generate_cube(mc_config, sandbox)
         else:   # config_type == 'update'
             if not _already_registered(mc_config, sandbox):
                 location_id = mc_config["properties"]["location_id"]
