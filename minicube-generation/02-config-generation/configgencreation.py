@@ -41,7 +41,7 @@ _REGIONS = gpd.read_file(
 )
 _SHORT_MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
                  'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
-_CSV_FILE = 'MinicubeLocation_test2.csv'
+_CSV_FILE = 'MinicubeLocation_event_v1.csv'
 
 
 def get_available_components():
