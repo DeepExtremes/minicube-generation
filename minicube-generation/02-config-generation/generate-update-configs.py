@@ -14,7 +14,7 @@ from constants import MC_REGISTRY
 
 
 def _update_components(base_version: str, components_to_update: List[str]):
-    mc_base_store = get_store('deepextremes-minicubes/base/')
+    mc_base_store = get_store(f'deepextremes-minicubes/base/{base_version}/')
     available_components = get_available_components()
     for component in components_to_update:
         if component not in available_components:
@@ -25,10 +25,10 @@ def _update_components(base_version: str, components_to_update: List[str]):
     with fs.open(MC_REGISTRY, 'r') as gjreg:
         gpdreg = gpd.GeoDataFrame(pd.read_csv(gjreg))
         entries = gpdreg.loc[gpdreg.version == base_version]
-        minicube_ids = list(entries.mc_id.values)
-        for minicube_id in minicube_ids:
-            mc = mc_base_store.open_data(minicube_id)
-            mc_path = f'deepextremes-minicubes/base/{minicube_id}'
+        for i, row in entries.iterrows():
+            minicube_id = row.mc_id
+            mc_path = row.path
+            mc = mc_base_store.open_data(f'{minicube_id}.zarr')
             create_update_config(
                 mc, mc_path, components_to_update, csv_location_ids
             )
