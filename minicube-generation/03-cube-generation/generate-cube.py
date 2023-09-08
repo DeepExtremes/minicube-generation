@@ -573,7 +573,7 @@ def generate_cube(mc_config: dict, sandbox: str):
         base_mc_id = mc_config["properties"].get("base_minicube")
         # remove leading bucket name
         adjusted_base_mc_id = base_mc_id.split('/')[-1]
-        _get_s3_store(mc_config['properties']['base_version']).\
+        _get_s3_store(f"base/{mc_config['properties']['base_version']}").\
             delete_data(adjusted_base_mc_id)
         print("Deleted previous entry of cube")
 
