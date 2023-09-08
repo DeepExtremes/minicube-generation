@@ -85,17 +85,40 @@ def _prepare_csv(df: pd.DataFrame) -> pd.DataFrame:
 
 def _prepare_dict(dfs: List[dict]) -> List[dict]:
     for df in dfs:
-        df.pop('EventDays')
-        df.pop('Event_Days')
+        if 'EventDays' in df:
+            df.pop('EventDays')
+        if 'Event_Days' in df:
+            df.pop('Event_Days')
         df.pop('LocationId')
         if 'EventStart' not in df:
-            df['EventStart'] = 'not'
+            df['EventStart'] = []
         if 'EventEnd' not in df:
-            df['EventEnd'] = 'not'
+            df['EventEnd'] = []
         if 'EventLabel' not in df:
-            df['EventLabel'] = 'not'
+            df['EventLabel'] = []
     return dfs
 
+
+def _harmonize_events(dfs: List[dict]) -> List[dict]:
+    for df in dfs:
+        label = df['EventLabel']
+        if label != []:
+            df['EventLabel'] = [int(l) for l in label]
+        start = df['EventStart']
+        formatted_start_times = []
+        for start_time in start:
+            formatted_start_times.append(
+                pd.Timestamp(start_time).strftime('%Y-%m-%d')
+            )
+        df['EventStart'] = formatted_start_times
+        end = df['EventEnd']
+        formatted_end_times = []
+        for end_time in end:
+            formatted_end_times.append(
+                pd.Timestamp(end_time).strftime('%Y-%m-%d')
+            )
+        df['EventEnd'] = formatted_end_times
+    return dfs
 
 def _get_output_df_from_csv(location_file: str, mc_reg: gpd.GeoDataFrame, fs) \
         -> pd.DataFrame:
@@ -130,6 +153,7 @@ def _get_output_df_from_json(location_file: str, mc_reg: gpd.GeoDataFrame, fs) \
             remaining_event_locations.append(event_location)
         event_location['LocationSource'] = location_file
     remaining_event_locations = _prepare_dict(remaining_event_locations)
+    remaining_event_locations = _harmonize_events(remaining_event_locations)
     output_df = pd.DataFrame(columns=['Longitude', 'Latitude', 'Class',
                                       'DominantClass', 'SecondDominantClass',
                                       'EventStart', 'EventEnd',
