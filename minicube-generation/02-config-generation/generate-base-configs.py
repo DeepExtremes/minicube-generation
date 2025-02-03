@@ -35,7 +35,9 @@ def _create_base_config_template():
 
 
 def _get_crs(lon: float, lat: float) -> str:
-    utm_zone = int(math.floor(lon + 180) / 6)
+    if not -180 < lon < 180 or not -90 < lat < 90:
+        raise ValueError("Coordinates out of range")
+    utm_zone = int(math.floor(lon + 180) / 6) + 1
     if utm_zone == 0:
         utm_zone = 60
     hemisphere = "south" if lat < 0 else "north"
