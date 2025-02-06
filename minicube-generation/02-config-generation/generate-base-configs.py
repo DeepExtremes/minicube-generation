@@ -4,7 +4,6 @@ import json
 import math
 import numpy as np
 import pandas as pd
-from pyproj import CRS
 from pyproj import Proj
 import sys
 
@@ -35,12 +34,11 @@ def _create_base_config_template():
 
 
 def _get_crs(lon: float, lat: float) -> str:
-    utm_zone = int(math.floor(lon + 180) / 6)
-    if utm_zone == 0:
-        utm_zone = 60
-    hemisphere = "south" if lat < 0 else "north"
-    crs = CRS.from_string(f'+proj=utm +zone={utm_zone} +{hemisphere}')
-    epsg_code = crs.to_epsg()
+    if not -180 < lon < 180 or not -90 < lat < 90:
+        raise ValueError("Coordinates out of range")
+    utm_zone = int(math.floor(lon + 180) / 6) + 1
+    hemisphere = 700 if lat < 0 else 600
+    epsg_code = 32000 + hemisphere + utm_zone
     return f'EPSG:{epsg_code}'
 
 
