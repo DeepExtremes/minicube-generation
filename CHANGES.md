@@ -1,4 +1,5 @@
 ## Changes in 1.3.1 (in development)
+* Fixed determination of utm zones
 
 ## Changes in 1.3
 * Adapted location creation to consider events from mixed classes
