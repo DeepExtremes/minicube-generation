@@ -37,6 +37,19 @@ def _get_crs(lon: float, lat: float) -> str:
     if not -180 < lon < 180 or not -90 < lat < 90:
         raise ValueError("Coordinates out of range")
     utm_zone = int(math.floor(lon + 180) / 6) + 1
+    # Handle Norway 32V anomaly
+    if (56 <= lat < 64) and (3 <= lon < 6):
+        utm_zone = 32
+    # Handle Svalbard zones
+    if 72 <= lat < 84:
+        if 0 <= lon < 9:
+            utm_zone = 31
+        elif 9 <= lon < 21:
+            utm_zone = 33
+        elif 21 <= lon < 33:
+            utm_zone = 35
+        elif 33 <= lon < 42:
+            utm_zone = 37
     hemisphere = 700 if lat < 0 else 600
     epsg_code = 32000 + hemisphere + utm_zone
     return f'EPSG:{epsg_code}'
